@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="ภาษาไทย">
 <title>ภาษาไทย · Vocabulaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap');
 :root {
   --bg:#F7F5F0;--surface:#FFFFFF;--surface2:#F0EDE6;
   --border:rgba(0,0,0,0.10);--border2:rgba(0,0,0,0.18);
@@ -23,6 +23,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
+/* ── Header ── */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 12px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
 .header-title{display:flex;align-items:baseline;gap:10px;}
 .header-title h1{font-family:'Noto Sans Thai',sans-serif;font-size:22px;font-weight:600;color:var(--text);}
@@ -30,6 +31,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .voice-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all .3s;}
 .voice-pill.ok{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.2);}
 
+/* ── Toolbar ── */
 .toolbar{padding:14px 20px;display:flex;gap:10px;}
 .search-wrap{flex:1;position:relative;}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
@@ -37,12 +39,14 @@ input[type=text]{font-family:'DM Sans',sans-serif;font-size:15px;width:100%;padd
 input[type=text]:focus{border-color:var(--accent);}
 input[type=text]::placeholder{color:var(--text3);}
 .search-wrap input{padding-left:38px;}
-
 .btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap;-webkit-appearance:none;}
 .btn:active{background:var(--surface2);}
 .btn.accent{background:var(--accent);color:#fff;border-color:var(--accent);}
 .btn.accent:active{background:#a84315;}
+.btn.green{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+.btn.green:active{background:#1f4e38;}
 
+/* ── Formulaire texte ── */
 .add-form{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:none;flex-direction:column;gap:12px;box-shadow:var(--shadow);}
 .add-form.open{display:flex;}
 .add-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -53,6 +57,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .feedback-msg{font-size:12px;color:var(--accent2);font-weight:500;opacity:0;transition:opacity .3s;}
 .feedback-msg.show{opacity:1;}
 
+/* ── Liste ── */
 .count-bar{padding:0 20px 8px;font-size:12px;color:var(--text3);}
 .table-wrap{padding:0 20px 120px;}
 .word-list{display:flex;flex-direction:column;gap:8px;}
@@ -70,7 +75,15 @@ input[type=text]::placeholder{color:var(--text3);}
 .del-btn:active{background:var(--danger-bg);color:var(--danger);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
 
-/* Modal */
+/* ── FABs ── */
+.fab-wrap{position:fixed;bottom:28px;right:24px;display:flex;flex-direction:column;gap:12px;align-items:flex-end;z-index:150;}
+.fab{width:56px;height:56px;border-radius:50%;color:#fff;border:none;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);}
+.fab:active{transform:scale(.93);}
+.fab.kbd{background:var(--accent2);box-shadow:0 4px 20px rgba(46,107,79,.4);}
+.fab.stylet{background:var(--accent);box-shadow:0 4px 20px rgba(196,82,26,.4);}
+.fab-label{font-size:10px;font-weight:500;text-align:center;margin-top:2px;color:var(--text3);}
+
+/* ── Modals ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px 20px 30px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:95vh;overflow-y:auto;}
@@ -79,7 +92,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .modal-title{font-size:17px;font-weight:500;}
 .modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
-/* Compositeur */
+/* ── Clavier thaï ── */
 .word-composer{display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;border:1px solid var(--border);}
 .word-composed{font-family:'Noto Sans Thai',sans-serif;font-size:34px;font-weight:500;color:var(--accent);flex:1;min-height:48px;letter-spacing:2px;word-break:break-all;}
 .word-composed.empty{color:var(--text3);font-size:16px;font-family:'DM Sans',sans-serif;font-weight:400;display:flex;align-items:center;}
@@ -87,8 +100,6 @@ input[type=text]::placeholder{color:var(--text3);}
 .composer-btn{width:40px;height:40px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .composer-btn:active{background:var(--surface2);}
 .composer-btn.speak{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.25);}
-
-/* Sections clavier */
 .kbd-section{margin-bottom:12px;}
 .kbd-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
 .kbd-row{display:flex;flex-wrap:wrap;gap:5px;}
@@ -101,15 +112,44 @@ input[type=text]::placeholder{color:var(--text3);}
 .kbd-key.tone:active{background:var(--accent);color:#fff;}
 .kbd-key.num{background:var(--surface2);}
 
-/* Infos mot */
+/* ── Canvas stylet ── */
+.stylet-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.tool-pill{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;}
+.tool-pill.active{background:var(--text);color:#fff;border-color:var(--text);}
+.tool-pill.eraser.active{background:var(--danger);color:#fff;border-color:var(--danger);}
+.color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;}
+.color-dot.selected{border-color:var(--text);transform:scale(1.18);}
+.size-dot{border-radius:50%;background:var(--text);cursor:pointer;border:2px solid transparent;flex-shrink:0;}
+.size-dot.selected{border-color:var(--accent);}
+.toolbar-sep{width:1px;height:22px;background:var(--border2);flex-shrink:0;}
+.pencil-badge{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent2-bg);color:var(--accent2);border:1px solid rgba(46,107,79,.2);display:none;margin-left:auto;}
+.pencil-badge.visible{display:inline-block;}
+.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:10px;}
+#stylet-canvas{display:block;width:100%;cursor:crosshair;}
+.canvas-guide-stylet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.08;font-family:'Noto Sans Thai',sans-serif;font-size:100px;color:#000;transition:opacity .3s;}
+.canvas-guide-stylet.hidden{opacity:0;}
+.stroke-info{font-size:11px;color:var(--text3);text-align:right;margin-bottom:8px;}
+
+/* Résultat reconnaissance */
+.recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.recog-status{font-size:12px;flex:1;}
+.recog-status.loading{color:var(--accent);}
+.recog-status.error{color:var(--danger);}
+.recog-status.ok{color:var(--accent2);}
+.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;min-height:0;}
+.candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;}
+.candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:36px;text-align:center;padding:6px;color:var(--accent);font-weight:500;min-height:52px;}
+
+.spinner{width:12px;height:12px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Champs communs */
 .divider{font-size:11px;color:var(--text3);text-align:center;margin:12px 0 10px;text-transform:uppercase;letter-spacing:.6px;}
 .modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-fields .field input{padding:10px 12px;}
 .modal-actions{display:flex;gap:10px;}
 .btn-full{flex:1;text-align:center;}
-
-.fab{position:fixed;bottom:28px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--accent2);color:#fff;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,107,79,.4);cursor:pointer;z-index:150;}
-.fab:active{transform:scale(.93);}
 
 @media(min-width:600px){
   .modal{border-radius:var(--radius);max-width:640px;margin-bottom:40px;}
@@ -160,70 +200,107 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="count-bar" id="count-bar"></div>
 <div class="table-wrap"><div class="word-list" id="word-list"></div></div>
 
-<button class="fab" id="fab-kbd" title="Clavier thaï">⌨️</button>
+<!-- FABs -->
+<div class="fab-wrap">
+  <div>
+    <button class="fab stylet" id="fab-stylet" title="Saisie au stylet">✏️</button>
+  </div>
+  <div>
+    <button class="fab kbd" id="fab-kbd" title="Clavier thaï">⌨️</button>
+  </div>
+</div>
 
-<!-- Modal clavier -->
-<div class="modal-overlay" id="modal-overlay">
+<!-- ════ Modal CLAVIER ════ -->
+<div class="modal-overlay" id="modal-kbd">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title">⌨️ Clavier thaï</div>
-      <button class="modal-close" id="modal-close-btn">✕</button>
+      <button class="modal-close" id="kbd-close">✕</button>
     </div>
-
-    <!-- Mot composé -->
     <div class="word-composer">
       <div class="word-composed empty" id="composed">appuie sur les touches…</div>
       <div class="composer-actions">
-        <button class="composer-btn speak" id="compose-speak" title="Écouter">🔊</button>
-        <button class="composer-btn" id="compose-del" title="Effacer dernier">⌫</button>
-        <button class="composer-btn" id="compose-clear" title="Tout effacer">✕</button>
+        <button class="composer-btn speak" id="compose-speak">🔊</button>
+        <button class="composer-btn" id="compose-del">⌫</button>
+        <button class="composer-btn" id="compose-clear">✕</button>
       </div>
     </div>
-
-    <!-- Consonnes -->
-    <div class="kbd-section">
-      <div class="kbd-label">Consonnes (44)</div>
-      <div class="kbd-row" id="kbd-consonants"></div>
-    </div>
-
-    <!-- Voyelles -->
-    <div class="kbd-section">
-      <div class="kbd-label">Voyelles</div>
-      <div class="kbd-row" id="kbd-vowels"></div>
-    </div>
-
-    <!-- Tons & signes -->
-    <div class="kbd-section">
-      <div class="kbd-label">Tons & signes diacritiques</div>
-      <div class="kbd-row" id="kbd-tones"></div>
-    </div>
-
-    <!-- Chiffres -->
-    <div class="kbd-section">
-      <div class="kbd-label">Chiffres thaï</div>
-      <div class="kbd-row" id="kbd-numbers"></div>
-    </div>
-
+    <div class="kbd-section"><div class="kbd-label">Consonnes (44)</div><div class="kbd-row" id="kbd-consonants"></div></div>
+    <div class="kbd-section"><div class="kbd-label">Voyelles</div><div class="kbd-row" id="kbd-vowels"></div></div>
+    <div class="kbd-section"><div class="kbd-label">Tons & signes</div><div class="kbd-row" id="kbd-tones"></div></div>
+    <div class="kbd-section"><div class="kbd-label">Chiffres thaï</div><div class="kbd-row" id="kbd-numbers"></div></div>
     <div class="divider">informations du mot</div>
     <div class="modal-fields">
-      <div class="field">
-        <label>romanisation</label>
-        <input type="text" id="s-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" />
-      </div>
-      <div class="field">
-        <label>sens (français)</label>
-        <input type="text" id="s-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" />
-      </div>
+      <div class="field"><label>romanisation</label><input type="text" id="kbd-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+      <div class="field"><label>sens (français)</label><input type="text" id="kbd-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" /></div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-full" id="modal-cancel-btn">annuler</button>
-      <button class="btn accent btn-full" id="modal-save-btn">✓ enregistrer le mot</button>
+      <button class="btn btn-full" id="kbd-cancel">annuler</button>
+      <button class="btn accent btn-full" id="kbd-save">✓ enregistrer le mot</button>
     </div>
   </div>
 </div>
 
+<!-- ════ Modal STYLET ════ -->
+<div class="modal-overlay" id="modal-stylet">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Saisie au stylet · MyScript</div>
+      <button class="modal-close" id="stylet-close">✕</button>
+    </div>
+
+    <!-- Outils -->
+    <div class="stylet-toolbar">
+      <button class="tool-pill active" id="tool-pen">✏️ crayon</button>
+      <button class="tool-pill eraser" id="tool-eraser">⬜ gomme</button>
+      <button class="tool-pill" id="tool-clear-canvas">🗑 effacer</button>
+      <div class="toolbar-sep"></div>
+      <div class="color-dot selected" data-color="#1A1814" style="background:#1A1814"></div>
+      <div class="color-dot" data-color="#C4521A" style="background:#C4521A"></div>
+      <div class="color-dot" data-color="#2E6B4F" style="background:#2E6B4F"></div>
+      <div class="color-dot" data-color="#185FA5" style="background:#185FA5"></div>
+      <div class="toolbar-sep"></div>
+      <div class="size-dot selected" data-size="2.5" style="width:10px;height:10px;"></div>
+      <div class="size-dot" data-size="4" style="width:15px;height:15px;"></div>
+      <div class="size-dot" data-size="7" style="width:21px;height:21px;"></div>
+      <span class="pencil-badge" id="pencil-badge">✏️ Apple Pencil</span>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-wrap">
+      <canvas id="stylet-canvas" height="280"></canvas>
+      <div class="canvas-guide-stylet" id="canvas-guide">ก</div>
+    </div>
+    <div class="stroke-info" id="stroke-info">0 trait — prêt</div>
+
+    <!-- Reconnaissance -->
+    <div class="recog-bar">
+      <button class="btn green" id="btn-recog">🔍 reconnaître (MyScript)</button>
+      <span class="recog-status" id="recog-status"></span>
+    </div>
+    <div class="candidates" id="candidates"></div>
+    <div class="thai-preview" id="thai-preview"></div>
+
+    <div class="divider">informations du mot</div>
+    <div class="modal-fields">
+      <div class="field"><label>romanisation</label><input type="text" id="s-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+      <div class="field"><label>sens (français)</label><input type="text" id="s-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" /></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-full" id="stylet-cancel">annuler</button>
+      <button class="btn accent btn-full" id="stylet-save">✓ enregistrer le mot</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
 'use strict';
+
+// ── MyScript keys ──
+const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
+const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
+
 const WORDS_KEY = 'thai_words_v2';
 const INITIAL = [
   {thai:"เงา",roman:"ngao",meaning:"ombre"},
@@ -258,23 +335,29 @@ const VOWELS = [
   {c:'า',r:'aa'},{c:'ิ',r:'i'},{c:'ี',r:'ii'},{c:'ึ',r:'ue'},
   {c:'ื',r:'uee'},{c:'ุ',r:'u'},{c:'ู',r:'uu'},{c:'เ',r:'e'},
   {c:'แ',r:'ae'},{c:'โ',r:'o'},{c:'ใ',r:'ai'},{c:'ไ',r:'ai'},
-  {c:'ำ',r:'am'},{c:'ั',r:'a'},{c:'็',r:'(bref)'},{c:'ว',r:'ua/w'},
-  {c:'ย',r:'ai/y'},{c:'อ',r:'o'},{c:'ื',r:'ue'},{c:'ว',r:'w'},
+  {c:'ำ',r:'am'},{c:'ั',r:'a'},{c:'็',r:'(bref)'},
 ];
 const TONES = [
   {c:'่',r:'mai ek'},{c:'้',r:'mai tho'},{c:'๊',r:'mai tri'},{c:'๋',r:'mai jat'},
   {c:'์',r:'silent'},{c:'ํ',r:'nasal'},{c:'ๆ',r:'répét.'},{c:'ฯ',r:'etc.'},
-  {c:'ฺ',r:'phinthu'},{c:'๎',r:'angkhan'},{c:'ๅ',r:'fong man'},
+  {c:'ฺ',r:'phinthu'},
 ];
 const NUMBERS = [
   {c:'๐',r:'0'},{c:'๑',r:'1'},{c:'๒',r:'2'},{c:'๓',r:'3'},{c:'๔',r:'4'},
   {c:'๕',r:'5'},{c:'๖',r:'6'},{c:'๗',r:'7'},{c:'๘',r:'8'},{c:'๙',r:'9'},
 ];
 
+// ── État ──
 let words=[], activeRow=null, playingWord=null;
 let thaiVoice=null, synth=window.speechSynthesis;
 let composedWord='';
+let canvas=null, ctx=null, drawing=false;
+let strokes=[], currentStroke=[];
+let hasPencil=false, hasDrawing=false;
+let currentTool='pen', currentColor='#1A1814', currentSize=2.5;
+let selectedThai='';
 
+// ── Persistance ──
 function loadWords(){
   try{const s=localStorage.getItem(WORDS_KEY);if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length>0){words=p;return;}}}catch(e){}
   words=INITIAL.map(w=>({thai:w.thai,roman:w.roman,meaning:w.meaning}));
@@ -282,6 +365,7 @@ function loadWords(){
 }
 function saveWords(){try{localStorage.setItem(WORDS_KEY,JSON.stringify(words));}catch(e){}}
 
+// ── Voix ──
 function checkVoices(){
   const voices=synth.getVoices();
   const v=voices.find(v=>v.lang.startsWith('th'));
@@ -300,6 +384,7 @@ function speak(word){
   synth.speak(u);
 }
 
+// ── Rendu liste ──
 function render(){
   const q=(document.getElementById('search').value||'').toLowerCase();
   const filtered=words.filter(w=>{
@@ -313,8 +398,7 @@ function render(){
   filtered.forEach(w=>{
     const card=document.createElement('div');
     card.className='word-card'+(activeRow===w.thai?' active':'');
-    const thaiDiv=document.createElement('div');thaiDiv.className='word-thai';
-    thaiDiv.textContent=w.thai;
+    const thaiDiv=document.createElement('div');thaiDiv.className='word-thai';thaiDiv.textContent=w.thai;
     const metaDiv=document.createElement('div');
     metaDiv.innerHTML='<div class="word-roman">'+(w.roman||'')+'</div><div class="word-meaning">'+(w.meaning||'')+'</div>';
     const actDiv=document.createElement('div');actDiv.className='word-actions';
@@ -339,6 +423,7 @@ function render(){
 
 document.getElementById('search').addEventListener('input',render);
 
+// ── Formulaire texte ──
 document.getElementById('toggle-add').addEventListener('click',()=>{
   const f=document.getElementById('add-form'),btn=document.getElementById('toggle-add');
   const open=f.classList.toggle('open');
@@ -346,7 +431,6 @@ document.getElementById('toggle-add').addEventListener('click',()=>{
   if(open)setTimeout(()=>document.getElementById('inp-thai').focus(),80);
   else['inp-thai','inp-roman','inp-meaning'].forEach(id=>document.getElementById(id).value='');
 });
-
 function doAddWord(){
   const thai=document.getElementById('inp-thai').value.trim();
   const roman=document.getElementById('inp-roman').value.trim();
@@ -364,20 +448,18 @@ document.getElementById('btn-add-word').addEventListener('click',doAddWord);
   document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAddWord();});
 });
 
-// ── Clavier thaï ──
+// ══════════════════════════════════════════
+// ── MODAL CLAVIER ──
+// ══════════════════════════════════════════
 function buildKeyboard(){
-  function makeRow(data, rowId, extraClass){
+  function makeRow(data,rowId,extraClass){
     const row=document.getElementById(rowId);
     data.forEach(d=>{
       const btn=document.createElement('button');
       btn.className='kbd-key'+(extraClass?' '+extraClass:'');
-      const main=document.createElement('span');main.textContent=d.c;
-      btn.appendChild(main);
+      const main=document.createElement('span');main.textContent=d.c;btn.appendChild(main);
       if(d.r){const rom=document.createElement('span');rom.className='rom';rom.textContent=d.r;btn.appendChild(rom);}
-      btn.addEventListener('click',()=>{
-        composedWord+=d.c;
-        updateComposer();
-      });
+      btn.addEventListener('click',()=>{composedWord+=d.c;updateComposer();});
       row.appendChild(btn);
     });
   }
@@ -389,46 +471,232 @@ function buildKeyboard(){
 
 function updateComposer(){
   const el=document.getElementById('composed');
-  if(composedWord){
-    el.textContent=composedWord;
-    el.classList.remove('empty');
-  } else {
-    el.textContent='appuie sur les touches…';
-    el.classList.add('empty');
-  }
+  if(composedWord){el.textContent=composedWord;el.classList.remove('empty');}
+  else{el.textContent='appuie sur les touches…';el.classList.add('empty');}
 }
 
 document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
 document.getElementById('compose-del').addEventListener('click',()=>{
-  composedWord=[...composedWord].slice(0,-1).join('');
-  updateComposer();
+  composedWord=[...composedWord].slice(0,-1).join('');updateComposer();
 });
-document.getElementById('compose-clear').addEventListener('click',()=>{
-  composedWord='';updateComposer();
-});
+document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();});
 
-// ── Modal ──
 document.getElementById('fab-kbd').addEventListener('click',()=>{
   composedWord='';updateComposer();
-  document.getElementById('s-roman').value='';
-  document.getElementById('s-meaning').value='';
-  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('kbd-roman').value='';
+  document.getElementById('kbd-meaning').value='';
+  document.getElementById('modal-kbd').classList.add('open');
 });
-function closeModal(){
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-document.getElementById('modal-close-btn').addEventListener('click',closeModal);
-document.getElementById('modal-cancel-btn').addEventListener('click',closeModal);
-document.getElementById('modal-overlay').addEventListener('click',e=>{
-  if(e.target===document.getElementById('modal-overlay'))closeModal();
+function closeKbd(){document.getElementById('modal-kbd').classList.remove('open');}
+document.getElementById('kbd-close').addEventListener('click',closeKbd);
+document.getElementById('kbd-cancel').addEventListener('click',closeKbd);
+document.getElementById('modal-kbd').addEventListener('click',e=>{if(e.target===document.getElementById('modal-kbd'))closeKbd();});
+document.getElementById('kbd-save').addEventListener('click',()=>{
+  if(!composedWord)return;
+  words.push({thai:composedWord,roman:document.getElementById('kbd-roman').value.trim(),meaning:document.getElementById('kbd-meaning').value.trim()});
+  saveWords();closeKbd();render();
 });
 
-document.getElementById('modal-save-btn').addEventListener('click',()=>{
-  if(!composedWord)return;
-  const roman=document.getElementById('s-roman').value.trim();
-  const meaning=document.getElementById('s-meaning').value.trim();
-  words.push({thai:composedWord,roman,meaning});
-  saveWords();closeModal();render();
+// ══════════════════════════════════════════
+// ── MODAL STYLET + MYSCRIPT ──
+// ══════════════════════════════════════════
+document.getElementById('fab-stylet').addEventListener('click',()=>{
+  selectedThai='';
+  document.getElementById('s-roman').value='';
+  document.getElementById('s-meaning').value='';
+  document.getElementById('candidates').innerHTML='';
+  document.getElementById('thai-preview').textContent='';
+  document.getElementById('recog-status').textContent='';
+  document.getElementById('recog-status').className='recog-status';
+  document.getElementById('modal-stylet').classList.add('open');
+  setTimeout(initCanvas,60);
+});
+
+function closeStylet(){
+  document.getElementById('modal-stylet').classList.remove('open');
+  if(canvas){
+    canvas.removeEventListener('pointerdown',onPtrDown);
+    canvas.removeEventListener('pointermove',onPtrMove);
+    canvas.removeEventListener('pointerup',onPtrUp);
+    canvas.removeEventListener('pointercancel',onPtrUp);
+    canvas=null;ctx=null;
+  }
+  strokes=[];currentStroke=[];hasDrawing=false;hasPencil=false;
+}
+document.getElementById('stylet-close').addEventListener('click',closeStylet);
+document.getElementById('stylet-cancel').addEventListener('click',closeStylet);
+document.getElementById('modal-stylet').addEventListener('click',e=>{if(e.target===document.getElementById('modal-stylet'))closeStylet();});
+
+// ── Canvas init ──
+function initCanvas(){
+  canvas=document.getElementById('stylet-canvas');
+  ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.offsetWidth;
+  canvas.width=w*dpr;canvas.height=280*dpr;canvas.style.height='280px';
+  ctx.scale(dpr,dpr);
+  ctx.lineCap='round';ctx.lineJoin='round';
+  drawBg(w);
+  canvas.addEventListener('pointerdown',onPtrDown,{passive:false});
+  canvas.addEventListener('pointermove',onPtrMove,{passive:false});
+  canvas.addEventListener('pointerup',onPtrUp);
+  canvas.addEventListener('pointercancel',onPtrUp);
+}
+
+function drawBg(w){
+  const cw=w||canvas.offsetWidth;
+  ctx.fillStyle='#FEFEFE';ctx.fillRect(0,0,cw,280);
+  ctx.strokeStyle='rgba(196,82,26,0.10)';ctx.lineWidth=1;
+  for(let y=70;y<280;y+=70){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();}
+}
+
+function getPos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,t:Date.now()};}
+
+function onPtrDown(e){
+  if(e.pointerType==='pen'){hasPencil=true;document.getElementById('pencil-badge').classList.add('visible');}
+  if(e.pointerType==='touch'&&hasPencil)return;
+  e.preventDefault();drawing=true;currentStroke=[];
+  const p=getPos(e);currentStroke.push(p);
+  ctx.beginPath();ctx.moveTo(p.x,p.y);
+  if(!hasDrawing){hasDrawing=true;document.getElementById('canvas-guide').classList.add('hidden');}
+}
+
+function onPtrMove(e){
+  if(!drawing)return;
+  if(e.pointerType==='touch'&&hasPencil)return;
+  e.preventDefault();const p=getPos(e);
+  if(currentTool==='eraser'){
+    ctx.save();ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath();ctx.arc(p.x,p.y,currentSize*6,0,Math.PI*2);ctx.fill();ctx.restore();
+    strokes=strokes.filter(s=>!s.some(pt=>Math.hypot(pt.x-p.x,pt.y-p.y)<currentSize*6));
+  } else {
+    const pressure=e.pressure>0?e.pressure:0.5;
+    ctx.lineWidth=currentSize*(0.4+pressure*1.4);
+    ctx.strokeStyle=currentColor;
+    currentStroke.push(p);
+    ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
+  }
+}
+
+function onPtrUp(e){
+  if(!drawing)return;
+  drawing=false;
+  if(currentStroke.length>1&&currentTool!=='eraser')strokes.push([...currentStroke]);
+  currentStroke=[];
+  const n=strokes.length;
+  document.getElementById('stroke-info').textContent=n+' trait'+(n>1?'s':'')+(n===0?' — prêt':' tracé'+(n>1?'s':''));
+  if(ctx)ctx.beginPath();
+}
+
+// Outils canvas
+document.getElementById('tool-pen').addEventListener('click',()=>{
+  currentTool='pen';
+  document.getElementById('tool-pen').classList.add('active');
+  document.getElementById('tool-eraser').classList.remove('active');
+});
+document.getElementById('tool-eraser').addEventListener('click',()=>{
+  currentTool='eraser';
+  document.getElementById('tool-eraser').classList.add('active');
+  document.getElementById('tool-pen').classList.remove('active');
+});
+document.getElementById('tool-clear-canvas').addEventListener('click',()=>{
+  if(!ctx)return;
+  drawBg(canvas.offsetWidth);
+  strokes=[];currentStroke=[];hasDrawing=false;
+  document.getElementById('canvas-guide').classList.remove('hidden');
+  document.getElementById('stroke-info').textContent='0 trait — prêt';
+  document.getElementById('candidates').innerHTML='';
+  document.getElementById('thai-preview').textContent='';
+  selectedThai='';
+  document.getElementById('recog-status').textContent='';
+});
+document.querySelectorAll('.color-dot').forEach(dot=>{
+  dot.addEventListener('click',()=>{
+    currentColor=dot.dataset.color;
+    document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
+    dot.classList.add('selected');
+  });
+});
+document.querySelectorAll('.size-dot').forEach(dot=>{
+  dot.addEventListener('click',()=>{
+    currentSize=parseFloat(dot.dataset.size);
+    document.querySelectorAll('.size-dot').forEach(d=>d.classList.remove('selected'));
+    dot.classList.add('selected');
+  });
+});
+
+// ── MyScript reconnaissance ──
+function computeHMAC(body){
+  return CryptoJS.HmacSHA512(body,APP_KEY+HMAC_KEY).toString(CryptoJS.enc.Hex);
+}
+function buildPayload(){
+  const r=canvas.getBoundingClientRect();
+  const t0=strokes[0][0].t;
+  return JSON.stringify({
+    contentType:"Text",
+    configuration:{lang:"th_TH",export:{jiix:{"bounding-box":false,strokes:false,text:{chars:false,words:true}}}},
+    height:Math.round(r.height),width:Math.round(r.width),
+    strokeGroups:[{strokes:strokes.map(s=>({
+      x:s.map(p=>Math.round(p.x)),y:s.map(p=>Math.round(p.y)),
+      t:s.map(p=>p.t-t0),pointerType:"PEN"
+    }))}]
+  });
+}
+
+document.getElementById('btn-recog').addEventListener('click',async()=>{
+  const status=document.getElementById('recog-status');
+  const candidatesDiv=document.getElementById('candidates');
+  const preview=document.getElementById('thai-preview');
+  if(strokes.length===0){status.textContent='Dessine quelque chose d\'abord !';status.className='recog-status error';return;}
+  status.innerHTML='<span class="spinner"></span> Reconnaissance MyScript…';
+  status.className='recog-status loading';
+  candidatesDiv.innerHTML='';preview.textContent='';selectedThai='';
+  try{
+    const body=buildPayload();
+    const resp=await fetch('https://cloud.myscript.com/api/v4.0/iink/batch',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/vnd.myscript.jiix,application/json','applicationKey':APP_KEY,'hmac':computeHMAC(body)},
+      body
+    });
+    if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e.message||'Erreur HTTP '+resp.status);}
+    const jiix=await resp.json();
+    const wds=jiix.words||[];
+    const label=wds.map(w=>(w.label||'').replace(/\s/g,'')).join('').trim();
+    const alts=wds[0]?.candidates?.map(c=>(c.label||'').replace(/\s/g,'')).filter(Boolean)||[];
+    if(!label)throw new Error('Rien reconnu — écris plus grand et plus lentement');
+    status.textContent='Sélectionne le bon résultat :';
+    status.className='recog-status ok';
+    // Label principal + alternatives
+    const all=[label,...alts.slice(0,5)].filter((v,i,a)=>a.indexOf(v)===i);
+    candidatesDiv.innerHTML='';
+    all.forEach(c=>{
+      const btn=document.createElement('button');
+      btn.className='candidate-btn';btn.textContent=c;
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');selectedThai=c;preview.textContent=c;speak(c);
+      });
+      candidatesDiv.appendChild(btn);
+    });
+    // Sélectionner le premier automatiquement
+    if(candidatesDiv.firstChild){
+      candidatesDiv.firstChild.classList.add('selected');
+      selectedThai=label;preview.textContent=label;
+    }
+  }catch(err){
+    status.textContent='⚠ '+err.message;status.className='recog-status error';
+  }
+});
+
+// ── Enregistrer depuis stylet ──
+document.getElementById('stylet-save').addEventListener('click',()=>{
+  if(!selectedThai){
+    document.getElementById('recog-status').textContent='Lance d\'abord la reconnaissance !';
+    document.getElementById('recog-status').className='recog-status error';
+    return;
+  }
+  words.push({thai:selectedThai,roman:document.getElementById('s-roman').value.trim(),meaning:document.getElementById('s-meaning').value.trim()});
+  saveWords();closeStylet();render();
 });
 
 // ── Init ──
