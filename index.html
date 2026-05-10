@@ -509,9 +509,27 @@ function speak(word){
   synth.speak(u);
 }
 
+// Volubilis chargé au démarrage
+let VOLUBILIS = null;
+async function loadVolubilis(){
+  try{
+    const resp = await fetch('volubilis.json');
+    VOLUBILIS = await resp.json();
+    console.log('Volubilis chargé:', Object.keys(VOLUBILIS).length, 'mots');
+  }catch(e){ console.warn('Volubilis non disponible', e); }
+}
+
 function lookupDict(thai){
   const c=thai.trim().replace(/\s+/g,'');
-  return DICT_MAP[c]||DICT_MAP[thai.trim()]||null;
+  // 1. Dico interne (roman + fr)
+  const d=DICT_MAP[c]||DICT_MAP[thai.trim()]||null;
+  if(d) return d;
+  // 2. Volubilis (easy + eng seulement)
+  if(VOLUBILIS){
+    const v=VOLUBILIS[c]||VOLUBILIS[thai.trim()];
+    if(v) return {roman:v[0], fr:'', en:v[1], pos:''};
+  }
+  return null;
 }
 
 function render(){
@@ -774,16 +792,20 @@ document.querySelectorAll('.size-dot').forEach(dot=>{dot.addEventListener('click
 function getTranslateKey(){try{return localStorage.getItem('google_translate_key')||'';}catch(e){return '';}}
 
 async function translateThai(thai){
+  const key=getTranslateKey();
+  if(!key)return {fr:'',err:'⚠ clé API absente — appuie sur 🔑 trad.'};
   try{
-    const url='https://translation.googleapis.com/language/translate/v2?key='+getTranslateKey();
+    const url='https://translation.googleapis.com/language/translate/v2?key='+key;
     const resp=await fetch(url,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({q:thai,source:'th',target:'fr',format:'text'})
     });
     const data=await resp.json();
-    return data.data?.translations?.[0]?.translatedText||'';
-  }catch(e){return '';}
+    if(data.error)return {fr:'',err:'⚠ '+data.error.message};
+    const fr=data.data?.translations?.[0]?.translatedText||'';
+    return {fr,err:''};
+  }catch(e){return {fr:'',err:'⚠ erreur réseau'};}
 }
 
 async function showResultCard(thai){
@@ -792,17 +814,24 @@ async function showResultCard(thai){
   document.getElementById('result-card').classList.add('visible');
   document.getElementById('save-feedback').classList.remove('show');
   speak(thai);
-  // Dico intégré en priorité
+  // 1. Lookup dico interne + Volubilis
   const d=lookupDict(thai);
-  if(d){
-    document.getElementById('res-roman').value=d.roman;
+  // Romanisation : depuis dico/Volubilis si disponible
+  document.getElementById('res-roman').value=d&&d.roman?d.roman:'';
+  // Traduction française
+  if(d&&d.fr){
+    // Dico interne a le français
     document.getElementById('res-fr').value=d.fr;
   } else {
-    // Mot inconnu du dico : appel Google Translation pour le français
-    document.getElementById('res-roman').value='';
-    document.getElementById('res-fr').value='⏳ traduction…';
-    const fr=await translateThai(thai);
-    document.getElementById('res-fr').value=fr;
+    // Appel Google Translation pour le français
+    const key=getTranslateKey();
+    if(!key){
+      document.getElementById('res-fr').value='';
+    } else {
+      document.getElementById('res-fr').value='⏳…';
+      const {fr,err}=await translateThai(thai);
+      document.getElementById('res-fr').value=err||fr||'—';
+    }
   }
 }
 
@@ -887,7 +916,7 @@ document.getElementById('corr-validate').addEventListener('click',()=>{
   document.getElementById('correction-zone').classList.remove('open');
 });
 
-loadWords();buildKeyboard();render();updateTkeyBtn();
+loadWords();buildKeyboard();render();updateTkeyBtn();loadVolubilis();
 </script>
 </body>
 </html>
