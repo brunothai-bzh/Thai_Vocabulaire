@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ภาษาไทย">
+<title>ภาษาไทย · Vocabulaire</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap');
+:root {
+  --bg:#F7F5F0;--surface:#FFFFFF;--surface2:#F0EDE6;
+  --border:rgba(0,0,0,0.10);--border2:rgba(0,0,0,0.18);
+  --text:#1A1814;--text2:#6B6560;--text3:#A09A93;
+  --accent:#C4521A;--accent-bg:#FBF0EA;
+  --accent2:#2E6B4F;--accent2-bg:#EAF3EE;
+  --danger:#A32D2D;--danger-bg:#FCEBEB;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+  --radius:14px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 12px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
+.header-title{display:flex;align-items:baseline;gap:10px;}
+.header-title h1{font-family:'Noto Sans Thai',sans-serif;font-size:22px;font-weight:600;color:var(--text);}
+.header-title span{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.voice-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all .3s;}
+.voice-pill.ok{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.2);}
+.toolbar{padding:14px 20px;display:flex;gap:10px;}
+.search-wrap{flex:1;position:relative;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
+input[type=text]{font-family:'DM Sans',sans-serif;font-size:15px;width:100%;padding:11px 14px 11px 38px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);outline:none;-webkit-appearance:none;}
+input[type=text]:focus{border-color:var(--accent);}
+input[type=text]::placeholder{color:var(--text3);}
+.search-wrap input{padding-left:38px;}
+.btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap;-webkit-appearance:none;}
+.btn:active{background:var(--surface2);}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn.accent:active{background:#a84315;}
+.add-form{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:none;flex-direction:column;gap:12px;box-shadow:var(--shadow);}
+.add-form.open{display:flex;}
+.add-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.field input{padding:10px 12px;font-size:15px;}
+.field input.thai-input{font-family:'Noto Sans Thai',sans-serif;font-size:20px;padding-left:10px;}
+.form-actions{display:flex;align-items:center;gap:10px;}
+.feedback-msg{font-size:12px;color:var(--accent2);font-weight:500;opacity:0;transition:opacity .3s;}
+.feedback-msg.show{opacity:1;}
+.count-bar{padding:0 20px 8px;font-size:12px;color:var(--text3);}
+.table-wrap{padding:0 20px 120px;}
+.word-list{display:flex;flex-direction:column;gap:8px;}
+.word-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;cursor:pointer;transition:background .12s,border-color .12s;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;}
+.word-card:active{background:var(--surface2);}
+.word-card.active{border-color:var(--accent);background:var(--accent-bg);}
+.word-thai{font-family:'Noto Sans Thai',sans-serif;font-size:26px;font-weight:500;text-align:center;line-height:1.3;}
+.word-thai img{height:52px;width:auto;display:block;border-radius:4px;margin:0 auto;}
+.word-roman{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);}
+.word-meaning{font-size:15px;color:var(--text);}
+.word-actions{display:flex;gap:8px;align-items:center;}
+.speak-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.speak-btn:active{background:var(--surface);}
+.speak-btn.playing{background:var(--accent);color:#fff;border-color:var(--accent);}
+.del-btn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.del-btn:active{background:var(--danger-bg);color:var(--danger);}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.modal-title{font-size:17px;font-weight:500;}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.canvas-tools{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.tool-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;}
+.tool-btn.active{background:var(--text);color:#fff;border-color:var(--text);}
+.tool-btn.eraser.active{background:var(--danger);color:#fff;border-color:var(--danger);}
+.color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;flex-shrink:0;}
+.color-dot.selected{border-color:var(--text);transform:scale(1.2);}
+.size-opt{border-radius:50%;background:var(--text);cursor:pointer;border:2px solid transparent;flex-shrink:0;}
+.size-opt.selected{border-color:var(--accent);}
+.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:14px;}
+#stylet-canvas{display:block;width:100%;cursor:crosshair;}
+.modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.modal-fields .field input{padding:10px 12px;}
+.modal-actions{display:flex;gap:10px;}
+.btn-full{flex:1;text-align:center;}
+.divider{font-size:11px;color:var(--text3);text-align:center;margin:8px 0;text-transform:uppercase;letter-spacing:.6px;}
+.fab{position:fixed;bottom:28px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--accent2);color:#fff;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,107,79,.4);cursor:pointer;z-index:150;}
+.fab:active{transform:scale(.93);}
+@media(min-width:600px){
+  .modal{border-radius:var(--radius);max-width:600px;margin-bottom:40px;}
+  .modal-overlay{align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <h1>ภาษาไทย</h1>
+    <span>vocabulaire</span>
+  </div>
+  <div id="voice-pill" class="voice-pill">⚠ voix thaï absente</div>
+</header>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="rechercher…" autocomplete="off" autocorrect="off" spellcheck="false" />
+  </div>
+  <button class="btn" id="toggle-add">+ ajouter</button>
+</div>
+
+<div class="add-form" id="add-form">
+  <div class="add-form-grid">
+    <div class="field">
+      <label>thaï *</label>
+      <input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" />
+    </div>
+    <div class="field">
+      <label>romanisation</label>
+      <input type="text" id="inp-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" />
+    </div>
+    <div class="field">
+      <label>sens (français)</label>
+      <input type="text" id="inp-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" />
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="btn accent" id="btn-add-word">✓ enregistrer</button>
+    <span class="feedback-msg" id="feedback">✓ ajouté !</span>
+  </div>
+</div>
+
+<div class="count-bar" id="count-bar"></div>
+<div class="table-wrap"><div class="word-list" id="word-list"></div></div>
+
+<button class="fab" id="fab-stylet" title="Saisir au stylet">✏️</button>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Saisie au stylet · Apple Pencil</div>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="canvas-tools">
+      <button class="tool-btn active" id="tool-pen">✏️ crayon</button>
+      <button class="tool-btn eraser" id="tool-eraser">⬜ gomme</button>
+      <button class="tool-btn" id="tool-clear">🗑 effacer</button>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <div class="color-dot selected" data-color="#1A1814" style="background:#1A1814"></div>
+        <div class="color-dot" data-color="#C4521A" style="background:#C4521A"></div>
+        <div class="color-dot" data-color="#2E6B4F" style="background:#2E6B4F"></div>
+        <div class="color-dot" data-color="#185FA5" style="background:#185FA5"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:12px;">
+      <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:500;">épaisseur</span>
+      <div class="size-opt selected" data-size="2" style="width:12px;height:12px;"></div>
+      <div class="size-opt" data-size="4" style="width:18px;height:18px;"></div>
+      <div class="size-opt" data-size="7" style="width:24px;height:24px;"></div>
+      <div class="size-opt" data-size="12" style="width:30px;height:30px;"></div>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="stylet-canvas" height="220"></canvas>
+    </div>
+    <div class="divider">informations du mot</div>
+    <div class="modal-fields">
+      <div class="field">
+        <label>romanisation</label>
+        <input type="text" id="s-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label>sens (français)</label>
+        <input type="text" id="s-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-full" id="modal-cancel-btn">annuler</button>
+      <button class="btn accent btn-full" id="modal-save-btn">✓ enregistrer le mot</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const WORDS_KEY = 'thai_words_v2';
+const INITIAL = [
+  {thai:"เงา",roman:"ngao",meaning:"ombre"},
+  {thai:"ยา",roman:"yaa",meaning:"médicament"},
+  {thai:"น้ำ",roman:"nám",meaning:"eau"},
+  {thai:"ข้าว",roman:"kâao",meaning:"riz"},
+  {thai:"บ้าน",roman:"bâan",meaning:"maison"},
+  {thai:"แมว",roman:"mæw",meaning:"chat"},
+  {thai:"หมา",roman:"mǎa",meaning:"chien"},
+  {thai:"ดี",roman:"dii",meaning:"bien / bon"},
+  {thai:"กิน",roman:"gin",meaning:"manger"},
+  {thai:"ไป",roman:"pai",meaning:"aller"},
+  {thai:"มา",roman:"maa",meaning:"venir"},
+  {thai:"รัก",roman:"rák",meaning:"aimer"},
+  {thai:"เนื้อไก่",roman:"néua gài",meaning:"viande de poulet"},
+];
+
+let words = [];
+let activeRow = null;
+let playingWord = null;
+let thaiVoice = null;
+let synth = window.speechSynthesis;
+let canvas = null, ctx = null;
+let drawing = false;
+let currentTool = 'pen';
+let currentColor = '#1A1814';
+let currentSize = 2;
+let hasPencil = false;
+
+function loadWords() {
+  try {
+    const s = localStorage.getItem(WORDS_KEY);
+    if (s) {
+      const p = JSON.parse(s);
+      if (Array.isArray(p) && p.length > 0) { words = p; return; }
+    }
+  } catch(e) {}
+  words = INITIAL.map(w => ({thai:w.thai, roman:w.roman, meaning:w.meaning}));
+  saveWords();
+}
+
+function saveWords() {
+  try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {}
+}
+
+function checkVoices() {
+  const voices = synth.getVoices();
+  const v = voices.find(v => v.lang.startsWith('th'));
+  if (v) {
+    thaiVoice = v;
+    const pill = document.getElementById('voice-pill');
+    pill.textContent = '🔊 voix thaï ok';
+    pill.classList.add('ok');
+  }
+}
+checkVoices();
+synth.onvoiceschanged = checkVoices;
+
+function speak(word) {
+  synth.cancel();
+  playingWord = word;
+  render();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'th-TH'; u.rate = 0.85; u.pitch = 1.1;
+  if (thaiVoice) u.voice = thaiVoice;
+  u.onend = () => { playingWord = null; render(); };
+  u.onerror = () => { playingWord = null; render(); };
+  synth.speak(u);
+}
+
+function render() {
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const filtered = words.filter(w => {
+    const haystack = (w.img ? '' : w.thai) + ' ' + (w.roman||'') + ' ' + (w.meaning||'');
+    return haystack.toLowerCase().includes(q);
+  });
+  const n = filtered.length;
+  document.getElementById('count-bar').textContent = n + ' mot' + (n !== 1 ? 's' : '');
+  const list = document.getElementById('word-list');
+  list.innerHTML = '';
+  if (n === 0) { list.innerHTML = '<div class="empty-state">aucun mot trouvé</div>'; return; }
+
+  filtered.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'word-card' + (activeRow === w.thai ? ' active' : '');
+
+    const thaiDiv = document.createElement('div');
+    thaiDiv.className = 'word-thai';
+    if (w.img) {
+      const img = document.createElement('img');
+      img.src = w.img; img.alt = 'manuscrit';
+      thaiDiv.appendChild(img);
+    } else {
+      thaiDiv.textContent = w.thai;
+    }
+
+    const metaDiv = document.createElement('div');
+    metaDiv.innerHTML = '<div class="word-roman">' + (w.roman||'') + '</div><div class="word-meaning">' + (w.meaning||'') + '</div>';
+
+    const actDiv = document.createElement('div');
+    actDiv.className = 'word-actions';
+
+    const spk = document.createElement('button');
+    spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
+    spk.textContent = playingWord === w.thai ? '⏸' : '🔊';
+    spk.addEventListener('click', e => { e.stopPropagation(); speak(w.thai); });
+
+    const del = document.createElement('button');
+    del.className = 'del-btn';
+    del.textContent = '✕';
+    del.setAttribute('aria-label', 'Supprimer');
+    del.addEventListener('click', e => {
+      e.stopPropagation();
+      words = words.filter(x => x.thai !== w.thai);
+      if (activeRow === w.thai) activeRow = null;
+      if (playingWord === w.thai) { synth.cancel(); playingWord = null; }
+      saveWords(); render();
+    });
+
+    actDiv.appendChild(spk);
+    actDiv.appendChild(del);
+    card.appendChild(thaiDiv);
+    card.appendChild(metaDiv);
+    card.appendChild(actDiv);
+    card.addEventListener('click', () => { activeRow = w.thai; speak(w.thai); });
+    list.appendChild(card);
+  });
+}
+
+document.getElementById('search').addEventListener('input', render);
+
+document.getElementById('toggle-add').addEventListener('click', () => {
+  const f = document.getElementById('add-form');
+  const btn = document.getElementById('toggle-add');
+  const open = f.classList.toggle('open');
+  btn.textContent = open ? '✕ fermer' : '+ ajouter';
+  if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
+  else { ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = ''); }
+});
+
+function doAddWord() {
+  const thai = document.getElementById('inp-thai').value.trim();
+  const roman = document.getElementById('inp-roman').value.trim();
+  const meaning = document.getElementById('inp-meaning').value.trim();
+  if (!thai) { document.getElementById('inp-thai').focus(); return; }
+  words.push({thai, roman, meaning});
+  saveWords();
+  ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inp-thai').focus();
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 1600);
+  render();
+}
+
+document.getElementById('btn-add-word').addEventListener('click', doAddWord);
+['inp-thai','inp-roman','inp-meaning'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
+});
+
+// ── Stylet ──
+document.getElementById('fab-stylet').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('s-roman').value = '';
+  document.getElementById('s-meaning').value = '';
+  setTimeout(initCanvas, 60);
+});
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  if (canvas) {
+    canvas.removeEventListener('pointerdown', onPtrDown);
+    canvas.removeEventListener('pointermove', onPtrMove);
+    canvas.removeEventListener('pointerup', onPtrUp);
+    canvas.removeEventListener('pointercancel', onPtrUp);
+    canvas = null; ctx = null;
+  }
+}
+
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+function initCanvas() {
+  canvas = document.getElementById('stylet-canvas');
+  ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.offsetWidth;
+  canvas.width = w * dpr;
+  canvas.height = 220 * dpr;
+  canvas.style.height = '220px';
+  ctx.scale(dpr, dpr);
+  drawCanvasBg(w);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  canvas.addEventListener('pointerdown', onPtrDown, {passive:false});
+  canvas.addEventListener('pointermove', onPtrMove, {passive:false});
+  canvas.addEventListener('pointerup', onPtrUp);
+  canvas.addEventListener('pointercancel', onPtrUp);
+}
+
+function drawCanvasBg(w) {
+  const cw = w || canvas.offsetWidth;
+  ctx.fillStyle = '#FEFEFE';
+  ctx.fillRect(0, 0, cw, 220);
+  ctx.strokeStyle = 'rgba(196,82,26,0.15)';
+  ctx.lineWidth = 1;
+  for (let y = 55; y < 220; y += 55) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
+  }
+}
+
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  return {x: e.clientX - r.left, y: e.clientY - r.top};
+}
+
+function onPtrDown(e) {
+  if (e.pointerType === 'pen') hasPencil = true;
+  if (e.pointerType === 'touch' && hasPencil) return;
+  e.preventDefault();
+  drawing = true;
+  const p = getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y);
+}
+
+function onPtrMove(e) {
+  if (!drawing) return;
+  if (e.pointerType === 'touch' && hasPencil) return;
+  e.preventDefault();
+  const p = getPos(e);
+  if (currentTool === 'eraser') {
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, currentSize * 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  } else {
+    const pressure = e.pressure > 0 ? e.pressure : 0.5;
+    ctx.lineWidth = currentSize * (0.4 + pressure * 1.2);
+    ctx.strokeStyle = currentColor;
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+}
+
+function onPtrUp() { drawing = false; if (ctx) ctx.beginPath(); }
+
+document.getElementById('tool-pen').addEventListener('click', () => {
+  currentTool = 'pen';
+  document.getElementById('tool-pen').classList.add('active');
+  document.getElementById('tool-eraser').classList.remove('active');
+});
+document.getElementById('tool-eraser').addEventListener('click', () => {
+  currentTool = 'eraser';
+  document.getElementById('tool-eraser').classList.add('active');
+  document.getElementById('tool-pen').classList.remove('active');
+});
+document.getElementById('tool-clear').addEventListener('click', () => {
+  if (!ctx) return;
+  drawCanvasBg(canvas.offsetWidth);
+});
+
+document.querySelectorAll('.color-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    currentColor = dot.dataset.color;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    dot.classList.add('selected');
+  });
+});
+document.querySelectorAll('.size-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    currentSize = parseInt(opt.dataset.size);
+    document.querySelectorAll('.size-opt').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+document.getElementById('modal-save-btn').addEventListener('click', () => {
+  const roman = document.getElementById('s-roman').value.trim();
+  const meaning = document.getElementById('s-meaning').value.trim();
+  const img = canvas ? canvas.toDataURL('image/png') : '';
+  words.push({thai: 'pen_' + Date.now(), roman, meaning, img});
+  saveWords();
+  closeModal();
+  render();
+});
+
+// ── Démarrage ──
+loadWords();
+render();
+</script>
+</body>
+</html>
