@@ -16,7 +16,6 @@
   --accent:#C4521A;--accent-bg:#FBF0EA;
   --accent2:#2E6B4F;--accent2-bg:#EAF3EE;
   --danger:#A32D2D;--danger-bg:#FCEBEB;
-  --info-bg:#E6F1FB;--info:#185FA5;
   --shadow:0 2px 12px rgba(0,0,0,0.07);
   --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
   --radius:14px;--radius-sm:8px;
@@ -27,8 +26,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .header-title{display:flex;align-items:baseline;gap:10px;}
 .header-title h1{font-family:'Noto Sans Thai',sans-serif;font-size:22px;font-weight:600;color:var(--text);}
 .header-title span{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.header-right{display:flex;gap:8px;align-items:center;}
 .voice-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all .3s;}
 .voice-pill.ok{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.2);}
+.api-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);cursor:pointer;}
+.api-pill.ok{background:var(--accent-bg);color:var(--accent);border-color:rgba(196,82,26,.2);}
 .toolbar{padding:14px 20px;display:flex;gap:10px;}
 .search-wrap{flex:1;position:relative;}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
@@ -68,6 +70,8 @@ input[type=text]::placeholder{color:var(--text3);}
 .del-btn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .del-btn:active{background:var(--danger-bg);color:var(--danger);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
+
+/* Modals */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:92vh;overflow-y:auto;}
@@ -75,6 +79,8 @@ input[type=text]::placeholder{color:var(--text3);}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .modal-title{font-size:17px;font-weight:500;}
 .modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* Canvas */
 .canvas-tools{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
 .tool-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;}
 .tool-btn.active{background:var(--text);color:#fff;border-color:var(--text);}
@@ -88,23 +94,31 @@ input[type=text]::placeholder{color:var(--text3);}
 .divider{font-size:11px;color:var(--text3);text-align:center;margin:8px 0;text-transform:uppercase;letter-spacing:.6px;}
 
 /* Reconnaissance */
-.recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
-.recog-status{font-size:12px;color:var(--text3);flex:1;}
+.recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.recog-status{font-size:12px;color:var(--text3);flex:1;min-width:0;}
 .recog-status.loading{color:var(--accent);}
 .recog-status.error{color:var(--danger);}
-.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;min-height:0;}
+.recog-status.ok{color:var(--accent2);}
+.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;min-height:0;}
 .candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;line-height:1.3;}
-.candidate-btn:active,.candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
-.selected-thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:32px;text-align:center;padding:8px;color:var(--accent);font-weight:500;min-height:52px;}
+.candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:36px;text-align:center;padding:6px;color:var(--accent);font-weight:500;min-height:56px;}
 
 .modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-fields .field input{padding:10px 12px;}
 .modal-actions{display:flex;gap:10px;}
 .btn-full{flex:1;text-align:center;}
+
+/* Modal API key */
+.api-modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
+.api-info{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px;background:var(--surface2);padding:12px;border-radius:var(--radius-sm);}
+.api-input-wrap{position:relative;margin-bottom:14px;}
+.api-input-wrap input{font-family:'DM Mono',monospace;font-size:13px;padding:11px 14px;letter-spacing:.5px;}
+
 .fab{position:fixed;bottom:28px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--accent2);color:#fff;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,107,79,.4);cursor:pointer;z-index:150;}
 .fab:active{transform:scale(.93);}
 @media(min-width:600px){
-  .modal{border-radius:var(--radius);max-width:620px;margin-bottom:40px;}
+  .modal,.api-modal{border-radius:var(--radius);max-width:620px;margin-bottom:40px;}
   .modal-overlay{align-items:center;}
 }
 </style>
@@ -116,7 +130,10 @@ input[type=text]::placeholder{color:var(--text3);}
     <h1>ภาษาไทย</h1>
     <span>vocabulaire</span>
   </div>
-  <div id="voice-pill" class="voice-pill">⚠ voix thaï absente</div>
+  <div class="header-right">
+    <div id="api-pill" class="api-pill" title="Configurer la clé Google Vision">🔑 clé API</div>
+    <div id="voice-pill" class="voice-pill">⚠ voix</div>
+  </div>
 </header>
 
 <div class="toolbar">
@@ -153,14 +170,13 @@ input[type=text]::placeholder{color:var(--text3);}
 
 <button class="fab" id="fab-stylet" title="Saisir au stylet">✏️</button>
 
+<!-- Modal stylet -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal" id="modal-box">
+  <div class="modal">
     <div class="modal-header">
       <div class="modal-title">Saisie au stylet · Apple Pencil</div>
       <button class="modal-close" id="modal-close-btn">✕</button>
     </div>
-
-    <!-- Outils dessin -->
     <div class="canvas-tools">
       <button class="tool-btn active" id="tool-pen">✏️ crayon</button>
       <button class="tool-btn eraser" id="tool-eraser">⬜ gomme</button>
@@ -179,24 +195,16 @@ input[type=text]::placeholder{color:var(--text3);}
       <div class="size-opt" data-size="7" style="width:24px;height:24px;"></div>
       <div class="size-opt" data-size="12" style="width:30px;height:30px;"></div>
     </div>
-
-    <!-- Canvas -->
     <div class="canvas-wrap">
       <canvas id="stylet-canvas" height="200"></canvas>
     </div>
-
-    <!-- Bouton reconnaissance -->
     <div class="recog-bar">
       <button class="btn green" id="btn-recog">🔍 reconnaître</button>
       <span class="recog-status" id="recog-status">Dessine un caractère thaï puis appuie sur reconnaître</span>
     </div>
-
-    <!-- Candidats -->
     <div class="candidates" id="candidates"></div>
-    <div class="selected-thai-preview" id="thai-preview"></div>
-
+    <div class="thai-preview" id="thai-preview"></div>
     <div class="divider">informations du mot</div>
-
     <div class="modal-fields">
       <div class="field">
         <label>romanisation</label>
@@ -214,14 +222,34 @@ input[type=text]::placeholder{color:var(--text3);}
   </div>
 </div>
 
+<!-- Modal clé API -->
+<div class="modal-overlay" id="api-overlay">
+  <div class="api-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Clé Google Vision API</div>
+      <button class="modal-close" id="api-close-btn">✕</button>
+    </div>
+    <div class="api-info">
+      Ta clé est stockée uniquement sur cet appareil (localStorage). Elle n'est jamais envoyée ailleurs qu'à Google Vision pour la reconnaissance de caractères thaï. Tu peux la modifier ou la supprimer à tout moment.
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label>Clé API (commence par AIza…)</label>
+      <div class="api-input-wrap">
+        <input type="text" id="api-key-input" placeholder="AIza…" autocomplete="off" autocorrect="off" spellcheck="false" style="padding-left:14px;" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-full" id="api-delete-btn" style="color:var(--danger);">🗑 supprimer</button>
+      <button class="btn accent btn-full" id="api-save-btn">✓ enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
+const WORDS_KEY  = 'thai_words_v2';
+const APIKEY_KEY = 'google_vision_key';
 
-// ── CLEF API Google Vision ──────────────────────────────────────────
-const GOOGLE_API_KEY = 'colle clé ici';
-// ───────────────────────────────────────────────────────────────────
-
-const WORDS_KEY = 'thai_words_v2';
 const INITIAL = [
   {thai:"เงา",roman:"ngao",meaning:"ombre"},
   {thai:"ยา",roman:"yaa",meaning:"médicament"},
@@ -238,35 +266,54 @@ const INITIAL = [
   {thai:"เนื้อไก่",roman:"néua gài",meaning:"viande de poulet"},
 ];
 
-let words = [];
-let activeRow = null;
-let playingWord = null;
-let thaiVoice = null;
-let synth = window.speechSynthesis;
-let canvas = null, ctx = null;
-let drawing = false;
-let currentTool = 'pen';
-let currentColor = '#1A1814';
-let currentSize = 2;
-let hasPencil = false;
+let words = [], activeRow = null, playingWord = null;
+let thaiVoice = null, synth = window.speechSynthesis;
+let canvas = null, ctx = null, drawing = false;
+let currentTool = 'pen', currentColor = '#1A1814', currentSize = 2, hasPencil = false;
 let selectedThai = '';
 
+// ── Clé API ──
+function getApiKey() { try { return localStorage.getItem(APIKEY_KEY) || ''; } catch(e) { return ''; } }
+function setApiKey(k) { try { localStorage.setItem(APIKEY_KEY, k); } catch(e) {} }
+function updateApiPill() {
+  const pill = document.getElementById('api-pill');
+  const k = getApiKey();
+  if (k) { pill.textContent = '🔑 clé ok'; pill.classList.add('ok'); }
+  else { pill.textContent = '🔑 clé API'; pill.classList.remove('ok'); }
+}
+
+// ── Modal API ──
+document.getElementById('api-pill').addEventListener('click', () => {
+  document.getElementById('api-key-input').value = getApiKey();
+  document.getElementById('api-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('api-key-input').focus(), 80);
+});
+document.getElementById('api-close-btn').addEventListener('click', () => document.getElementById('api-overlay').classList.remove('open'));
+document.getElementById('api-overlay').addEventListener('click', e => { if (e.target === document.getElementById('api-overlay')) document.getElementById('api-overlay').classList.remove('open'); });
+document.getElementById('api-save-btn').addEventListener('click', () => {
+  const k = document.getElementById('api-key-input').value.trim();
+  setApiKey(k); updateApiPill();
+  document.getElementById('api-overlay').classList.remove('open');
+});
+document.getElementById('api-delete-btn').addEventListener('click', () => {
+  setApiKey(''); updateApiPill();
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('api-overlay').classList.remove('open');
+});
+
+// ── Mots ──
 function loadWords() {
-  try {
-    const s = localStorage.getItem(WORDS_KEY);
-    if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } }
-  } catch(e) {}
+  try { const s = localStorage.getItem(WORDS_KEY); if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } } } catch(e) {}
   words = INITIAL.map(w => ({thai:w.thai,roman:w.roman,meaning:w.meaning}));
   saveWords();
 }
-function saveWords() {
-  try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {}
-}
+function saveWords() { try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {} }
 
+// ── Voix ──
 function checkVoices() {
   const voices = synth.getVoices();
   const v = voices.find(v => v.lang.startsWith('th'));
-  if (v) { thaiVoice = v; const p = document.getElementById('voice-pill'); p.textContent = '🔊 voix thaï ok'; p.classList.add('ok'); }
+  if (v) { thaiVoice = v; const p = document.getElementById('voice-pill'); p.textContent = '🔊 voix ok'; p.classList.add('ok'); }
 }
 checkVoices();
 synth.onvoiceschanged = checkVoices;
@@ -281,39 +328,37 @@ function speak(word) {
   synth.speak(u);
 }
 
+// ── Rendu ──
 function render() {
   const q = (document.getElementById('search').value || '').toLowerCase();
   const filtered = words.filter(w => {
-    const h = (w.img ? '' : w.thai) + ' ' + (w.roman||'') + ' ' + (w.meaning||'');
+    const h = (w.img ? '' : w.thai)+' '+(w.roman||'')+' '+(w.meaning||'');
     return h.toLowerCase().includes(q);
   });
   const n = filtered.length;
-  document.getElementById('count-bar').textContent = n + ' mot' + (n !== 1 ? 's' : '');
+  document.getElementById('count-bar').textContent = n+' mot'+(n!==1?'s':'');
   const list = document.getElementById('word-list');
   list.innerHTML = '';
   if (n === 0) { list.innerHTML = '<div class="empty-state">aucun mot trouvé</div>'; return; }
   filtered.forEach(w => {
     const card = document.createElement('div');
-    card.className = 'word-card' + (activeRow === w.thai ? ' active' : '');
-    const thaiDiv = document.createElement('div');
-    thaiDiv.className = 'word-thai';
+    card.className = 'word-card'+(activeRow===w.thai?' active':'');
+    const thaiDiv = document.createElement('div'); thaiDiv.className = 'word-thai';
     if (w.img) { const img = document.createElement('img'); img.src = w.img; img.alt = 'manuscrit'; thaiDiv.appendChild(img); }
     else thaiDiv.textContent = w.thai;
     const metaDiv = document.createElement('div');
     metaDiv.innerHTML = '<div class="word-roman">'+(w.roman||'')+'</div><div class="word-meaning">'+(w.meaning||'')+'</div>';
-    const actDiv = document.createElement('div');
-    actDiv.className = 'word-actions';
+    const actDiv = document.createElement('div'); actDiv.className = 'word-actions';
     const spk = document.createElement('button');
-    spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
-    spk.textContent = playingWord === w.thai ? '⏸' : '🔊';
+    spk.className = 'speak-btn'+(playingWord===w.thai?' playing':'');
+    spk.textContent = playingWord===w.thai?'⏸':'🔊';
     spk.addEventListener('click', e => { e.stopPropagation(); speak(w.thai); });
-    const del = document.createElement('button');
-    del.className = 'del-btn'; del.textContent = '✕';
+    const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
     del.addEventListener('click', e => {
       e.stopPropagation();
       words = words.filter(x => x.thai !== w.thai);
-      if (activeRow === w.thai) activeRow = null;
-      if (playingWord === w.thai) { synth.cancel(); playingWord = null; }
+      if (activeRow===w.thai) activeRow = null;
+      if (playingWord===w.thai) { synth.cancel(); playingWord = null; }
       saveWords(); render();
     });
     actDiv.appendChild(spk); actDiv.appendChild(del);
@@ -325,15 +370,14 @@ function render() {
 
 document.getElementById('search').addEventListener('input', render);
 
+// ── Formulaire texte ──
 document.getElementById('toggle-add').addEventListener('click', () => {
-  const f = document.getElementById('add-form');
-  const btn = document.getElementById('toggle-add');
+  const f = document.getElementById('add-form'), btn = document.getElementById('toggle-add');
   const open = f.classList.toggle('open');
   btn.textContent = open ? '✕ fermer' : '+ ajouter';
   if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
   else ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
 });
-
 function doAddWord() {
   const thai = document.getElementById('inp-thai').value.trim();
   const roman = document.getElementById('inp-roman').value.trim();
@@ -348,7 +392,7 @@ function doAddWord() {
 }
 document.getElementById('btn-add-word').addEventListener('click', doAddWord);
 ['inp-thai','inp-roman','inp-meaning'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key==='Enter') doAddWord(); });
 });
 
 // ── Modal stylet ──
@@ -363,7 +407,6 @@ document.getElementById('fab-stylet').addEventListener('click', () => {
   selectedThai = '';
   setTimeout(initCanvas, 60);
 });
-
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   if (canvas) {
@@ -376,199 +419,155 @@ function closeModal() {
 }
 document.getElementById('modal-close-btn').addEventListener('click', closeModal);
 document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
-document.getElementById('modal-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-});
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target===document.getElementById('modal-overlay')) closeModal(); });
 
+// ── Canvas ──
 function initCanvas() {
   canvas = document.getElementById('stylet-canvas');
   ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = window.devicePixelRatio||1;
   const w = canvas.offsetWidth;
-  canvas.width = w * dpr;
-  canvas.height = 200 * dpr;
-  canvas.style.height = '200px';
-  ctx.scale(dpr, dpr);
-  drawBg(w);
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  canvas.width = w*dpr; canvas.height = 200*dpr; canvas.style.height = '200px';
+  ctx.scale(dpr,dpr); drawBg(w);
+  ctx.lineCap='round'; ctx.lineJoin='round';
   canvas.addEventListener('pointerdown', onPtrDown, {passive:false});
   canvas.addEventListener('pointermove', onPtrMove, {passive:false});
   canvas.addEventListener('pointerup', onPtrUp);
   canvas.addEventListener('pointercancel', onPtrUp);
 }
-
 function drawBg(w) {
-  const cw = w || canvas.offsetWidth;
-  ctx.fillStyle = '#FEFEFE';
-  ctx.fillRect(0, 0, cw, 200);
-  ctx.strokeStyle = 'rgba(196,82,26,0.12)';
-  ctx.lineWidth = 1;
-  for (let y = 50; y < 200; y += 50) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
-  }
+  const cw = w||canvas.offsetWidth;
+  ctx.fillStyle='#FEFEFE'; ctx.fillRect(0,0,cw,200);
+  ctx.strokeStyle='rgba(196,82,26,0.12)'; ctx.lineWidth=1;
+  for (let y=50;y<200;y+=50) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cw,y); ctx.stroke(); }
 }
-
-function getPos(e) {
-  const r = canvas.getBoundingClientRect();
-  return {x: e.clientX - r.left, y: e.clientY - r.top};
-}
+function getPos(e) { const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
 function onPtrDown(e) {
-  if (e.pointerType === 'pen') hasPencil = true;
-  if (e.pointerType === 'touch' && hasPencil) return;
-  e.preventDefault(); drawing = true;
-  const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  if (e.pointerType==='pen') hasPencil=true;
+  if (e.pointerType==='touch'&&hasPencil) return;
+  e.preventDefault(); drawing=true;
+  const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);
 }
 function onPtrMove(e) {
   if (!drawing) return;
-  if (e.pointerType === 'touch' && hasPencil) return;
-  e.preventDefault();
-  const p = getPos(e);
-  if (currentTool === 'eraser') {
-    ctx.save(); ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath(); ctx.arc(p.x, p.y, currentSize * 5, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  if (e.pointerType==='touch'&&hasPencil) return;
+  e.preventDefault(); const p=getPos(e);
+  if (currentTool==='eraser') {
+    ctx.save(); ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath(); ctx.arc(p.x,p.y,currentSize*5,0,Math.PI*2); ctx.fill(); ctx.restore();
   } else {
-    const pressure = e.pressure > 0 ? e.pressure : 0.5;
-    ctx.lineWidth = currentSize * (0.4 + pressure * 1.2);
-    ctx.strokeStyle = currentColor;
-    ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+    const pr=e.pressure>0?e.pressure:0.5;
+    ctx.lineWidth=currentSize*(0.4+pr*1.2); ctx.strokeStyle=currentColor;
+    ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y);
   }
 }
-function onPtrUp() { drawing = false; if (ctx) ctx.beginPath(); }
+function onPtrUp() { drawing=false; if(ctx) ctx.beginPath(); }
 
 document.getElementById('tool-pen').addEventListener('click', () => {
-  currentTool = 'pen';
+  currentTool='pen';
   document.getElementById('tool-pen').classList.add('active');
   document.getElementById('tool-eraser').classList.remove('active');
 });
 document.getElementById('tool-eraser').addEventListener('click', () => {
-  currentTool = 'eraser';
+  currentTool='eraser';
   document.getElementById('tool-eraser').classList.add('active');
   document.getElementById('tool-pen').classList.remove('active');
 });
 document.getElementById('tool-clear').addEventListener('click', () => {
   if (!ctx) return;
   drawBg(canvas.offsetWidth);
-  document.getElementById('candidates').innerHTML = '';
-  document.getElementById('thai-preview').textContent = '';
-  selectedThai = '';
-  document.getElementById('recog-status').textContent = 'Dessine un caractère thaï puis appuie sur reconnaître';
-  document.getElementById('recog-status').className = 'recog-status';
+  document.getElementById('candidates').innerHTML='';
+  document.getElementById('thai-preview').textContent='';
+  selectedThai='';
+  document.getElementById('recog-status').textContent='Dessine un caractère thaï puis appuie sur reconnaître';
+  document.getElementById('recog-status').className='recog-status';
 });
 document.querySelectorAll('.color-dot').forEach(dot => {
   dot.addEventListener('click', () => {
-    currentColor = dot.dataset.color;
-    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    currentColor=dot.dataset.color;
+    document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
     dot.classList.add('selected');
   });
 });
 document.querySelectorAll('.size-opt').forEach(opt => {
   opt.addEventListener('click', () => {
-    currentSize = parseInt(opt.dataset.size);
-    document.querySelectorAll('.size-opt').forEach(o => o.classList.remove('selected'));
+    currentSize=parseInt(opt.dataset.size);
+    document.querySelectorAll('.size-opt').forEach(o=>o.classList.remove('selected'));
     opt.classList.add('selected');
   });
 });
 
 // ── Reconnaissance Google Vision ──
 document.getElementById('btn-recog').addEventListener('click', async () => {
-  if (!canvas) return;
+  const apiKey = getApiKey();
   const status = document.getElementById('recog-status');
   const candidatesDiv = document.getElementById('candidates');
   const preview = document.getElementById('thai-preview');
-
+  if (!apiKey) {
+    status.textContent = '❌ clé API manquante — appuie sur 🔑 clé API en haut';
+    status.className = 'recog-status error';
+    return;
+  }
+  if (!canvas) return;
   status.textContent = '⏳ reconnaissance en cours…';
   status.className = 'recog-status loading';
-  candidatesDiv.innerHTML = '';
-  preview.textContent = '';
-  selectedThai = '';
-
+  candidatesDiv.innerHTML = ''; preview.textContent = ''; selectedThai = '';
   try {
-    // Export canvas en base64 (sans le préfixe data:...)
-    const dataUrl = canvas.toDataURL('image/png');
-    const base64 = dataUrl.split(',')[1];
-
-    const body = {
-      requests: [{
-        image: { content: base64 },
-        features: [{ type: 'TEXT_DETECTION', maxResults: 10 }],
-        imageContext: { languageHints: ['th'] }
-      }]
-    };
-
-    const resp = await fetch(
-      'https://vision.googleapis.com/v1/images:annotate?key=' + GOOGLE_API_KEY,
-      { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }
-    );
+    const base64 = canvas.toDataURL('image/png').split(',')[1];
+    const body = { requests: [{ image:{content:base64}, features:[{type:'TEXT_DETECTION',maxResults:10}], imageContext:{languageHints:['th']} }] };
+    const resp = await fetch('https://vision.googleapis.com/v1/images:annotate?key='+apiKey,
+      {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
     const data = await resp.json();
-
     if (data.error) throw new Error(data.error.message);
-
     const annotations = data.responses[0].textAnnotations;
-    if (!annotations || annotations.length === 0) {
-      status.textContent = '❌ aucun caractère reconnu — essaie d\'écrire plus grand';
-      status.className = 'recog-status error';
-      return;
+    if (!annotations||annotations.length===0) {
+      status.textContent = '❌ aucun caractère reconnu — écris plus grand';
+      status.className = 'recog-status error'; return;
     }
-
-    // Extraire les caractères thaï uniques détectés
-    const fullText = annotations[0].description || '';
-    // Filtrer pour ne garder que les caractères thaï (plage Unicode \u0E00-\u0E7F)
-    const thaiChars = [...new Set(fullText.split('').filter(c => /[\u0E00-\u0E7F]/.test(c)))];
-    // Aussi proposer des mots entiers thaï
-    const thaiWords = [...new Set(fullText.split(/\s+/).filter(w => /^[\u0E00-\u0E7F]+$/.test(w)))];
-    const candidates = [...new Set([...thaiWords, ...thaiChars])].slice(0, 8);
-
-    if (candidates.length === 0) {
-      status.textContent = '❌ aucun caractère thaï reconnu — écris plus grand et plus net';
-      status.className = 'recog-status error';
-      return;
+    const fullText = annotations[0].description||'';
+    const thaiWords = [...new Set(fullText.split(/\s+/).filter(w=>/^[\u0E00-\u0E7F]+$/.test(w)))];
+    const thaiChars = [...new Set(fullText.split('').filter(c=>/[\u0E00-\u0E7F]/.test(c)))];
+    const candidates = [...new Set([...thaiWords,...thaiChars])].slice(0,8);
+    if (candidates.length===0) {
+      status.textContent = '❌ aucun caractère thaï reconnu — réessaie';
+      status.className = 'recog-status error'; return;
     }
-
-    status.textContent = 'Sélectionne le caractère reconnu :';
-    status.className = 'recog-status';
-
+    status.textContent = 'Sélectionne le bon caractère :';
+    status.className = 'recog-status ok';
     candidatesDiv.innerHTML = '';
     candidates.forEach(c => {
       const btn = document.createElement('button');
-      btn.className = 'candidate-btn';
-      btn.textContent = c;
+      btn.className = 'candidate-btn'; btn.textContent = c;
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
         btn.classList.add('selected');
-        selectedThai = c;
-        preview.textContent = c;
+        selectedThai = c; preview.textContent = c;
         speak(c);
       });
       candidatesDiv.appendChild(btn);
     });
-
   } catch(err) {
-    status.textContent = '❌ erreur : ' + err.message;
+    status.textContent = '❌ erreur : '+err.message;
     status.className = 'recog-status error';
-    console.error(err);
   }
 });
 
-// ── Enregistrer depuis stylet ──
+// ── Enregistrer ──
 document.getElementById('modal-save-btn').addEventListener('click', () => {
   const roman = document.getElementById('s-roman').value.trim();
   const meaning = document.getElementById('s-meaning').value.trim();
-
   if (selectedThai) {
-    // Mot reconnu : on sauvegarde le texte thaï directement
-    words.push({thai: selectedThai, roman, meaning});
+    words.push({thai:selectedThai, roman, meaning});
   } else {
-    // Pas de reconnaissance : on sauvegarde l'image du canvas
     const img = canvas ? canvas.toDataURL('image/png') : '';
-    words.push({thai: 'pen_' + Date.now(), roman, meaning, img});
+    words.push({thai:'pen_'+Date.now(), roman, meaning, img});
   }
-  saveWords();
-  closeModal();
-  render();
+  saveWords(); closeModal(); render();
 });
 
 // ── Init ──
 loadWords();
+updateApiPill();
 render();
 </script>
 </body>
