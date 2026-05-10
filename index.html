@@ -232,6 +232,7 @@ input[type=text]::placeholder{color:var(--text3);}
     <span>vocabulaire</span>
   </div>
   <div class="header-right">
+    <button class="csv-btn" id="translate-key-btn" title="Clé Google Translation">🔑 trad.</button>
     <button class="csv-btn" id="csv-btn">⇅ CSV</button>
     <div id="voice-pill" class="voice-pill">⚠ voix</div>
   </div>
@@ -263,6 +264,26 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="fab-row">
   <button class="fab stylet" id="fab-stylet">✏️</button>
   <button class="fab kbd" id="fab-kbd">⌨️</button>
+</div>
+
+<!-- Modal clé Translation -->
+<div class="modal-overlay" id="modal-tkey">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Clé Google Translation</div>
+      <button class="modal-close" id="tkey-close">✕</button>
+    </div>
+    <div class="csv-info">Ta clé est stockée uniquement sur cet appareil. Elle sert uniquement à traduire automatiquement les mots thaï reconnus vers le français.</div>
+    <div class="field" style="margin-bottom:12px;">
+      <label>Clé API (AIza…)</label>
+      <input type="text" id="tkey-input" placeholder="AIza…" autocomplete="off" autocorrect="off" spellcheck="false" style="padding-left:14px;font-family:monospace;font-size:13px;" />
+    </div>
+    <div class="csv-actions">
+      <button class="btn btn-full" id="tkey-delete" style="color:var(--danger);">🗑 supprimer</button>
+      <button class="btn accent btn-full" id="tkey-save">✓ enregistrer</button>
+    </div>
+    <div class="csv-feedback" id="tkey-feedback"></div>
+  </div>
 </div>
 
 <!-- Modal CSV -->
@@ -549,6 +570,37 @@ document.getElementById('btn-add-word').addEventListener('click',doAddWord);
   document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAddWord();});
 });
 
+// Clé Translation
+function updateTkeyBtn(){
+  const k=getTranslateKey();
+  const btn=document.getElementById('translate-key-btn');
+  btn.textContent=k?'🔑 trad. ok':'🔑 trad.';
+  btn.style.color=k?'var(--accent2)':'';
+}
+document.getElementById('translate-key-btn').addEventListener('click',()=>{
+  document.getElementById('tkey-input').value=getTranslateKey();
+  document.getElementById('tkey-feedback').textContent='';
+  document.getElementById('modal-tkey').classList.add('open');
+  setTimeout(()=>document.getElementById('tkey-input').focus(),80);
+});
+function closeTkey(){document.getElementById('modal-tkey').classList.remove('open');}
+document.getElementById('tkey-close').addEventListener('click',closeTkey);
+document.getElementById('modal-tkey').addEventListener('click',e=>{if(e.target===document.getElementById('modal-tkey'))closeTkey();});
+document.getElementById('tkey-save').addEventListener('click',()=>{
+  const k=document.getElementById('tkey-input').value.trim();
+  try{localStorage.setItem('google_translate_key',k);}catch(e){}
+  updateTkeyBtn();
+  document.getElementById('tkey-feedback').textContent=k?'✓ clé enregistrée':'clé supprimée';
+  setTimeout(closeTkey,800);
+});
+document.getElementById('tkey-delete').addEventListener('click',()=>{
+  try{localStorage.removeItem('google_translate_key');}catch(e){}
+  document.getElementById('tkey-input').value='';
+  updateTkeyBtn();
+  document.getElementById('tkey-feedback').textContent='✓ clé supprimée';
+  setTimeout(closeTkey,800);
+});
+
 // CSV
 document.getElementById('csv-btn').addEventListener('click',()=>{document.getElementById('csv-feedback').textContent='';document.getElementById('modal-csv').classList.add('open');});
 function closeCsv(){document.getElementById('modal-csv').classList.remove('open');}
@@ -719,16 +771,39 @@ document.getElementById('tool-clear-canvas').addEventListener('click',()=>{
 document.querySelectorAll('.color-dot').forEach(dot=>{dot.addEventListener('click',()=>{currentColor=dot.dataset.color;document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));dot.classList.add('selected');});});
 document.querySelectorAll('.size-dot').forEach(dot=>{dot.addEventListener('click',()=>{currentSize=parseFloat(dot.dataset.size);document.querySelectorAll('.size-dot').forEach(d=>d.classList.remove('selected'));dot.classList.add('selected');});});
 
-function showResultCard(thai){
+function getTranslateKey(){try{return localStorage.getItem('google_translate_key')||'';}catch(e){return '';}}
+
+async function translateThai(thai){
+  try{
+    const url='https://translation.googleapis.com/language/translate/v2?key='+getTranslateKey();
+    const resp=await fetch(url,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({q:thai,source:'th',target:'fr',format:'text'})
+    });
+    const data=await resp.json();
+    return data.data?.translations?.[0]?.translatedText||'';
+  }catch(e){return '';}
+}
+
+async function showResultCard(thai){
   selectedThai=thai;
   document.getElementById('result-thai-big').textContent=thai;
   document.getElementById('result-card').classList.add('visible');
-  // Auto-remplir depuis dico si mot connu
-  const d=lookupDict(thai);
-  document.getElementById('res-roman').value=d?d.roman:'';
-  document.getElementById('res-fr').value=d?d.fr:'';
   document.getElementById('save-feedback').classList.remove('show');
   speak(thai);
+  // Dico intégré en priorité
+  const d=lookupDict(thai);
+  if(d){
+    document.getElementById('res-roman').value=d.roman;
+    document.getElementById('res-fr').value=d.fr;
+  } else {
+    // Mot inconnu du dico : appel Google Translation pour le français
+    document.getElementById('res-roman').value='';
+    document.getElementById('res-fr').value='⏳ traduction…';
+    const fr=await translateThai(thai);
+    document.getElementById('res-fr').value=fr;
+  }
 }
 
 function computeHMAC(body){return CryptoJS.HmacSHA512(body,APP_KEY+HMAC_KEY).toString(CryptoJS.enc.Hex);}
@@ -812,7 +887,7 @@ document.getElementById('corr-validate').addEventListener('click',()=>{
   document.getElementById('correction-zone').classList.remove('open');
 });
 
-loadWords();buildKeyboard();render();
+loadWords();buildKeyboard();render();updateTkeyBtn();
 </script>
 </body>
 </html>
