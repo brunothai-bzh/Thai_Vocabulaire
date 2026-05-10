@@ -67,9 +67,9 @@ input[type=text]::placeholder{color:var(--text3);}
 .word-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s,border-color .12s;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;}
 .word-card:active{background:var(--surface2);}
 .word-card.active{border-color:var(--accent);background:var(--accent-bg);}
-.word-thai{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;line-height:1.2;flex-shrink:0;min-width:52px;text-align:center;}.word-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;overflow:hidden;}
-.word-roman{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.word-meaning{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.word-thai{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;line-height:1.2;flex:1;min-width:0;text-align:left;}.word-meta{display:flex;flex-direction:column;gap:1px;flex-shrink:0;max-width:140px;text-align:right;}
+.word-roman{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;text-align:right;}
+.word-meaning{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
 .word-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
 .speak-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .speak-btn:active{background:var(--surface);}
