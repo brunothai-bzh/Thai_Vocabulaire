@@ -427,7 +427,7 @@ function initCanvas() {
   ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio||1;
   const w = canvas.offsetWidth;
-  canvas.width = w*dpr; canvas.height = 200*dpr; canvas.style.height = '200px';
+  canvas.width = w*dpr; canvas.height = 200*dpr; canvas.style.height = '350px';
   ctx.scale(dpr,dpr); drawBg(w);
   ctx.lineCap='round'; ctx.lineJoin='round';
   canvas.addEventListener('pointerdown', onPtrDown, {passive:false});
