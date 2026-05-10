@@ -23,7 +23,6 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* ── Header ── */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 12px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
 .header-title{display:flex;align-items:baseline;gap:10px;}
 .header-title h1{font-family:'Noto Sans Thai',sans-serif;font-size:22px;font-weight:600;color:var(--text);}
@@ -31,7 +30,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:1
 .voice-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all .3s;}
 .voice-pill.ok{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.2);}
 
-/* ── Toolbar ── */
 .toolbar{padding:14px 20px;display:flex;gap:10px;}
 .search-wrap{flex:1;position:relative;}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
@@ -45,8 +43,9 @@ input[type=text]::placeholder{color:var(--text3);}
 .btn.accent:active{background:#a84315;}
 .btn.green{background:var(--accent2);color:#fff;border-color:var(--accent2);}
 .btn.green:active{background:#1f4e38;}
+.btn.outline{background:transparent;color:var(--accent2);border-color:var(--accent2);}
+.btn.outline:active{background:var(--accent2-bg);}
 
-/* ── Formulaire texte ── */
 .add-form{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:none;flex-direction:column;gap:12px;box-shadow:var(--shadow);}
 .add-form.open{display:flex;}
 .add-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -57,9 +56,8 @@ input[type=text]::placeholder{color:var(--text3);}
 .feedback-msg{font-size:12px;color:var(--accent2);font-weight:500;opacity:0;transition:opacity .3s;}
 .feedback-msg.show{opacity:1;}
 
-/* ── Liste ── */
 .count-bar{padding:0 20px 8px;font-size:12px;color:var(--text3);}
-.table-wrap{padding:0 20px 120px;}
+.table-wrap{padding:0 20px 100px;}
 .word-list{display:flex;flex-direction:column;gap:8px;}
 .word-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;cursor:pointer;transition:background .12s,border-color .12s;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;}
 .word-card:active{background:var(--surface2);}
@@ -75,13 +73,12 @@ input[type=text]::placeholder{color:var(--text3);}
 .del-btn:active{background:var(--danger-bg);color:var(--danger);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
 
-/* ── FABs ── */
-.fab-wrap{position:fixed;bottom:28px;right:24px;display:flex;flex-direction:column;gap:12px;align-items:flex-end;z-index:150;}
-.fab{width:56px;height:56px;border-radius:50%;color:#fff;border:none;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);}
+/* ── FABs côte à côte ── */
+.fab-row{position:fixed;bottom:28px;right:20px;display:flex;flex-direction:row;gap:12px;align-items:center;z-index:150;}
+.fab{width:56px;height:56px;border-radius:50%;color:#fff;border:none;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .fab:active{transform:scale(.93);}
 .fab.kbd{background:var(--accent2);box-shadow:0 4px 20px rgba(46,107,79,.4);}
 .fab.stylet{background:var(--accent);box-shadow:0 4px 20px rgba(196,82,26,.4);}
-.fab-label{font-size:10px;font-weight:500;text-align:center;margin-top:2px;color:var(--text3);}
 
 /* ── Modals ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
@@ -124,27 +121,49 @@ input[type=text]::placeholder{color:var(--text3);}
 .toolbar-sep{width:1px;height:22px;background:var(--border2);flex-shrink:0;}
 .pencil-badge{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent2-bg);color:var(--accent2);border:1px solid rgba(46,107,79,.2);display:none;margin-left:auto;}
 .pencil-badge.visible{display:inline-block;}
-.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:10px;}
+.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:8px;}
 #stylet-canvas{display:block;width:100%;cursor:crosshair;}
 .canvas-guide-stylet{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.08;font-family:'Noto Sans Thai',sans-serif;font-size:100px;color:#000;transition:opacity .3s;}
 .canvas-guide-stylet.hidden{opacity:0;}
 .stroke-info{font-size:11px;color:var(--text3);text-align:right;margin-bottom:8px;}
 
-/* Résultat reconnaissance */
+/* Résultat + correction */
 .recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
 .recog-status{font-size:12px;flex:1;}
 .recog-status.loading{color:var(--accent);}
 .recog-status.error{color:var(--danger);}
 .recog-status.ok{color:var(--accent2);}
-.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;min-height:0;}
+.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 .candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;}
 .candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
-.thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:36px;text-align:center;padding:6px;color:var(--accent);font-weight:500;min-height:52px;}
+
+/* Zone correction clavier intégrée */
+.correction-zone{display:none;margin-bottom:12px;border:1.5px solid var(--accent2);border-radius:var(--radius);overflow:hidden;}
+.correction-zone.open{display:block;}
+.correction-header{background:var(--accent2-bg);padding:8px 14px;font-size:12px;font-weight:500;color:var(--accent2);display:flex;align-items:center;justify-content:space-between;}
+.correction-composer{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface);}
+.correction-word{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:40px;word-break:break-all;}
+.correction-actions{display:flex;gap:5px;}
+.corr-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.corr-btn:active{background:var(--surface);}
+.corr-btn.speak{background:var(--accent2-bg);color:var(--accent2);}
+.mini-kbd{padding:10px 14px 14px;background:var(--surface);}
+.mini-kbd-section{margin-bottom:8px;}
+.mini-kbd-label{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.mini-kbd-row{display:flex;flex-wrap:wrap;gap:4px;}
+.mini-key{font-family:'Noto Sans Thai',sans-serif;font-size:17px;min-width:34px;height:42px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-user-select:none;}
+.mini-key:active{background:var(--accent-bg);border-color:var(--accent);transform:scale(.92);}
+.mini-key .rom{font-family:'DM Mono',monospace;font-size:7px;color:var(--text3);line-height:1;}
+.mini-key.vowel{background:#EAF3EE;border-color:rgba(46,107,79,.2);}
+.mini-key.vowel:active{background:var(--accent2);color:#fff;}
+.mini-key.tone{background:#FBF0EA;border-color:rgba(196,82,26,.2);}
+.mini-key.tone:active{background:var(--accent);color:#fff;}
+
+.thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:32px;text-align:center;padding:4px;color:var(--accent);font-weight:500;min-height:44px;}
 
 .spinner{width:12px;height:12px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* Champs communs */
 .divider{font-size:11px;color:var(--text3);text-align:center;margin:12px 0 10px;text-transform:uppercase;letter-spacing:.6px;}
 .modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-fields .field input{padding:10px 12px;}
@@ -178,18 +197,9 @@ input[type=text]::placeholder{color:var(--text3);}
 
 <div class="add-form" id="add-form">
   <div class="add-form-grid">
-    <div class="field">
-      <label>thaï *</label>
-      <input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" />
-    </div>
-    <div class="field">
-      <label>romanisation</label>
-      <input type="text" id="inp-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" />
-    </div>
-    <div class="field">
-      <label>sens (français)</label>
-      <input type="text" id="inp-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" />
-    </div>
+    <div class="field"><label>thaï *</label><input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+    <div class="field"><label>romanisation</label><input type="text" id="inp-roman" placeholder="ex : mæw" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+    <div class="field"><label>sens (français)</label><input type="text" id="inp-meaning" placeholder="ex : chat" autocomplete="off" spellcheck="false" /></div>
   </div>
   <div class="form-actions">
     <button class="btn accent" id="btn-add-word">✓ enregistrer</button>
@@ -200,14 +210,10 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="count-bar" id="count-bar"></div>
 <div class="table-wrap"><div class="word-list" id="word-list"></div></div>
 
-<!-- FABs -->
-<div class="fab-wrap">
-  <div>
-    <button class="fab stylet" id="fab-stylet" title="Saisie au stylet">✏️</button>
-  </div>
-  <div>
-    <button class="fab kbd" id="fab-kbd" title="Clavier thaï">⌨️</button>
-  </div>
+<!-- FABs côte à côte -->
+<div class="fab-row">
+  <button class="fab stylet" id="fab-stylet" title="Saisie au stylet">✏️</button>
+  <button class="fab kbd" id="fab-kbd" title="Clavier thaï">⌨️</button>
 </div>
 
 <!-- ════ Modal CLAVIER ════ -->
@@ -245,11 +251,10 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="modal-overlay" id="modal-stylet">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">✏️ Saisie au stylet · MyScript</div>
+      <div class="modal-title">✏️ Stylet · MyScript</div>
       <button class="modal-close" id="stylet-close">✕</button>
     </div>
 
-    <!-- Outils -->
     <div class="stylet-toolbar">
       <button class="tool-pill active" id="tool-pen">✏️ crayon</button>
       <button class="tool-pill eraser" id="tool-eraser">⬜ gomme</button>
@@ -266,19 +271,44 @@ input[type=text]::placeholder{color:var(--text3);}
       <span class="pencil-badge" id="pencil-badge">✏️ Apple Pencil</span>
     </div>
 
-    <!-- Canvas -->
     <div class="canvas-wrap">
-      <canvas id="stylet-canvas" height="280"></canvas>
+      <canvas id="stylet-canvas" height="240"></canvas>
       <div class="canvas-guide-stylet" id="canvas-guide">ก</div>
     </div>
     <div class="stroke-info" id="stroke-info">0 trait — prêt</div>
 
-    <!-- Reconnaissance -->
     <div class="recog-bar">
-      <button class="btn green" id="btn-recog">🔍 reconnaître (MyScript)</button>
+      <button class="btn green" id="btn-recog">🔍 reconnaître</button>
       <span class="recog-status" id="recog-status"></span>
     </div>
+
+    <!-- Candidats MyScript -->
     <div class="candidates" id="candidates"></div>
+
+    <!-- Zone correction clavier -->
+    <div class="correction-zone" id="correction-zone">
+      <div class="correction-header">
+        <span>✏️ Corriger au clavier thaï</span>
+        <button class="corr-btn" id="correction-close" style="width:28px;height:28px;font-size:14px;">✕</button>
+      </div>
+      <div class="correction-composer">
+        <div class="correction-word" id="correction-word"></div>
+        <div class="correction-actions">
+          <button class="corr-btn speak" id="corr-speak">🔊</button>
+          <button class="corr-btn" id="corr-del">⌫</button>
+          <button class="corr-btn" id="corr-clear">✕</button>
+        </div>
+      </div>
+      <div class="mini-kbd">
+        <div class="mini-kbd-section"><div class="mini-kbd-label">Consonnes</div><div class="mini-kbd-row" id="mini-consonants"></div></div>
+        <div class="mini-kbd-section"><div class="mini-kbd-label">Voyelles</div><div class="mini-kbd-row" id="mini-vowels"></div></div>
+        <div class="mini-kbd-section"><div class="mini-kbd-label">Tons</div><div class="mini-kbd-row" id="mini-tones"></div></div>
+        <div style="margin-top:10px;">
+          <button class="btn accent" id="corr-validate" style="width:100%;">✓ utiliser cette correction</button>
+        </div>
+      </div>
+    </div>
+
     <div class="thai-preview" id="thai-preview"></div>
 
     <div class="divider">informations du mot</div>
@@ -297,11 +327,10 @@ input[type=text]::placeholder{color:var(--text3);}
 <script>
 'use strict';
 
-// ── MyScript keys ──
 const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
 const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
-
 const WORDS_KEY = 'thai_words_v2';
+
 const INITIAL = [
   {thai:"เงา",roman:"ngao",meaning:"ombre"},
   {thai:"ยา",roman:"yaa",meaning:"médicament"},
@@ -335,7 +364,7 @@ const VOWELS = [
   {c:'า',r:'aa'},{c:'ิ',r:'i'},{c:'ี',r:'ii'},{c:'ึ',r:'ue'},
   {c:'ื',r:'uee'},{c:'ุ',r:'u'},{c:'ู',r:'uu'},{c:'เ',r:'e'},
   {c:'แ',r:'ae'},{c:'โ',r:'o'},{c:'ใ',r:'ai'},{c:'ไ',r:'ai'},
-  {c:'ำ',r:'am'},{c:'ั',r:'a'},{c:'็',r:'(bref)'},
+  {c:'ำ',r:'am'},{c:'ั',r:'a'},{c:'็',r:'bref'},
 ];
 const TONES = [
   {c:'่',r:'mai ek'},{c:'้',r:'mai tho'},{c:'๊',r:'mai tri'},{c:'๋',r:'mai jat'},
@@ -347,17 +376,16 @@ const NUMBERS = [
   {c:'๕',r:'5'},{c:'๖',r:'6'},{c:'๗',r:'7'},{c:'๘',r:'8'},{c:'๙',r:'9'},
 ];
 
-// ── État ──
 let words=[], activeRow=null, playingWord=null;
 let thaiVoice=null, synth=window.speechSynthesis;
 let composedWord='';
+let correctionWord='';
 let canvas=null, ctx=null, drawing=false;
 let strokes=[], currentStroke=[];
 let hasPencil=false, hasDrawing=false;
 let currentTool='pen', currentColor='#1A1814', currentSize=2.5;
 let selectedThai='';
 
-// ── Persistance ──
 function loadWords(){
   try{const s=localStorage.getItem(WORDS_KEY);if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length>0){words=p;return;}}}catch(e){}
   words=INITIAL.map(w=>({thai:w.thai,roman:w.roman,meaning:w.meaning}));
@@ -365,7 +393,6 @@ function loadWords(){
 }
 function saveWords(){try{localStorage.setItem(WORDS_KEY,JSON.stringify(words));}catch(e){}}
 
-// ── Voix ──
 function checkVoices(){
   const voices=synth.getVoices();
   const v=voices.find(v=>v.lang.startsWith('th'));
@@ -384,7 +411,6 @@ function speak(word){
   synth.speak(u);
 }
 
-// ── Rendu liste ──
 function render(){
   const q=(document.getElementById('search').value||'').toLowerCase();
   const filtered=words.filter(w=>{
@@ -423,7 +449,6 @@ function render(){
 
 document.getElementById('search').addEventListener('input',render);
 
-// ── Formulaire texte ──
 document.getElementById('toggle-add').addEventListener('click',()=>{
   const f=document.getElementById('add-form'),btn=document.getElementById('toggle-add');
   const open=f.classList.toggle('open');
@@ -448,25 +473,32 @@ document.getElementById('btn-add-word').addEventListener('click',doAddWord);
   document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAddWord();});
 });
 
-// ══════════════════════════════════════════
-// ── MODAL CLAVIER ──
-// ══════════════════════════════════════════
+// ══ CLAVIER ══
 function buildKeyboard(){
-  function makeRow(data,rowId,extraClass){
+  function makeRow(data,rowId,extraClass,mini){
     const row=document.getElementById(rowId);
+    const cls=mini?'mini-key':'kbd-key';
     data.forEach(d=>{
       const btn=document.createElement('button');
-      btn.className='kbd-key'+(extraClass?' '+extraClass:'');
+      btn.className=cls+(extraClass?' '+extraClass:'');
       const main=document.createElement('span');main.textContent=d.c;btn.appendChild(main);
       if(d.r){const rom=document.createElement('span');rom.className='rom';rom.textContent=d.r;btn.appendChild(rom);}
-      btn.addEventListener('click',()=>{composedWord+=d.c;updateComposer();});
+      btn.addEventListener('click',()=>{
+        if(mini){correctionWord+=d.c;updateCorrectionWord();}
+        else{composedWord+=d.c;updateComposer();}
+      });
       row.appendChild(btn);
     });
   }
-  makeRow(CONSONANTS,'kbd-consonants','');
-  makeRow(VOWELS,'kbd-vowels','vowel');
-  makeRow(TONES,'kbd-tones','tone');
-  makeRow(NUMBERS,'kbd-numbers','num');
+  // Clavier principal
+  makeRow(CONSONANTS,'kbd-consonants','',false);
+  makeRow(VOWELS,'kbd-vowels','vowel',false);
+  makeRow(TONES,'kbd-tones','tone',false);
+  makeRow(NUMBERS,'kbd-numbers','num',false);
+  // Mini clavier correction
+  makeRow(CONSONANTS,'mini-consonants','',true);
+  makeRow(VOWELS,'mini-vowels','vowel',true);
+  makeRow(TONES,'mini-tones','tone',true);
 }
 
 function updateComposer(){
@@ -476,9 +508,7 @@ function updateComposer(){
 }
 
 document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
-document.getElementById('compose-del').addEventListener('click',()=>{
-  composedWord=[...composedWord].slice(0,-1).join('');updateComposer();
-});
+document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();});
 document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();});
 
 document.getElementById('fab-kbd').addEventListener('click',()=>{
@@ -497,9 +527,7 @@ document.getElementById('kbd-save').addEventListener('click',()=>{
   saveWords();closeKbd();render();
 });
 
-// ══════════════════════════════════════════
-// ── MODAL STYLET + MYSCRIPT ──
-// ══════════════════════════════════════════
+// ══ STYLET ══
 document.getElementById('fab-stylet').addEventListener('click',()=>{
   selectedThai='';
   document.getElementById('s-roman').value='';
@@ -508,6 +536,7 @@ document.getElementById('fab-stylet').addEventListener('click',()=>{
   document.getElementById('thai-preview').textContent='';
   document.getElementById('recog-status').textContent='';
   document.getElementById('recog-status').className='recog-status';
+  document.getElementById('correction-zone').classList.remove('open');
   document.getElementById('modal-stylet').classList.add('open');
   setTimeout(initCanvas,60);
 });
@@ -527,15 +556,13 @@ document.getElementById('stylet-close').addEventListener('click',closeStylet);
 document.getElementById('stylet-cancel').addEventListener('click',closeStylet);
 document.getElementById('modal-stylet').addEventListener('click',e=>{if(e.target===document.getElementById('modal-stylet'))closeStylet();});
 
-// ── Canvas init ──
 function initCanvas(){
   canvas=document.getElementById('stylet-canvas');
   ctx=canvas.getContext('2d');
   const dpr=window.devicePixelRatio||1;
   const w=canvas.offsetWidth;
-  canvas.width=w*dpr;canvas.height=280*dpr;canvas.style.height='280px';
-  ctx.scale(dpr,dpr);
-  ctx.lineCap='round';ctx.lineJoin='round';
+  canvas.width=w*dpr;canvas.height=240*dpr;canvas.style.height='240px';
+  ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';
   drawBg(w);
   canvas.addEventListener('pointerdown',onPtrDown,{passive:false});
   canvas.addEventListener('pointermove',onPtrMove,{passive:false});
@@ -545,9 +572,9 @@ function initCanvas(){
 
 function drawBg(w){
   const cw=w||canvas.offsetWidth;
-  ctx.fillStyle='#FEFEFE';ctx.fillRect(0,0,cw,280);
+  ctx.fillStyle='#FEFEFE';ctx.fillRect(0,0,cw,240);
   ctx.strokeStyle='rgba(196,82,26,0.10)';ctx.lineWidth=1;
-  for(let y=70;y<280;y+=70){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();}
+  for(let y=60;y<240;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();}
 }
 
 function getPos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,t:Date.now()};}
@@ -556,11 +583,9 @@ function onPtrDown(e){
   if(e.pointerType==='pen'){hasPencil=true;document.getElementById('pencil-badge').classList.add('visible');}
   if(e.pointerType==='touch'&&hasPencil)return;
   e.preventDefault();drawing=true;currentStroke=[];
-  const p=getPos(e);currentStroke.push(p);
-  ctx.beginPath();ctx.moveTo(p.x,p.y);
+  const p=getPos(e);currentStroke.push(p);ctx.beginPath();ctx.moveTo(p.x,p.y);
   if(!hasDrawing){hasDrawing=true;document.getElementById('canvas-guide').classList.add('hidden');}
 }
-
 function onPtrMove(e){
   if(!drawing)return;
   if(e.pointerType==='touch'&&hasPencil)return;
@@ -571,16 +596,12 @@ function onPtrMove(e){
     strokes=strokes.filter(s=>!s.some(pt=>Math.hypot(pt.x-p.x,pt.y-p.y)<currentSize*6));
   } else {
     const pressure=e.pressure>0?e.pressure:0.5;
-    ctx.lineWidth=currentSize*(0.4+pressure*1.4);
-    ctx.strokeStyle=currentColor;
-    currentStroke.push(p);
-    ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
+    ctx.lineWidth=currentSize*(0.4+pressure*1.4);ctx.strokeStyle=currentColor;
+    currentStroke.push(p);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
   }
 }
-
-function onPtrUp(e){
-  if(!drawing)return;
-  drawing=false;
+function onPtrUp(){
+  if(!drawing)return;drawing=false;
   if(currentStroke.length>1&&currentTool!=='eraser')strokes.push([...currentStroke]);
   currentStroke=[];
   const n=strokes.length;
@@ -588,7 +609,6 @@ function onPtrUp(e){
   if(ctx)ctx.beginPath();
 }
 
-// Outils canvas
 document.getElementById('tool-pen').addEventListener('click',()=>{
   currentTool='pen';
   document.getElementById('tool-pen').classList.add('active');
@@ -607,6 +627,7 @@ document.getElementById('tool-clear-canvas').addEventListener('click',()=>{
   document.getElementById('stroke-info').textContent='0 trait — prêt';
   document.getElementById('candidates').innerHTML='';
   document.getElementById('thai-preview').textContent='';
+  document.getElementById('correction-zone').classList.remove('open');
   selectedThai='';
   document.getElementById('recog-status').textContent='';
 });
@@ -625,13 +646,10 @@ document.querySelectorAll('.size-dot').forEach(dot=>{
   });
 });
 
-// ── MyScript reconnaissance ──
-function computeHMAC(body){
-  return CryptoJS.HmacSHA512(body,APP_KEY+HMAC_KEY).toString(CryptoJS.enc.Hex);
-}
+// ── MyScript ──
+function computeHMAC(body){return CryptoJS.HmacSHA512(body,APP_KEY+HMAC_KEY).toString(CryptoJS.enc.Hex);}
 function buildPayload(){
-  const r=canvas.getBoundingClientRect();
-  const t0=strokes[0][0].t;
+  const r=canvas.getBoundingClientRect();const t0=strokes[0][0].t;
   return JSON.stringify({
     contentType:"Text",
     configuration:{lang:"th_TH",export:{jiix:{"bounding-box":false,strokes:false,text:{chars:false,words:true}}}},
@@ -648,9 +666,10 @@ document.getElementById('btn-recog').addEventListener('click',async()=>{
   const candidatesDiv=document.getElementById('candidates');
   const preview=document.getElementById('thai-preview');
   if(strokes.length===0){status.textContent='Dessine quelque chose d\'abord !';status.className='recog-status error';return;}
-  status.innerHTML='<span class="spinner"></span> Reconnaissance MyScript…';
+  status.innerHTML='<span class="spinner"></span> Envoi à MyScript…';
   status.className='recog-status loading';
   candidatesDiv.innerHTML='';preview.textContent='';selectedThai='';
+  document.getElementById('correction-zone').classList.remove('open');
   try{
     const body=buildPayload();
     const resp=await fetch('https://cloud.myscript.com/api/v4.0/iink/batch',{
@@ -664,31 +683,75 @@ document.getElementById('btn-recog').addEventListener('click',async()=>{
     const label=wds.map(w=>(w.label||'').replace(/\s/g,'')).join('').trim();
     const alts=wds[0]?.candidates?.map(c=>(c.label||'').replace(/\s/g,'')).filter(Boolean)||[];
     if(!label)throw new Error('Rien reconnu — écris plus grand et plus lentement');
-    status.textContent='Sélectionne le bon résultat :';
-    status.className='recog-status ok';
-    // Label principal + alternatives
+
     const all=[label,...alts.slice(0,5)].filter((v,i,a)=>a.indexOf(v)===i);
+    status.textContent='Sélectionne ou corrige :';
+    status.className='recog-status ok';
     candidatesDiv.innerHTML='';
-    all.forEach(c=>{
+
+    all.forEach((c,i)=>{
       const btn=document.createElement('button');
-      btn.className='candidate-btn';btn.textContent=c;
+      btn.className='candidate-btn'+(i===0?' selected':'');
+      btn.textContent=c;
       btn.addEventListener('click',()=>{
         document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');selectedThai=c;preview.textContent=c;speak(c);
+        btn.classList.add('selected');
+        selectedThai=c;preview.textContent=c;speak(c);
+        document.getElementById('correction-zone').classList.remove('open');
       });
       candidatesDiv.appendChild(btn);
     });
-    // Sélectionner le premier automatiquement
-    if(candidatesDiv.firstChild){
-      candidatesDiv.firstChild.classList.add('selected');
-      selectedThai=label;preview.textContent=label;
-    }
+
+    // Bouton "corriger au clavier"
+    const corrBtn=document.createElement('button');
+    corrBtn.className='candidate-btn';
+    corrBtn.style.cssText='background:var(--accent2-bg);border-color:var(--accent2);color:var(--accent2);font-family:"DM Sans",sans-serif;font-size:13px;';
+    corrBtn.textContent='⌨️ corriger';
+    corrBtn.addEventListener('click',()=>{
+      openCorrectionZone(selectedThai||label);
+    });
+    candidatesDiv.appendChild(corrBtn);
+
+    selectedThai=label;preview.textContent=label;
+    speak(label);
+
   }catch(err){
     status.textContent='⚠ '+err.message;status.className='recog-status error';
   }
 });
 
-// ── Enregistrer depuis stylet ──
+// ── Zone correction ──
+function openCorrectionZone(initial){
+  correctionWord=initial||'';
+  updateCorrectionWord();
+  document.getElementById('correction-zone').classList.add('open');
+  // Scroll vers la zone
+  setTimeout(()=>{document.getElementById('correction-zone').scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+}
+
+function updateCorrectionWord(){
+  document.getElementById('correction-word').textContent=correctionWord||'…';
+}
+
+document.getElementById('correction-close').addEventListener('click',()=>{
+  document.getElementById('correction-zone').classList.remove('open');
+});
+document.getElementById('corr-speak').addEventListener('click',()=>speak(correctionWord));
+document.getElementById('corr-del').addEventListener('click',()=>{
+  correctionWord=[...correctionWord].slice(0,-1).join('');updateCorrectionWord();
+});
+document.getElementById('corr-clear').addEventListener('click',()=>{correctionWord='';updateCorrectionWord();});
+document.getElementById('corr-validate').addEventListener('click',()=>{
+  if(!correctionWord)return;
+  selectedThai=correctionWord;
+  document.getElementById('thai-preview').textContent=correctionWord;
+  // Mettre à jour la sélection visuelle
+  document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
+  speak(correctionWord);
+  document.getElementById('correction-zone').classList.remove('open');
+});
+
+// ── Enregistrer ──
 document.getElementById('stylet-save').addEventListener('click',()=>{
   if(!selectedThai){
     document.getElementById('recog-status').textContent='Lance d\'abord la reconnaissance !';
