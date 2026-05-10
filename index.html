@@ -16,6 +16,7 @@
   --accent:#C4521A;--accent-bg:#FBF0EA;
   --accent2:#2E6B4F;--accent2-bg:#EAF3EE;
   --danger:#A32D2D;--danger-bg:#FCEBEB;
+  --info-bg:#E6F1FB;--info:#185FA5;
   --shadow:0 2px 12px rgba(0,0,0,0.07);
   --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
   --radius:14px;--radius-sm:8px;
@@ -39,6 +40,8 @@ input[type=text]::placeholder{color:var(--text3);}
 .btn:active{background:var(--surface2);}
 .btn.accent{background:var(--accent);color:#fff;border-color:var(--accent);}
 .btn.accent:active{background:#a84315;}
+.btn.green{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+.btn.green:active{background:#1f4e38;}
 .add-form{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:none;flex-direction:column;gap:12px;box-shadow:var(--shadow);}
 .add-form.open{display:flex;}
 .add-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -67,7 +70,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:92vh;overflow-y:auto;}
 @keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .modal-title{font-size:17px;font-weight:500;}
@@ -80,17 +83,28 @@ input[type=text]::placeholder{color:var(--text3);}
 .color-dot.selected{border-color:var(--text);transform:scale(1.2);}
 .size-opt{border-radius:50%;background:var(--text);cursor:pointer;border:2px solid transparent;flex-shrink:0;}
 .size-opt.selected{border-color:var(--accent);}
-.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:14px;}
+.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:12px;}
 #stylet-canvas{display:block;width:100%;cursor:crosshair;}
+.divider{font-size:11px;color:var(--text3);text-align:center;margin:8px 0;text-transform:uppercase;letter-spacing:.6px;}
+
+/* Reconnaissance */
+.recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.recog-status{font-size:12px;color:var(--text3);flex:1;}
+.recog-status.loading{color:var(--accent);}
+.recog-status.error{color:var(--danger);}
+.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;min-height:0;}
+.candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;line-height:1.3;}
+.candidate-btn:active,.candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.selected-thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:32px;text-align:center;padding:8px;color:var(--accent);font-weight:500;min-height:52px;}
+
 .modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-fields .field input{padding:10px 12px;}
 .modal-actions{display:flex;gap:10px;}
 .btn-full{flex:1;text-align:center;}
-.divider{font-size:11px;color:var(--text3);text-align:center;margin:8px 0;text-transform:uppercase;letter-spacing:.6px;}
 .fab{position:fixed;bottom:28px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--accent2);color:#fff;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,107,79,.4);cursor:pointer;z-index:150;}
 .fab:active{transform:scale(.93);}
 @media(min-width:600px){
-  .modal{border-radius:var(--radius);max-width:600px;margin-bottom:40px;}
+  .modal{border-radius:var(--radius);max-width:620px;margin-bottom:40px;}
   .modal-overlay{align-items:center;}
 }
 </style>
@@ -145,6 +159,8 @@ input[type=text]::placeholder{color:var(--text3);}
       <div class="modal-title">Saisie au stylet · Apple Pencil</div>
       <button class="modal-close" id="modal-close-btn">✕</button>
     </div>
+
+    <!-- Outils dessin -->
     <div class="canvas-tools">
       <button class="tool-btn active" id="tool-pen">✏️ crayon</button>
       <button class="tool-btn eraser" id="tool-eraser">⬜ gomme</button>
@@ -163,10 +179,24 @@ input[type=text]::placeholder{color:var(--text3);}
       <div class="size-opt" data-size="7" style="width:24px;height:24px;"></div>
       <div class="size-opt" data-size="12" style="width:30px;height:30px;"></div>
     </div>
+
+    <!-- Canvas -->
     <div class="canvas-wrap">
-      <canvas id="stylet-canvas" height="220"></canvas>
+      <canvas id="stylet-canvas" height="200"></canvas>
     </div>
+
+    <!-- Bouton reconnaissance -->
+    <div class="recog-bar">
+      <button class="btn green" id="btn-recog">🔍 reconnaître</button>
+      <span class="recog-status" id="recog-status">Dessine un caractère thaï puis appuie sur reconnaître</span>
+    </div>
+
+    <!-- Candidats -->
+    <div class="candidates" id="candidates"></div>
+    <div class="selected-thai-preview" id="thai-preview"></div>
+
     <div class="divider">informations du mot</div>
+
     <div class="modal-fields">
       <div class="field">
         <label>romanisation</label>
@@ -186,6 +216,11 @@ input[type=text]::placeholder{color:var(--text3);}
 
 <script>
 'use strict';
+
+// ── CLEF API Google Vision ──────────────────────────────────────────
+const GOOGLE_API_KEY = 'colle clé ici';
+// ───────────────────────────────────────────────────────────────────
+
 const WORDS_KEY = 'thai_words_v2';
 const INITIAL = [
   {thai:"เงา",roman:"ngao",meaning:"ombre"},
@@ -214,19 +249,16 @@ let currentTool = 'pen';
 let currentColor = '#1A1814';
 let currentSize = 2;
 let hasPencil = false;
+let selectedThai = '';
 
 function loadWords() {
   try {
     const s = localStorage.getItem(WORDS_KEY);
-    if (s) {
-      const p = JSON.parse(s);
-      if (Array.isArray(p) && p.length > 0) { words = p; return; }
-    }
+    if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } }
   } catch(e) {}
-  words = INITIAL.map(w => ({thai:w.thai, roman:w.roman, meaning:w.meaning}));
+  words = INITIAL.map(w => ({thai:w.thai,roman:w.roman,meaning:w.meaning}));
   saveWords();
 }
-
 function saveWords() {
   try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {}
 }
@@ -234,20 +266,13 @@ function saveWords() {
 function checkVoices() {
   const voices = synth.getVoices();
   const v = voices.find(v => v.lang.startsWith('th'));
-  if (v) {
-    thaiVoice = v;
-    const pill = document.getElementById('voice-pill');
-    pill.textContent = '🔊 voix thaï ok';
-    pill.classList.add('ok');
-  }
+  if (v) { thaiVoice = v; const p = document.getElementById('voice-pill'); p.textContent = '🔊 voix thaï ok'; p.classList.add('ok'); }
 }
 checkVoices();
 synth.onvoiceschanged = checkVoices;
 
 function speak(word) {
-  synth.cancel();
-  playingWord = word;
-  render();
+  synth.cancel(); playingWord = word; render();
   const u = new SpeechSynthesisUtterance(word);
   u.lang = 'th-TH'; u.rate = 0.85; u.pitch = 1.1;
   if (thaiVoice) u.voice = thaiVoice;
@@ -259,44 +284,31 @@ function speak(word) {
 function render() {
   const q = (document.getElementById('search').value || '').toLowerCase();
   const filtered = words.filter(w => {
-    const haystack = (w.img ? '' : w.thai) + ' ' + (w.roman||'') + ' ' + (w.meaning||'');
-    return haystack.toLowerCase().includes(q);
+    const h = (w.img ? '' : w.thai) + ' ' + (w.roman||'') + ' ' + (w.meaning||'');
+    return h.toLowerCase().includes(q);
   });
   const n = filtered.length;
   document.getElementById('count-bar').textContent = n + ' mot' + (n !== 1 ? 's' : '');
   const list = document.getElementById('word-list');
   list.innerHTML = '';
   if (n === 0) { list.innerHTML = '<div class="empty-state">aucun mot trouvé</div>'; return; }
-
   filtered.forEach(w => {
     const card = document.createElement('div');
     card.className = 'word-card' + (activeRow === w.thai ? ' active' : '');
-
     const thaiDiv = document.createElement('div');
     thaiDiv.className = 'word-thai';
-    if (w.img) {
-      const img = document.createElement('img');
-      img.src = w.img; img.alt = 'manuscrit';
-      thaiDiv.appendChild(img);
-    } else {
-      thaiDiv.textContent = w.thai;
-    }
-
+    if (w.img) { const img = document.createElement('img'); img.src = w.img; img.alt = 'manuscrit'; thaiDiv.appendChild(img); }
+    else thaiDiv.textContent = w.thai;
     const metaDiv = document.createElement('div');
-    metaDiv.innerHTML = '<div class="word-roman">' + (w.roman||'') + '</div><div class="word-meaning">' + (w.meaning||'') + '</div>';
-
+    metaDiv.innerHTML = '<div class="word-roman">'+(w.roman||'')+'</div><div class="word-meaning">'+(w.meaning||'')+'</div>';
     const actDiv = document.createElement('div');
     actDiv.className = 'word-actions';
-
     const spk = document.createElement('button');
     spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
     spk.textContent = playingWord === w.thai ? '⏸' : '🔊';
     spk.addEventListener('click', e => { e.stopPropagation(); speak(w.thai); });
-
     const del = document.createElement('button');
-    del.className = 'del-btn';
-    del.textContent = '✕';
-    del.setAttribute('aria-label', 'Supprimer');
+    del.className = 'del-btn'; del.textContent = '✕';
     del.addEventListener('click', e => {
       e.stopPropagation();
       words = words.filter(x => x.thai !== w.thai);
@@ -304,12 +316,8 @@ function render() {
       if (playingWord === w.thai) { synth.cancel(); playingWord = null; }
       saveWords(); render();
     });
-
-    actDiv.appendChild(spk);
-    actDiv.appendChild(del);
-    card.appendChild(thaiDiv);
-    card.appendChild(metaDiv);
-    card.appendChild(actDiv);
+    actDiv.appendChild(spk); actDiv.appendChild(del);
+    card.appendChild(thaiDiv); card.appendChild(metaDiv); card.appendChild(actDiv);
     card.addEventListener('click', () => { activeRow = w.thai; speak(w.thai); });
     list.appendChild(card);
   });
@@ -323,7 +331,7 @@ document.getElementById('toggle-add').addEventListener('click', () => {
   const open = f.classList.toggle('open');
   btn.textContent = open ? '✕ fermer' : '+ ajouter';
   if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
-  else { ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = ''); }
+  else ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
 });
 
 function doAddWord() {
@@ -331,26 +339,28 @@ function doAddWord() {
   const roman = document.getElementById('inp-roman').value.trim();
   const meaning = document.getElementById('inp-meaning').value.trim();
   if (!thai) { document.getElementById('inp-thai').focus(); return; }
-  words.push({thai, roman, meaning});
-  saveWords();
+  words.push({thai,roman,meaning}); saveWords();
   ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('inp-thai').focus();
-  const fb = document.getElementById('feedback');
-  fb.classList.add('show');
+  const fb = document.getElementById('feedback'); fb.classList.add('show');
   setTimeout(() => fb.classList.remove('show'), 1600);
   render();
 }
-
 document.getElementById('btn-add-word').addEventListener('click', doAddWord);
 ['inp-thai','inp-roman','inp-meaning'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
 });
 
-// ── Stylet ──
+// ── Modal stylet ──
 document.getElementById('fab-stylet').addEventListener('click', () => {
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('s-roman').value = '';
   document.getElementById('s-meaning').value = '';
+  document.getElementById('candidates').innerHTML = '';
+  document.getElementById('thai-preview').textContent = '';
+  document.getElementById('recog-status').textContent = 'Dessine un caractère thaï puis appuie sur reconnaître';
+  document.getElementById('recog-status').className = 'recog-status';
+  selectedThai = '';
   setTimeout(initCanvas, 60);
 });
 
@@ -364,7 +374,6 @@ function closeModal() {
     canvas = null; ctx = null;
   }
 }
-
 document.getElementById('modal-close-btn').addEventListener('click', closeModal);
 document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
 document.getElementById('modal-overlay').addEventListener('click', e => {
@@ -377,25 +386,24 @@ function initCanvas() {
   const dpr = window.devicePixelRatio || 1;
   const w = canvas.offsetWidth;
   canvas.width = w * dpr;
-  canvas.height = 220 * dpr;
-  canvas.style.height = '220px';
+  canvas.height = 200 * dpr;
+  canvas.style.height = '200px';
   ctx.scale(dpr, dpr);
-  drawCanvasBg(w);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
+  drawBg(w);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   canvas.addEventListener('pointerdown', onPtrDown, {passive:false});
   canvas.addEventListener('pointermove', onPtrMove, {passive:false});
   canvas.addEventListener('pointerup', onPtrUp);
   canvas.addEventListener('pointercancel', onPtrUp);
 }
 
-function drawCanvasBg(w) {
+function drawBg(w) {
   const cw = w || canvas.offsetWidth;
   ctx.fillStyle = '#FEFEFE';
-  ctx.fillRect(0, 0, cw, 220);
-  ctx.strokeStyle = 'rgba(196,82,26,0.15)';
+  ctx.fillRect(0, 0, cw, 200);
+  ctx.strokeStyle = 'rgba(196,82,26,0.12)';
   ctx.lineWidth = 1;
-  for (let y = 55; y < 220; y += 55) {
+  for (let y = 50; y < 200; y += 50) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
   }
 }
@@ -404,40 +412,27 @@ function getPos(e) {
   const r = canvas.getBoundingClientRect();
   return {x: e.clientX - r.left, y: e.clientY - r.top};
 }
-
 function onPtrDown(e) {
   if (e.pointerType === 'pen') hasPencil = true;
   if (e.pointerType === 'touch' && hasPencil) return;
-  e.preventDefault();
-  drawing = true;
-  const p = getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(p.x, p.y);
+  e.preventDefault(); drawing = true;
+  const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
 }
-
 function onPtrMove(e) {
   if (!drawing) return;
   if (e.pointerType === 'touch' && hasPencil) return;
   e.preventDefault();
   const p = getPos(e);
   if (currentTool === 'eraser') {
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, currentSize * 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    ctx.save(); ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(p.x, p.y, currentSize * 5, 0, Math.PI*2); ctx.fill(); ctx.restore();
   } else {
     const pressure = e.pressure > 0 ? e.pressure : 0.5;
     ctx.lineWidth = currentSize * (0.4 + pressure * 1.2);
     ctx.strokeStyle = currentColor;
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y);
   }
 }
-
 function onPtrUp() { drawing = false; if (ctx) ctx.beginPath(); }
 
 document.getElementById('tool-pen').addEventListener('click', () => {
@@ -452,9 +447,13 @@ document.getElementById('tool-eraser').addEventListener('click', () => {
 });
 document.getElementById('tool-clear').addEventListener('click', () => {
   if (!ctx) return;
-  drawCanvasBg(canvas.offsetWidth);
+  drawBg(canvas.offsetWidth);
+  document.getElementById('candidates').innerHTML = '';
+  document.getElementById('thai-preview').textContent = '';
+  selectedThai = '';
+  document.getElementById('recog-status').textContent = 'Dessine un caractère thaï puis appuie sur reconnaître';
+  document.getElementById('recog-status').className = 'recog-status';
 });
-
 document.querySelectorAll('.color-dot').forEach(dot => {
   dot.addEventListener('click', () => {
     currentColor = dot.dataset.color;
@@ -470,17 +469,105 @@ document.querySelectorAll('.size-opt').forEach(opt => {
   });
 });
 
+// ── Reconnaissance Google Vision ──
+document.getElementById('btn-recog').addEventListener('click', async () => {
+  if (!canvas) return;
+  const status = document.getElementById('recog-status');
+  const candidatesDiv = document.getElementById('candidates');
+  const preview = document.getElementById('thai-preview');
+
+  status.textContent = '⏳ reconnaissance en cours…';
+  status.className = 'recog-status loading';
+  candidatesDiv.innerHTML = '';
+  preview.textContent = '';
+  selectedThai = '';
+
+  try {
+    // Export canvas en base64 (sans le préfixe data:...)
+    const dataUrl = canvas.toDataURL('image/png');
+    const base64 = dataUrl.split(',')[1];
+
+    const body = {
+      requests: [{
+        image: { content: base64 },
+        features: [{ type: 'TEXT_DETECTION', maxResults: 10 }],
+        imageContext: { languageHints: ['th'] }
+      }]
+    };
+
+    const resp = await fetch(
+      'https://vision.googleapis.com/v1/images:annotate?key=' + GOOGLE_API_KEY,
+      { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }
+    );
+    const data = await resp.json();
+
+    if (data.error) throw new Error(data.error.message);
+
+    const annotations = data.responses[0].textAnnotations;
+    if (!annotations || annotations.length === 0) {
+      status.textContent = '❌ aucun caractère reconnu — essaie d\'écrire plus grand';
+      status.className = 'recog-status error';
+      return;
+    }
+
+    // Extraire les caractères thaï uniques détectés
+    const fullText = annotations[0].description || '';
+    // Filtrer pour ne garder que les caractères thaï (plage Unicode \u0E00-\u0E7F)
+    const thaiChars = [...new Set(fullText.split('').filter(c => /[\u0E00-\u0E7F]/.test(c)))];
+    // Aussi proposer des mots entiers thaï
+    const thaiWords = [...new Set(fullText.split(/\s+/).filter(w => /^[\u0E00-\u0E7F]+$/.test(w)))];
+    const candidates = [...new Set([...thaiWords, ...thaiChars])].slice(0, 8);
+
+    if (candidates.length === 0) {
+      status.textContent = '❌ aucun caractère thaï reconnu — écris plus grand et plus net';
+      status.className = 'recog-status error';
+      return;
+    }
+
+    status.textContent = 'Sélectionne le caractère reconnu :';
+    status.className = 'recog-status';
+
+    candidatesDiv.innerHTML = '';
+    candidates.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'candidate-btn';
+      btn.textContent = c;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedThai = c;
+        preview.textContent = c;
+        speak(c);
+      });
+      candidatesDiv.appendChild(btn);
+    });
+
+  } catch(err) {
+    status.textContent = '❌ erreur : ' + err.message;
+    status.className = 'recog-status error';
+    console.error(err);
+  }
+});
+
+// ── Enregistrer depuis stylet ──
 document.getElementById('modal-save-btn').addEventListener('click', () => {
   const roman = document.getElementById('s-roman').value.trim();
   const meaning = document.getElementById('s-meaning').value.trim();
-  const img = canvas ? canvas.toDataURL('image/png') : '';
-  words.push({thai: 'pen_' + Date.now(), roman, meaning, img});
+
+  if (selectedThai) {
+    // Mot reconnu : on sauvegarde le texte thaï directement
+    words.push({thai: selectedThai, roman, meaning});
+  } else {
+    // Pas de reconnaissance : on sauvegarde l'image du canvas
+    const img = canvas ? canvas.toDataURL('image/png') : '';
+    words.push({thai: 'pen_' + Date.now(), roman, meaning, img});
+  }
   saveWords();
   closeModal();
   render();
 });
 
-// ── Démarrage ──
+// ── Init ──
 loadWords();
 render();
 </script>
