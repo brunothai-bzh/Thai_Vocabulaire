@@ -22,15 +22,14 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px 12px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
 .header-title{display:flex;align-items:baseline;gap:10px;}
 .header-title h1{font-family:'Noto Sans Thai',sans-serif;font-size:22px;font-weight:600;color:var(--text);}
 .header-title span{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
-.header-right{display:flex;gap:8px;align-items:center;}
 .voice-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all .3s;}
 .voice-pill.ok{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.2);}
-.api-pill{font-size:11px;font-weight:500;padding:5px 10px;border-radius:20px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);cursor:pointer;}
-.api-pill.ok{background:var(--accent-bg);color:var(--accent);border-color:rgba(196,82,26,.2);}
+
 .toolbar{padding:14px 20px;display:flex;gap:10px;}
 .search-wrap{flex:1;position:relative;}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
@@ -38,12 +37,12 @@ input[type=text]{font-family:'DM Sans',sans-serif;font-size:15px;width:100%;padd
 input[type=text]:focus{border-color:var(--accent);}
 input[type=text]::placeholder{color:var(--text3);}
 .search-wrap input{padding-left:38px;}
+
 .btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap;-webkit-appearance:none;}
 .btn:active{background:var(--surface2);}
 .btn.accent{background:var(--accent);color:#fff;border-color:var(--accent);}
 .btn.accent:active{background:#a84315;}
-.btn.green{background:var(--accent2);color:#fff;border-color:var(--accent2);}
-.btn.green:active{background:#1f4e38;}
+
 .add-form{margin:0 20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:none;flex-direction:column;gap:12px;box-shadow:var(--shadow);}
 .add-form.open{display:flex;}
 .add-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -53,6 +52,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .form-actions{display:flex;align-items:center;gap:10px;}
 .feedback-msg{font-size:12px;color:var(--accent2);font-weight:500;opacity:0;transition:opacity .3s;}
 .feedback-msg.show{opacity:1;}
+
 .count-bar{padding:0 20px 8px;font-size:12px;color:var(--text3);}
 .table-wrap{padding:0 20px 120px;}
 .word-list{display:flex;flex-direction:column;gap:8px;}
@@ -60,7 +60,6 @@ input[type=text]::placeholder{color:var(--text3);}
 .word-card:active{background:var(--surface2);}
 .word-card.active{border-color:var(--accent);background:var(--accent-bg);}
 .word-thai{font-family:'Noto Sans Thai',sans-serif;font-size:26px;font-weight:500;text-align:center;line-height:1.3;}
-.word-thai img{height:52px;width:auto;display:block;border-radius:4px;margin:0 auto;}
 .word-roman{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);}
 .word-meaning{font-size:15px;color:var(--text);}
 .word-actions{display:flex;gap:8px;align-items:center;}
@@ -71,55 +70,51 @@ input[type=text]::placeholder{color:var(--text3);}
 .del-btn:active{background:var(--danger-bg);color:var(--danger);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
 
-/* Modals */
+/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:92vh;overflow-y:auto;}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px 20px 30px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:95vh;overflow-y:auto;}
 @keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .modal-title{font-size:17px;font-weight:500;}
 .modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
-/* Canvas */
-.canvas-tools{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
-.tool-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;}
-.tool-btn.active{background:var(--text);color:#fff;border-color:var(--text);}
-.tool-btn.eraser.active{background:var(--danger);color:#fff;border-color:var(--danger);}
-.color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;flex-shrink:0;}
-.color-dot.selected{border-color:var(--text);transform:scale(1.2);}
-.size-opt{border-radius:50%;background:var(--text);cursor:pointer;border:2px solid transparent;flex-shrink:0;}
-.size-opt.selected{border-color:var(--accent);}
-.canvas-wrap{position:relative;background:#FEFEFE;border:1.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;touch-action:none;margin-bottom:12px;}
-#stylet-canvas{display:block;width:100%;cursor:crosshair;}
-.divider{font-size:11px;color:var(--text3);text-align:center;margin:8px 0;text-transform:uppercase;letter-spacing:.6px;}
+/* Compositeur */
+.word-composer{display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;border:1px solid var(--border);}
+.word-composed{font-family:'Noto Sans Thai',sans-serif;font-size:34px;font-weight:500;color:var(--accent);flex:1;min-height:48px;letter-spacing:2px;word-break:break-all;}
+.word-composed.empty{color:var(--text3);font-size:16px;font-family:'DM Sans',sans-serif;font-weight:400;display:flex;align-items:center;}
+.composer-actions{display:flex;gap:6px;flex-shrink:0;}
+.composer-btn{width:40px;height:40px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.composer-btn:active{background:var(--surface2);}
+.composer-btn.speak{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.25);}
 
-/* Reconnaissance */
-.recog-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
-.recog-status{font-size:12px;color:var(--text3);flex:1;min-width:0;}
-.recog-status.loading{color:var(--accent);}
-.recog-status.error{color:var(--danger);}
-.recog-status.ok{color:var(--accent2);}
-.candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;min-height:0;}
-.candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;line-height:1.3;}
-.candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
-.thai-preview{font-family:'Noto Sans Thai',sans-serif;font-size:36px;text-align:center;padding:6px;color:var(--accent);font-weight:500;min-height:56px;}
+/* Sections clavier */
+.kbd-section{margin-bottom:12px;}
+.kbd-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
+.kbd-row{display:flex;flex-wrap:wrap;gap:5px;}
+.kbd-key{font-family:'Noto Sans Thai',sans-serif;font-size:19px;min-width:38px;height:48px;padding:0 5px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .08s,transform .08s;-webkit-user-select:none;}
+.kbd-key:active{background:var(--accent-bg);border-color:var(--accent);transform:scale(.92);}
+.kbd-key .rom{font-family:'DM Mono',monospace;font-size:8px;color:var(--text3);line-height:1;margin-top:1px;}
+.kbd-key.vowel{background:#EAF3EE;border-color:rgba(46,107,79,.2);}
+.kbd-key.vowel:active{background:var(--accent2);color:#fff;}
+.kbd-key.tone{background:#FBF0EA;border-color:rgba(196,82,26,.2);}
+.kbd-key.tone:active{background:var(--accent);color:#fff;}
+.kbd-key.num{background:var(--surface2);}
 
+/* Infos mot */
+.divider{font-size:11px;color:var(--text3);text-align:center;margin:12px 0 10px;text-transform:uppercase;letter-spacing:.6px;}
 .modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .modal-fields .field input{padding:10px 12px;}
 .modal-actions{display:flex;gap:10px;}
 .btn-full{flex:1;text-align:center;}
 
-/* Modal API key */
-.api-modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
-.api-info{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px;background:var(--surface2);padding:12px;border-radius:var(--radius-sm);}
-.api-input-wrap{position:relative;margin-bottom:14px;}
-.api-input-wrap input{font-family:'DM Mono',monospace;font-size:13px;padding:11px 14px;letter-spacing:.5px;}
-
 .fab{position:fixed;bottom:28px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--accent2);color:#fff;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,107,79,.4);cursor:pointer;z-index:150;}
 .fab:active{transform:scale(.93);}
+
 @media(min-width:600px){
-  .modal,.api-modal{border-radius:var(--radius);max-width:620px;margin-bottom:40px;}
+  .modal{border-radius:var(--radius);max-width:640px;margin-bottom:40px;}
   .modal-overlay{align-items:center;}
+  .kbd-key{min-width:42px;font-size:21px;}
 }
 </style>
 </head>
@@ -130,10 +125,7 @@ input[type=text]::placeholder{color:var(--text3);}
     <h1>ภาษาไทย</h1>
     <span>vocabulaire</span>
   </div>
-  <div class="header-right">
-    <div id="api-pill" class="api-pill" title="Configurer la clé Google Vision">🔑 clé API</div>
-    <div id="voice-pill" class="voice-pill">⚠ voix</div>
-  </div>
+  <div id="voice-pill" class="voice-pill">⚠ voix</div>
 </header>
 
 <div class="toolbar">
@@ -168,42 +160,50 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="count-bar" id="count-bar"></div>
 <div class="table-wrap"><div class="word-list" id="word-list"></div></div>
 
-<button class="fab" id="fab-stylet" title="Saisir au stylet">✏️</button>
+<button class="fab" id="fab-kbd" title="Clavier thaï">⌨️</button>
 
-<!-- Modal stylet -->
+<!-- Modal clavier -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Saisie au stylet · Apple Pencil</div>
+      <div class="modal-title">⌨️ Clavier thaï</div>
       <button class="modal-close" id="modal-close-btn">✕</button>
     </div>
-    <div class="canvas-tools">
-      <button class="tool-btn active" id="tool-pen">✏️ crayon</button>
-      <button class="tool-btn eraser" id="tool-eraser">⬜ gomme</button>
-      <button class="tool-btn" id="tool-clear">🗑 effacer</button>
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
-        <div class="color-dot selected" data-color="#1A1814" style="background:#1A1814"></div>
-        <div class="color-dot" data-color="#C4521A" style="background:#C4521A"></div>
-        <div class="color-dot" data-color="#2E6B4F" style="background:#2E6B4F"></div>
-        <div class="color-dot" data-color="#185FA5" style="background:#185FA5"></div>
+
+    <!-- Mot composé -->
+    <div class="word-composer">
+      <div class="word-composed empty" id="composed">appuie sur les touches…</div>
+      <div class="composer-actions">
+        <button class="composer-btn speak" id="compose-speak" title="Écouter">🔊</button>
+        <button class="composer-btn" id="compose-del" title="Effacer dernier">⌫</button>
+        <button class="composer-btn" id="compose-clear" title="Tout effacer">✕</button>
       </div>
     </div>
-    <div style="display:flex;gap:14px;align-items:center;margin-bottom:12px;">
-      <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:500;">épaisseur</span>
-      <div class="size-opt selected" data-size="2" style="width:12px;height:12px;"></div>
-      <div class="size-opt" data-size="4" style="width:18px;height:18px;"></div>
-      <div class="size-opt" data-size="7" style="width:24px;height:24px;"></div>
-      <div class="size-opt" data-size="12" style="width:30px;height:30px;"></div>
+
+    <!-- Consonnes -->
+    <div class="kbd-section">
+      <div class="kbd-label">Consonnes (44)</div>
+      <div class="kbd-row" id="kbd-consonants"></div>
     </div>
-    <div class="canvas-wrap">
-      <canvas id="stylet-canvas" height="350"></canvas>
+
+    <!-- Voyelles -->
+    <div class="kbd-section">
+      <div class="kbd-label">Voyelles</div>
+      <div class="kbd-row" id="kbd-vowels"></div>
     </div>
-    <div class="recog-bar">
-      <button class="btn green" id="btn-recog">🔍 reconnaître</button>
-      <span class="recog-status" id="recog-status">Dessine un caractère thaï puis appuie sur reconnaître</span>
+
+    <!-- Tons & signes -->
+    <div class="kbd-section">
+      <div class="kbd-label">Tons & signes diacritiques</div>
+      <div class="kbd-row" id="kbd-tones"></div>
     </div>
-    <div class="candidates" id="candidates"></div>
-    <div class="thai-preview" id="thai-preview"></div>
+
+    <!-- Chiffres -->
+    <div class="kbd-section">
+      <div class="kbd-label">Chiffres thaï</div>
+      <div class="kbd-row" id="kbd-numbers"></div>
+    </div>
+
     <div class="divider">informations du mot</div>
     <div class="modal-fields">
       <div class="field">
@@ -222,34 +222,9 @@ input[type=text]::placeholder{color:var(--text3);}
   </div>
 </div>
 
-<!-- Modal clé API -->
-<div class="modal-overlay" id="api-overlay">
-  <div class="api-modal">
-    <div class="modal-header">
-      <div class="modal-title">🔑 Clé Google Vision API</div>
-      <button class="modal-close" id="api-close-btn">✕</button>
-    </div>
-    <div class="api-info">
-      Ta clé est stockée uniquement sur cet appareil (localStorage). Elle n'est jamais envoyée ailleurs qu'à Google Vision pour la reconnaissance de caractères thaï. Tu peux la modifier ou la supprimer à tout moment.
-    </div>
-    <div class="field" style="margin-bottom:14px;">
-      <label>Clé API (commence par AIza…)</label>
-      <div class="api-input-wrap">
-        <input type="text" id="api-key-input" placeholder="AIza…" autocomplete="off" autocorrect="off" spellcheck="false" style="padding-left:14px;" />
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-full" id="api-delete-btn" style="color:var(--danger);">🗑 supprimer</button>
-      <button class="btn accent btn-full" id="api-save-btn">✓ enregistrer</button>
-    </div>
-  </div>
-</div>
-
 <script>
 'use strict';
-const WORDS_KEY  = 'thai_words_v2';
-const APIKEY_KEY = 'google_vision_key';
-
+const WORDS_KEY = 'thai_words_v2';
 const INITIAL = [
   {thai:"เงา",roman:"ngao",meaning:"ombre"},
   {thai:"ยา",roman:"yaa",meaning:"médicament"},
@@ -266,308 +241,199 @@ const INITIAL = [
   {thai:"เนื้อไก่",roman:"néua gài",meaning:"viande de poulet"},
 ];
 
-let words = [], activeRow = null, playingWord = null;
-let thaiVoice = null, synth = window.speechSynthesis;
-let canvas = null, ctx = null, drawing = false;
-let currentTool = 'pen', currentColor = '#1A1814', currentSize = 2, hasPencil = false;
-let selectedThai = '';
+const CONSONANTS = [
+  {c:'ก',r:'g'},{c:'ข',r:'kh'},{c:'ฃ',r:'kh'},{c:'ค',r:'kh'},
+  {c:'ฅ',r:'kh'},{c:'ฆ',r:'kh'},{c:'ง',r:'ng'},{c:'จ',r:'j'},
+  {c:'ฉ',r:'ch'},{c:'ช',r:'ch'},{c:'ซ',r:'s'},{c:'ฌ',r:'ch'},
+  {c:'ญ',r:'y'},{c:'ฎ',r:'d'},{c:'ฏ',r:'t'},{c:'ฐ',r:'th'},
+  {c:'ฑ',r:'th'},{c:'ฒ',r:'th'},{c:'ณ',r:'n'},{c:'ด',r:'d'},
+  {c:'ต',r:'t'},{c:'ถ',r:'th'},{c:'ท',r:'th'},{c:'ธ',r:'th'},
+  {c:'น',r:'n'},{c:'บ',r:'b'},{c:'ป',r:'p'},{c:'ผ',r:'ph'},
+  {c:'ฝ',r:'f'},{c:'พ',r:'ph'},{c:'ฟ',r:'f'},{c:'ภ',r:'ph'},
+  {c:'ม',r:'m'},{c:'ย',r:'y'},{c:'ร',r:'r'},{c:'ล',r:'l'},
+  {c:'ว',r:'w'},{c:'ศ',r:'s'},{c:'ษ',r:'s'},{c:'ส',r:'s'},
+  {c:'ห',r:'h'},{c:'ฬ',r:'l'},{c:'อ',r:'o'},{c:'ฮ',r:'h'},
+];
+const VOWELS = [
+  {c:'า',r:'aa'},{c:'ิ',r:'i'},{c:'ี',r:'ii'},{c:'ึ',r:'ue'},
+  {c:'ื',r:'uee'},{c:'ุ',r:'u'},{c:'ู',r:'uu'},{c:'เ',r:'e'},
+  {c:'แ',r:'ae'},{c:'โ',r:'o'},{c:'ใ',r:'ai'},{c:'ไ',r:'ai'},
+  {c:'ำ',r:'am'},{c:'ั',r:'a'},{c:'็',r:'(bref)'},{c:'ว',r:'ua/w'},
+  {c:'ย',r:'ai/y'},{c:'อ',r:'o'},{c:'ื',r:'ue'},{c:'ว',r:'w'},
+];
+const TONES = [
+  {c:'่',r:'mai ek'},{c:'้',r:'mai tho'},{c:'๊',r:'mai tri'},{c:'๋',r:'mai jat'},
+  {c:'์',r:'silent'},{c:'ํ',r:'nasal'},{c:'ๆ',r:'répét.'},{c:'ฯ',r:'etc.'},
+  {c:'ฺ',r:'phinthu'},{c:'๎',r:'angkhan'},{c:'ๅ',r:'fong man'},
+];
+const NUMBERS = [
+  {c:'๐',r:'0'},{c:'๑',r:'1'},{c:'๒',r:'2'},{c:'๓',r:'3'},{c:'๔',r:'4'},
+  {c:'๕',r:'5'},{c:'๖',r:'6'},{c:'๗',r:'7'},{c:'๘',r:'8'},{c:'๙',r:'9'},
+];
 
-// ── Clé API ──
-function getApiKey() { try { return localStorage.getItem(APIKEY_KEY) || ''; } catch(e) { return ''; } }
-function setApiKey(k) { try { localStorage.setItem(APIKEY_KEY, k); } catch(e) {} }
-function updateApiPill() {
-  const pill = document.getElementById('api-pill');
-  const k = getApiKey();
-  if (k) { pill.textContent = '🔑 clé ok'; pill.classList.add('ok'); }
-  else { pill.textContent = '🔑 clé API'; pill.classList.remove('ok'); }
-}
+let words=[], activeRow=null, playingWord=null;
+let thaiVoice=null, synth=window.speechSynthesis;
+let composedWord='';
 
-// ── Modal API ──
-document.getElementById('api-pill').addEventListener('click', () => {
-  document.getElementById('api-key-input').value = getApiKey();
-  document.getElementById('api-overlay').classList.add('open');
-  setTimeout(() => document.getElementById('api-key-input').focus(), 80);
-});
-document.getElementById('api-close-btn').addEventListener('click', () => document.getElementById('api-overlay').classList.remove('open'));
-document.getElementById('api-overlay').addEventListener('click', e => { if (e.target === document.getElementById('api-overlay')) document.getElementById('api-overlay').classList.remove('open'); });
-document.getElementById('api-save-btn').addEventListener('click', () => {
-  const k = document.getElementById('api-key-input').value.trim();
-  setApiKey(k); updateApiPill();
-  document.getElementById('api-overlay').classList.remove('open');
-});
-document.getElementById('api-delete-btn').addEventListener('click', () => {
-  setApiKey(''); updateApiPill();
-  document.getElementById('api-key-input').value = '';
-  document.getElementById('api-overlay').classList.remove('open');
-});
-
-// ── Mots ──
-function loadWords() {
-  try { const s = localStorage.getItem(WORDS_KEY); if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } } } catch(e) {}
-  words = INITIAL.map(w => ({thai:w.thai,roman:w.roman,meaning:w.meaning}));
+function loadWords(){
+  try{const s=localStorage.getItem(WORDS_KEY);if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length>0){words=p;return;}}}catch(e){}
+  words=INITIAL.map(w=>({thai:w.thai,roman:w.roman,meaning:w.meaning}));
   saveWords();
 }
-function saveWords() { try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {} }
+function saveWords(){try{localStorage.setItem(WORDS_KEY,JSON.stringify(words));}catch(e){}}
 
-// ── Voix ──
-function checkVoices() {
-  const voices = synth.getVoices();
-  const v = voices.find(v => v.lang.startsWith('th'));
-  if (v) { thaiVoice = v; const p = document.getElementById('voice-pill'); p.textContent = '🔊 voix ok'; p.classList.add('ok'); }
+function checkVoices(){
+  const voices=synth.getVoices();
+  const v=voices.find(v=>v.lang.startsWith('th'));
+  if(v){thaiVoice=v;const p=document.getElementById('voice-pill');p.textContent='🔊 voix ok';p.classList.add('ok');}
 }
-checkVoices();
-synth.onvoiceschanged = checkVoices;
+checkVoices();synth.onvoiceschanged=checkVoices;
 
-function speak(word) {
-  synth.cancel(); playingWord = word; render();
-  const u = new SpeechSynthesisUtterance(word);
-  u.lang = 'th-TH'; u.rate = 0.85; u.pitch = 1.1;
-  if (thaiVoice) u.voice = thaiVoice;
-  u.onend = () => { playingWord = null; render(); };
-  u.onerror = () => { playingWord = null; render(); };
+function speak(word){
+  if(!word)return;
+  synth.cancel();playingWord=word;render();
+  const u=new SpeechSynthesisUtterance(word);
+  u.lang='th-TH';u.rate=0.85;u.pitch=1.1;
+  if(thaiVoice)u.voice=thaiVoice;
+  u.onend=()=>{playingWord=null;render();};
+  u.onerror=()=>{playingWord=null;render();};
   synth.speak(u);
 }
 
-// ── Rendu ──
-function render() {
-  const q = (document.getElementById('search').value || '').toLowerCase();
-  const filtered = words.filter(w => {
-    const h = (w.img ? '' : w.thai)+' '+(w.roman||'')+' '+(w.meaning||'');
+function render(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const filtered=words.filter(w=>{
+    const h=(w.thai||'')+' '+(w.roman||'')+' '+(w.meaning||'');
     return h.toLowerCase().includes(q);
   });
-  const n = filtered.length;
-  document.getElementById('count-bar').textContent = n+' mot'+(n!==1?'s':'');
-  const list = document.getElementById('word-list');
-  list.innerHTML = '';
-  if (n === 0) { list.innerHTML = '<div class="empty-state">aucun mot trouvé</div>'; return; }
-  filtered.forEach(w => {
-    const card = document.createElement('div');
-    card.className = 'word-card'+(activeRow===w.thai?' active':'');
-    const thaiDiv = document.createElement('div'); thaiDiv.className = 'word-thai';
-    if (w.img) { const img = document.createElement('img'); img.src = w.img; img.alt = 'manuscrit'; thaiDiv.appendChild(img); }
-    else thaiDiv.textContent = w.thai;
-    const metaDiv = document.createElement('div');
-    metaDiv.innerHTML = '<div class="word-roman">'+(w.roman||'')+'</div><div class="word-meaning">'+(w.meaning||'')+'</div>';
-    const actDiv = document.createElement('div'); actDiv.className = 'word-actions';
-    const spk = document.createElement('button');
-    spk.className = 'speak-btn'+(playingWord===w.thai?' playing':'');
-    spk.textContent = playingWord===w.thai?'⏸':'🔊';
-    spk.addEventListener('click', e => { e.stopPropagation(); speak(w.thai); });
-    const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
-    del.addEventListener('click', e => {
+  const n=filtered.length;
+  document.getElementById('count-bar').textContent=n+' mot'+(n!==1?'s':'');
+  const list=document.getElementById('word-list');list.innerHTML='';
+  if(n===0){list.innerHTML='<div class="empty-state">aucun mot trouvé</div>';return;}
+  filtered.forEach(w=>{
+    const card=document.createElement('div');
+    card.className='word-card'+(activeRow===w.thai?' active':'');
+    const thaiDiv=document.createElement('div');thaiDiv.className='word-thai';
+    thaiDiv.textContent=w.thai;
+    const metaDiv=document.createElement('div');
+    metaDiv.innerHTML='<div class="word-roman">'+(w.roman||'')+'</div><div class="word-meaning">'+(w.meaning||'')+'</div>';
+    const actDiv=document.createElement('div');actDiv.className='word-actions';
+    const spk=document.createElement('button');
+    spk.className='speak-btn'+(playingWord===w.thai?' playing':'');
+    spk.textContent=playingWord===w.thai?'⏸':'🔊';
+    spk.addEventListener('click',e=>{e.stopPropagation();speak(w.thai);});
+    const del=document.createElement('button');del.className='del-btn';del.textContent='✕';
+    del.addEventListener('click',e=>{
       e.stopPropagation();
-      words = words.filter(x => x.thai !== w.thai);
-      if (activeRow===w.thai) activeRow = null;
-      if (playingWord===w.thai) { synth.cancel(); playingWord = null; }
-      saveWords(); render();
+      words=words.filter(x=>x.thai!==w.thai);
+      if(activeRow===w.thai)activeRow=null;
+      if(playingWord===w.thai){synth.cancel();playingWord=null;}
+      saveWords();render();
     });
-    actDiv.appendChild(spk); actDiv.appendChild(del);
-    card.appendChild(thaiDiv); card.appendChild(metaDiv); card.appendChild(actDiv);
-    card.addEventListener('click', () => { activeRow = w.thai; speak(w.thai); });
+    actDiv.appendChild(spk);actDiv.appendChild(del);
+    card.appendChild(thaiDiv);card.appendChild(metaDiv);card.appendChild(actDiv);
+    card.addEventListener('click',()=>{activeRow=w.thai;speak(w.thai);});
     list.appendChild(card);
   });
 }
 
-document.getElementById('search').addEventListener('input', render);
+document.getElementById('search').addEventListener('input',render);
 
-// ── Formulaire texte ──
-document.getElementById('toggle-add').addEventListener('click', () => {
-  const f = document.getElementById('add-form'), btn = document.getElementById('toggle-add');
-  const open = f.classList.toggle('open');
-  btn.textContent = open ? '✕ fermer' : '+ ajouter';
-  if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
-  else ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
+document.getElementById('toggle-add').addEventListener('click',()=>{
+  const f=document.getElementById('add-form'),btn=document.getElementById('toggle-add');
+  const open=f.classList.toggle('open');
+  btn.textContent=open?'✕ fermer':'+ ajouter';
+  if(open)setTimeout(()=>document.getElementById('inp-thai').focus(),80);
+  else['inp-thai','inp-roman','inp-meaning'].forEach(id=>document.getElementById(id).value='');
 });
-function doAddWord() {
-  const thai = document.getElementById('inp-thai').value.trim();
-  const roman = document.getElementById('inp-roman').value.trim();
-  const meaning = document.getElementById('inp-meaning').value.trim();
-  if (!thai) { document.getElementById('inp-thai').focus(); return; }
-  words.push({thai,roman,meaning}); saveWords();
-  ['inp-thai','inp-roman','inp-meaning'].forEach(id => document.getElementById(id).value = '');
+
+function doAddWord(){
+  const thai=document.getElementById('inp-thai').value.trim();
+  const roman=document.getElementById('inp-roman').value.trim();
+  const meaning=document.getElementById('inp-meaning').value.trim();
+  if(!thai){document.getElementById('inp-thai').focus();return;}
+  words.push({thai,roman,meaning});saveWords();
+  ['inp-thai','inp-roman','inp-meaning'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('inp-thai').focus();
-  const fb = document.getElementById('feedback'); fb.classList.add('show');
-  setTimeout(() => fb.classList.remove('show'), 1600);
+  const fb=document.getElementById('feedback');fb.classList.add('show');
+  setTimeout(()=>fb.classList.remove('show'),1600);
   render();
 }
-document.getElementById('btn-add-word').addEventListener('click', doAddWord);
-['inp-thai','inp-roman','inp-meaning'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => { if (e.key==='Enter') doAddWord(); });
+document.getElementById('btn-add-word').addEventListener('click',doAddWord);
+['inp-thai','inp-roman','inp-meaning'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAddWord();});
 });
 
-// ── Modal stylet ──
-document.getElementById('fab-stylet').addEventListener('click', () => {
-  document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('s-roman').value = '';
-  document.getElementById('s-meaning').value = '';
-  document.getElementById('candidates').innerHTML = '';
-  document.getElementById('thai-preview').textContent = '';
-  document.getElementById('recog-status').textContent = 'Dessine un caractère thaï puis appuie sur reconnaître';
-  document.getElementById('recog-status').className = 'recog-status';
-  selectedThai = '';
-  setTimeout(initCanvas, 60);
-});
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  if (canvas) {
-    canvas.removeEventListener('pointerdown', onPtrDown);
-    canvas.removeEventListener('pointermove', onPtrMove);
-    canvas.removeEventListener('pointerup', onPtrUp);
-    canvas.removeEventListener('pointercancel', onPtrUp);
-    canvas = null; ctx = null;
-  }
-}
-document.getElementById('modal-close-btn').addEventListener('click', closeModal);
-document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
-document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target===document.getElementById('modal-overlay')) closeModal(); });
-
-// ── Canvas ──
-function initCanvas() {
-  canvas = document.getElementById('stylet-canvas');
-  ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio||1;
-  const w = canvas.offsetWidth;
-  canvas.width = w*dpr; canvas.height = 200*dpr; canvas.style.height = '350px';
-  ctx.scale(dpr,dpr); drawBg(w);
-  ctx.lineCap='round'; ctx.lineJoin='round';
-  canvas.addEventListener('pointerdown', onPtrDown, {passive:false});
-  canvas.addEventListener('pointermove', onPtrMove, {passive:false});
-  canvas.addEventListener('pointerup', onPtrUp);
-  canvas.addEventListener('pointercancel', onPtrUp);
-}
-function drawBg(w) {
-  const cw = w||canvas.offsetWidth;
-  ctx.fillStyle='#FEFEFE'; ctx.fillRect(0,0,cw,200);
-  ctx.strokeStyle='rgba(196,82,26,0.12)'; ctx.lineWidth=1;
-  for (let y=50;y<200;y+=50) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cw,y); ctx.stroke(); }
-}
-function getPos(e) { const r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
-function onPtrDown(e) {
-  if (e.pointerType==='pen') hasPencil=true;
-  if (e.pointerType==='touch'&&hasPencil) return;
-  e.preventDefault(); drawing=true;
-  const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);
-}
-function onPtrMove(e) {
-  if (!drawing) return;
-  if (e.pointerType==='touch'&&hasPencil) return;
-  e.preventDefault(); const p=getPos(e);
-  if (currentTool==='eraser') {
-    ctx.save(); ctx.globalCompositeOperation='destination-out';
-    ctx.beginPath(); ctx.arc(p.x,p.y,currentSize*5,0,Math.PI*2); ctx.fill(); ctx.restore();
-  } else {
-    const pr=e.pressure>0?e.pressure:0.5;
-    ctx.lineWidth=currentSize*(0.4+pr*1.2); ctx.strokeStyle=currentColor;
-    ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y);
-  }
-}
-function onPtrUp() { drawing=false; if(ctx) ctx.beginPath(); }
-
-document.getElementById('tool-pen').addEventListener('click', () => {
-  currentTool='pen';
-  document.getElementById('tool-pen').classList.add('active');
-  document.getElementById('tool-eraser').classList.remove('active');
-});
-document.getElementById('tool-eraser').addEventListener('click', () => {
-  currentTool='eraser';
-  document.getElementById('tool-eraser').classList.add('active');
-  document.getElementById('tool-pen').classList.remove('active');
-});
-document.getElementById('tool-clear').addEventListener('click', () => {
-  if (!ctx) return;
-  drawBg(canvas.offsetWidth);
-  document.getElementById('candidates').innerHTML='';
-  document.getElementById('thai-preview').textContent='';
-  selectedThai='';
-  document.getElementById('recog-status').textContent='Dessine un caractère thaï puis appuie sur reconnaître';
-  document.getElementById('recog-status').className='recog-status';
-});
-document.querySelectorAll('.color-dot').forEach(dot => {
-  dot.addEventListener('click', () => {
-    currentColor=dot.dataset.color;
-    document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('selected'));
-    dot.classList.add('selected');
-  });
-});
-document.querySelectorAll('.size-opt').forEach(opt => {
-  opt.addEventListener('click', () => {
-    currentSize=parseInt(opt.dataset.size);
-    document.querySelectorAll('.size-opt').forEach(o=>o.classList.remove('selected'));
-    opt.classList.add('selected');
-  });
-});
-
-// ── Reconnaissance Google Vision ──
-document.getElementById('btn-recog').addEventListener('click', async () => {
-  const apiKey = getApiKey();
-  const status = document.getElementById('recog-status');
-  const candidatesDiv = document.getElementById('candidates');
-  const preview = document.getElementById('thai-preview');
-  if (!apiKey) {
-    status.textContent = '❌ clé API manquante — appuie sur 🔑 clé API en haut';
-    status.className = 'recog-status error';
-    return;
-  }
-  if (!canvas) return;
-  status.textContent = '⏳ reconnaissance en cours…';
-  status.className = 'recog-status loading';
-  candidatesDiv.innerHTML = ''; preview.textContent = ''; selectedThai = '';
-  try {
-    const base64 = canvas.toDataURL('image/png').split(',')[1];
-    const body = { requests: [{ image:{content:base64}, features:[{type:'TEXT_DETECTION',maxResults:10}], imageContext:{languageHints:['th']} }] };
-    const resp = await fetch('https://vision.googleapis.com/v1/images:annotate?key='+apiKey,
-      {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error.message);
-    const annotations = data.responses[0].textAnnotations;
-    if (!annotations||annotations.length===0) {
-      status.textContent = '❌ aucun caractère reconnu — écris plus grand';
-      status.className = 'recog-status error'; return;
-    }
-    const fullText = annotations[0].description||'';
-    const thaiWords = [...new Set(fullText.split(/\s+/).filter(w=>/^[\u0E00-\u0E7F]+$/.test(w)))];
-    const thaiChars = [...new Set(fullText.split('').filter(c=>/[\u0E00-\u0E7F]/.test(c)))];
-    const candidates = [...new Set([...thaiWords,...thaiChars])].slice(0,8);
-    if (candidates.length===0) {
-      status.textContent = '❌ aucun caractère thaï reconnu — réessaie';
-      status.className = 'recog-status error'; return;
-    }
-    status.textContent = 'Sélectionne le bon caractère :';
-    status.className = 'recog-status ok';
-    candidatesDiv.innerHTML = '';
-    candidates.forEach(c => {
-      const btn = document.createElement('button');
-      btn.className = 'candidate-btn'; btn.textContent = c;
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedThai = c; preview.textContent = c;
-        speak(c);
+// ── Clavier thaï ──
+function buildKeyboard(){
+  function makeRow(data, rowId, extraClass){
+    const row=document.getElementById(rowId);
+    data.forEach(d=>{
+      const btn=document.createElement('button');
+      btn.className='kbd-key'+(extraClass?' '+extraClass:'');
+      const main=document.createElement('span');main.textContent=d.c;
+      btn.appendChild(main);
+      if(d.r){const rom=document.createElement('span');rom.className='rom';rom.textContent=d.r;btn.appendChild(rom);}
+      btn.addEventListener('click',()=>{
+        composedWord+=d.c;
+        updateComposer();
       });
-      candidatesDiv.appendChild(btn);
+      row.appendChild(btn);
     });
-  } catch(err) {
-    status.textContent = '❌ erreur : '+err.message;
-    status.className = 'recog-status error';
   }
+  makeRow(CONSONANTS,'kbd-consonants','');
+  makeRow(VOWELS,'kbd-vowels','vowel');
+  makeRow(TONES,'kbd-tones','tone');
+  makeRow(NUMBERS,'kbd-numbers','num');
+}
+
+function updateComposer(){
+  const el=document.getElementById('composed');
+  if(composedWord){
+    el.textContent=composedWord;
+    el.classList.remove('empty');
+  } else {
+    el.textContent='appuie sur les touches…';
+    el.classList.add('empty');
+  }
+}
+
+document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
+document.getElementById('compose-del').addEventListener('click',()=>{
+  composedWord=[...composedWord].slice(0,-1).join('');
+  updateComposer();
+});
+document.getElementById('compose-clear').addEventListener('click',()=>{
+  composedWord='';updateComposer();
 });
 
-// ── Enregistrer ──
-document.getElementById('modal-save-btn').addEventListener('click', () => {
-  const roman = document.getElementById('s-roman').value.trim();
-  const meaning = document.getElementById('s-meaning').value.trim();
-  if (selectedThai) {
-    words.push({thai:selectedThai, roman, meaning});
-  } else {
-    const img = canvas ? canvas.toDataURL('image/png') : '';
-    words.push({thai:'pen_'+Date.now(), roman, meaning, img});
-  }
-  saveWords(); closeModal(); render();
+// ── Modal ──
+document.getElementById('fab-kbd').addEventListener('click',()=>{
+  composedWord='';updateComposer();
+  document.getElementById('s-roman').value='';
+  document.getElementById('s-meaning').value='';
+  document.getElementById('modal-overlay').classList.add('open');
+});
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+document.getElementById('modal-close-btn').addEventListener('click',closeModal);
+document.getElementById('modal-cancel-btn').addEventListener('click',closeModal);
+document.getElementById('modal-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal-overlay'))closeModal();
+});
+
+document.getElementById('modal-save-btn').addEventListener('click',()=>{
+  if(!composedWord)return;
+  const roman=document.getElementById('s-roman').value.trim();
+  const meaning=document.getElementById('s-meaning').value.trim();
+  words.push({thai:composedWord,roman,meaning});
+  saveWords();closeModal();render();
 });
 
 // ── Init ──
 loadWords();
-updateApiPill();
+buildKeyboard();
 render();
 </script>
 </body>
