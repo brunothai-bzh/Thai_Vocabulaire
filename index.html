@@ -16,9 +16,10 @@
   --accent:#C4521A;--accent-bg:#FBF0EA;
   --accent2:#2E6B4F;--accent2-bg:#EAF3EE;
   --danger:#A32D2D;--danger-bg:#FCEBEB;
-  --low:#185FA5;--low-bg:#E6F1FB;/* classe basse = bleu */
-  --mid:#6B3FA0;--mid-bg:#F0EAFC;/* classe moyenne = violet */
-  --high:#A32D2D;--high-bg:#FCEBEB;/* classe haute = rouge */
+  /* Option A — classes tonales saturées */
+  --low-bg:#B5D4F4;--low-text:#042C53;--low-border:#185FA5;
+  --mid-bg:#9FE1CB;--mid-text:#04342C;--mid-border:#0F6E56;
+  --high-bg:#FAC775;--high-text:#412402;--high-border:#854F0B;
   --shadow:0 2px 12px rgba(0,0,0,0.07);
   --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
   --radius:14px;--radius-sm:8px;
@@ -77,14 +78,12 @@ input[type=text]::placeholder{color:var(--text3);}
 .del-btn:active{background:var(--danger-bg);color:var(--danger);}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-size:15px;}
 
-/* FABs */
 .fab-row{position:fixed;bottom:28px;right:20px;display:flex;flex-direction:row;gap:12px;align-items:center;z-index:150;}
 .fab{width:56px;height:56px;border-radius:50%;color:#fff;border:none;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .fab:active{transform:scale(.93);}
 .fab.kbd{background:var(--accent2);box-shadow:0 4px 20px rgba(46,107,79,.4);}
 .fab.stylet{background:var(--accent);box-shadow:0 4px 20px rgba(196,82,26,.4);}
 
-/* Modals */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:16px 16px 28px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;max-height:95vh;overflow-y:auto;}
@@ -102,44 +101,38 @@ input[type=text]::placeholder{color:var(--text3);}
 .composer-btn:active{background:var(--surface2);}
 .composer-btn.speak{background:var(--accent2-bg);color:var(--accent2);border-color:rgba(46,107,79,.25);}
 
-/* Légende classes tonales */
-.tone-legend{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);}
-.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.legend-dot.low{background:var(--low);}
-.legend-dot.mid{background:var(--mid);}
-.legend-dot.high{background:var(--high);}
+/* Légende */
+.tone-legend{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;}
+.legend-item.low{background:var(--low-bg);color:var(--low-text);border:1px solid var(--low-border);}
+.legend-item.mid{background:var(--mid-bg);color:var(--mid-text);border:1px solid var(--mid-border);}
+.legend-item.high{background:var(--high-bg);color:var(--high-text);border:1px solid var(--high-border);}
 
-/* Touches avec classes tonales */
+/* Touches */
 .kbd-section{margin-bottom:10px;}
 .kbd-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
 .kbd-row{display:flex;flex-wrap:wrap;gap:4px;}
-.kbd-key{font-family:'Noto Sans Thai',sans-serif;font-size:22px;min-width:44px;height:54px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .08s,transform .08s;-webkit-user-select:none;position:relative;}
+.kbd-key{font-family:'Noto Sans Thai',sans-serif;font-size:22px;min-width:44px;height:54px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .08s,transform .08s;-webkit-user-select:none;}
 .kbd-key:active{transform:scale(.92);}
-.kbd-key .rom{font-family:'DM Mono',monospace;font-size:8px;color:var(--text3);line-height:1;margin-top:1px;}
-/* Classe basse */
-.kbd-key.low{background:var(--low-bg);border-color:rgba(24,95,165,.25);}
-.kbd-key.low:active{background:var(--low);color:#fff;}
-/* Classe moyenne */
-.kbd-key.mid{background:var(--mid-bg);border-color:rgba(107,63,160,.25);}
-.kbd-key.mid:active{background:var(--mid);color:#fff;}
-/* Classe haute */
-.kbd-key.high{background:var(--high-bg);border-color:rgba(163,45,45,.25);}
-.kbd-key.high:active{background:var(--high);color:#fff;}
-/* Voyelles */
-.kbd-key.vowel{background:#EAF3EE;border-color:rgba(46,107,79,.2);}
+.kbd-key .rom{font-family:'DM Mono',monospace;font-size:8px;line-height:1;margin-top:1px;}
+/* Option A couleurs */
+.kbd-key.low{background:var(--low-bg);border-color:var(--low-border);color:var(--low-text);}
+.kbd-key.low .rom{color:var(--low-text);opacity:.7;}
+.kbd-key.low:active{background:var(--low-border);color:#fff;}
+.kbd-key.mid{background:var(--mid-bg);border-color:var(--mid-border);color:var(--mid-text);}
+.kbd-key.mid .rom{color:var(--mid-text);opacity:.7;}
+.kbd-key.mid:active{background:var(--mid-border);color:#fff;}
+.kbd-key.high{background:var(--high-bg);border-color:var(--high-border);color:var(--high-text);}
+.kbd-key.high .rom{color:var(--high-text);opacity:.7;}
+.kbd-key.high:active{background:var(--high-border);color:#fff;}
+.kbd-key.vowel{background:#EAF3EE;border-color:rgba(46,107,79,.2);color:var(--text);}
+.kbd-key.vowel .rom{color:var(--text3);}
 .kbd-key.vowel:active{background:var(--accent2);color:#fff;}
-/* Tons */
-.kbd-key.tone{background:#FBF0EA;border-color:rgba(196,82,26,.2);}
+.kbd-key.tone{background:#FBF0EA;border-color:rgba(196,82,26,.2);color:var(--text);}
+.kbd-key.tone .rom{color:var(--text3);}
 .kbd-key.tone:active{background:var(--accent);color:#fff;}
-/* Chiffres */
-.kbd-key.num{background:var(--surface2);}
-/* Point de couleur classe tonale */
-.tone-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;}
-.tone-dot.low{background:var(--low);}
-.tone-dot.mid{background:var(--mid);}
-.tone-dot.high{background:var(--high);}
-
+.kbd-key.num{background:var(--surface2);color:var(--text);}
+.kbd-key.num .rom{color:var(--text3);}
 .kbd-save-row{margin-top:12px;display:flex;gap:10px;}
 
 /* Stylet */
@@ -170,11 +163,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .result-card{display:none;margin-bottom:12px;background:var(--accent2-bg);border:1px solid rgba(46,107,79,.2);border-radius:var(--radius);padding:14px 16px;}
 .result-card.visible{display:block;}
 .result-thai-big{font-family:'Noto Sans Thai',sans-serif;font-size:40px;font-weight:500;color:var(--accent2);text-align:center;margin-bottom:8px;}
-.result-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.result-meta-item{background:var(--surface);border-radius:var(--radius-sm);padding:7px 10px;}
-.result-meta-label{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;}
-.result-meta-value{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);}
-.result-meta-value.unknown{font-style:italic;color:var(--text3);font-family:'DM Sans',sans-serif;}
+
 .result-actions{display:flex;gap:8px;margin-top:10px;}
 .correction-zone{display:none;margin-bottom:12px;border:1.5px solid var(--accent2);border-radius:var(--radius);overflow:hidden;}
 .correction-zone.open{display:block;}
@@ -189,25 +178,28 @@ input[type=text]::placeholder{color:var(--text3);}
 .mini-kbd-section{margin-bottom:8px;}
 .mini-kbd-label{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
 .mini-kbd-row{display:flex;flex-wrap:wrap;gap:4px;}
-.mini-key{font-family:'Noto Sans Thai',sans-serif;font-size:17px;min-width:34px;height:42px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-user-select:none;position:relative;}
+.mini-key{font-family:'Noto Sans Thai',sans-serif;font-size:17px;min-width:34px;height:42px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-user-select:none;}
 .mini-key:active{transform:scale(.92);}
-.mini-key .rom{font-family:'DM Mono',monospace;font-size:7px;color:var(--text3);line-height:1;}
-.mini-key.low{background:var(--low-bg);border-color:rgba(24,95,165,.2);}
-.mini-key.low:active{background:var(--low);color:#fff;}
-.mini-key.mid{background:var(--mid-bg);border-color:rgba(107,63,160,.2);}
-.mini-key.mid:active{background:var(--mid);color:#fff;}
-.mini-key.high{background:var(--high-bg);border-color:rgba(163,45,45,.2);}
-.mini-key.high:active{background:var(--high);color:#fff;}
+.mini-key .rom{font-family:'DM Mono',monospace;font-size:7px;line-height:1;}
+.mini-key.low{background:var(--low-bg);border-color:var(--low-border);color:var(--low-text);}
+.mini-key.low .rom{color:var(--low-text);opacity:.7;}
+.mini-key.low:active{background:var(--low-border);color:#fff;}
+.mini-key.mid{background:var(--mid-bg);border-color:var(--mid-border);color:var(--mid-text);}
+.mini-key.mid .rom{color:var(--mid-text);opacity:.7;}
+.mini-key.mid:active{background:var(--mid-border);color:#fff;}
+.mini-key.high{background:var(--high-bg);border-color:var(--high-border);color:var(--high-text);}
+.mini-key.high .rom{color:var(--high-text);opacity:.7;}
+.mini-key.high:active{background:var(--high-border);color:#fff;}
 .mini-key.vowel{background:#EAF3EE;border-color:rgba(46,107,79,.2);}
 .mini-key.vowel:active{background:var(--accent2);color:#fff;}
 .mini-key.tone{background:#FBF0EA;border-color:rgba(196,82,26,.2);}
 .mini-key.tone:active{background:var(--accent);color:#fff;}
 
-/* Modal CSV */
+/* CSV modal */
 .csv-modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:20px 20px 30px;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
-.csv-zone{display:flex;flex-direction:column;gap:10px;}
-.csv-info{font-size:13px;color:var(--text2);line-height:1.6;background:var(--surface2);padding:10px 14px;border-radius:var(--radius-sm);}
-.csv-actions{display:flex;gap:10px;}
+.csv-info{font-size:13px;color:var(--text2);line-height:1.6;background:var(--surface2);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px;}
+.csv-actions{display:flex;gap:10px;margin-bottom:8px;}
+.csv-feedback{font-size:12px;color:var(--accent2);min-height:18px;text-align:center;}
 
 .spinner{width:12px;height:12px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -229,7 +221,7 @@ input[type=text]::placeholder{color:var(--text3);}
     <span>vocabulaire</span>
   </div>
   <div class="header-right">
-    <button class="csv-btn" id="csv-btn" title="Exporter / Importer CSV">⇅ CSV</button>
+    <button class="csv-btn" id="csv-btn">⇅ CSV</button>
     <div id="voice-pill" class="voice-pill">⚠ voix</div>
   </div>
 </header>
@@ -258,33 +250,28 @@ input[type=text]::placeholder{color:var(--text3);}
 <div class="table-wrap"><div class="word-list" id="word-list"></div></div>
 
 <div class="fab-row">
-  <button class="fab stylet" id="fab-stylet" title="Saisie au stylet">✏️</button>
-  <button class="fab kbd" id="fab-kbd" title="Clavier thaï">⌨️</button>
+  <button class="fab stylet" id="fab-stylet">✏️</button>
+  <button class="fab kbd" id="fab-kbd">⌨️</button>
 </div>
 
-<!-- ════ Modal CSV ════ -->
+<!-- Modal CSV -->
 <div class="modal-overlay" id="modal-csv">
   <div class="csv-modal">
     <div class="modal-header">
       <div class="modal-title">⇅ Export / Import CSV</div>
       <button class="modal-close" id="csv-close">✕</button>
     </div>
-    <div class="csv-zone">
-      <div class="csv-info">
-        Format CSV : <strong>thaï, romanisation, sens</strong> — une ligne par mot, encodage UTF-8.
-        L'import fusionne avec ta liste existante (pas de doublons).
-      </div>
-      <div class="csv-actions">
-        <button class="btn green btn-full" id="csv-export">⬇ Exporter ma liste</button>
-        <button class="btn btn-full" id="csv-import-btn" style="color:var(--accent);border-color:var(--accent);">⬆ Importer un CSV</button>
-      </div>
-      <div id="csv-feedback" style="font-size:12px;color:var(--accent2);min-height:18px;text-align:center;"></div>
-      <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display:none" />
+    <div class="csv-info">Format : <strong>thaï, romanisation, sens</strong> — UTF-8. L'import fusionne sans doublons.</div>
+    <div class="csv-actions">
+      <button class="btn green btn-full" id="csv-export">⬇ Exporter</button>
+      <button class="btn btn-full" id="csv-import-btn" style="color:var(--accent);border-color:var(--accent);">⬆ Importer</button>
     </div>
+    <div class="csv-feedback" id="csv-feedback"></div>
+    <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display:none" />
   </div>
 </div>
 
-<!-- ════ Modal CLAVIER ════ -->
+<!-- Modal CLAVIER -->
 <div class="modal-overlay" id="modal-kbd">
   <div class="modal">
     <div class="modal-header">
@@ -299,26 +286,23 @@ input[type=text]::placeholder{color:var(--text3);}
         <button class="composer-btn" id="compose-clear">✕</button>
       </div>
     </div>
-
-    <!-- Légende classes tonales -->
     <div class="tone-legend">
-      <div class="legend-item"><div class="legend-dot low"></div>Basse (11)</div>
-      <div class="legend-item"><div class="legend-dot mid"></div>Moyenne (9)</div>
-      <div class="legend-item"><div class="legend-dot high"></div>Haute (11)</div>
+      <div class="legend-item low">🔵 Basse (11)</div>
+      <div class="legend-item mid">🟢 Moyenne (9)</div>
+      <div class="legend-item high">🟡 Haute (11)</div>
     </div>
-
     <div class="kbd-section"><div class="kbd-label">Consonnes (44)</div><div class="kbd-row" id="kbd-consonants"></div></div>
     <div class="kbd-section"><div class="kbd-label">Voyelles</div><div class="kbd-row" id="kbd-vowels"></div></div>
     <div class="kbd-section"><div class="kbd-label">Tons & signes</div><div class="kbd-row" id="kbd-tones"></div></div>
     <div class="kbd-section"><div class="kbd-label">Chiffres thaï</div><div class="kbd-row" id="kbd-numbers"></div></div>
     <div class="kbd-save-row">
       <button class="btn btn-full" id="kbd-cancel">annuler</button>
-      <button class="btn accent btn-full" id="kbd-save">✓ enregistrer le mot</button>
+      <button class="btn accent btn-full" id="kbd-save">✓ enregistrer</button>
     </div>
   </div>
 </div>
 
-<!-- ════ Modal STYLET ════ -->
+<!-- Modal STYLET -->
 <div class="modal-overlay" id="modal-stylet">
   <div class="modal">
     <div class="modal-header">
@@ -352,12 +336,7 @@ input[type=text]::placeholder{color:var(--text3);}
     <div class="candidates" id="candidates"></div>
     <div class="result-card" id="result-card">
       <div class="result-thai-big" id="result-thai-big"></div>
-      <div class="result-meta">
-        <div class="result-meta-item"><div class="result-meta-label">Romanisation</div><div class="result-meta-value" id="res-roman">—</div></div>
-        <div class="result-meta-item"><div class="result-meta-label">Français</div><div class="result-meta-value" id="res-fr">—</div></div>
-        <div class="result-meta-item"><div class="result-meta-label">Anglais</div><div class="result-meta-value" id="res-en">—</div></div>
-        <div class="result-meta-item"><div class="result-meta-label">Classe</div><div class="result-meta-value" id="res-pos">—</div></div>
-      </div>
+
       <div class="result-actions">
         <button class="btn green btn-full" id="res-speak">🔊 écouter</button>
         <button class="btn btn-full" id="res-correct" style="color:var(--accent2);border-color:var(--accent2);">⌨️ corriger</button>
@@ -365,7 +344,7 @@ input[type=text]::placeholder{color:var(--text3);}
     </div>
     <div class="correction-zone" id="correction-zone">
       <div class="correction-header">
-        <span>✏️ Corriger au clavier thaï</span>
+        <span>✏️ Corriger au clavier</span>
         <button class="corr-btn" id="correction-close" style="width:28px;height:28px;font-size:14px;">✕</button>
       </div>
       <div class="correction-composer">
@@ -393,11 +372,11 @@ input[type=text]::placeholder{color:var(--text3);}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
 'use strict';
-const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
-const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
-const WORDS_KEY = 'thai_words_v2';
+const APP_KEY='0c8d5f2a-957e-475d-aae2-3cad538d5995';
+const HMAC_KEY='25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
+const WORDS_KEY='thai_words_v2';
 
-const DICT = [
+const DICT=[
   {thai:"สวัสดี",roman:"Sawatdee",fr:"Bonjour",en:"Hello",pos:"interjection"},
   {thai:"ขอบคุณ",roman:"Khob khun",fr:"Merci",en:"Thank you",pos:"interjection"},
   {thai:"ใช่",roman:"Chai",fr:"Oui",en:"Yes",pos:"particule"},
@@ -439,7 +418,6 @@ const DICT = [
 const DICT_MAP={};DICT.forEach(d=>DICT_MAP[d.thai]=d);
 const INITIAL=DICT.slice(0,13).map(d=>({thai:d.thai,roman:d.roman,meaning:d.fr}));
 
-// Consonnes avec classe tonale : low=basse, mid=moyenne, high=haute
 const CONSONANTS=[
   {c:'ก',r:'g',t:'mid'},{c:'ข',r:'kh',t:'high'},{c:'ฃ',r:'kh',t:'high'},{c:'ค',r:'kh',t:'low'},
   {c:'ฅ',r:'kh',t:'low'},{c:'ฆ',r:'kh',t:'low'},{c:'ง',r:'ng',t:'low'},{c:'จ',r:'j',t:'mid'},
@@ -485,8 +463,7 @@ function loadWords(){
 function saveWords(){try{localStorage.setItem(WORDS_KEY,JSON.stringify(words));}catch(e){}}
 
 function checkVoices(){
-  const voices=synth.getVoices();
-  const v=voices.find(v=>v.lang.startsWith('th'));
+  const v=synth.getVoices().find(v=>v.lang.startsWith('th'));
   if(v){thaiVoice=v;const p=document.getElementById('voice-pill');p.textContent='🔊 voix ok';p.classList.add('ok');}
 }
 checkVoices();synth.onvoiceschanged=checkVoices;
@@ -503,16 +480,13 @@ function speak(word){
 }
 
 function lookupDict(thai){
-  const clean=thai.trim().replace(/\s+/g,'');
-  return DICT_MAP[clean]||DICT_MAP[thai.trim()]||null;
+  const c=thai.trim().replace(/\s+/g,'');
+  return DICT_MAP[c]||DICT_MAP[thai.trim()]||null;
 }
 
 function render(){
   const q=(document.getElementById('search').value||'').toLowerCase();
-  const filtered=words.filter(w=>{
-    const h=(w.thai||'')+' '+(w.roman||'')+' '+(w.meaning||'');
-    return h.toLowerCase().includes(q);
-  });
+  const filtered=words.filter(w=>((w.thai||'')+' '+(w.roman||'')+' '+(w.meaning||'')).toLowerCase().includes(q));
   const n=filtered.length;
   document.getElementById('count-bar').textContent=n+' mot'+(n!==1?'s':'');
   const list=document.getElementById('word-list');list.innerHTML='';
@@ -530,8 +504,7 @@ function render(){
     spk.addEventListener('click',e=>{e.stopPropagation();speak(w.thai);});
     const del=document.createElement('button');del.className='del-btn';del.textContent='✕';
     del.addEventListener('click',e=>{
-      e.stopPropagation();
-      words=words.filter(x=>x.thai!==w.thai);
+      e.stopPropagation();words=words.filter(x=>x.thai!==w.thai);
       if(activeRow===w.thai)activeRow=null;
       if(playingWord===w.thai){synth.cancel();playingWord=null;}
       saveWords();render();
@@ -567,37 +540,21 @@ document.getElementById('btn-add-word').addEventListener('click',doAddWord);
   document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAddWord();});
 });
 
-// ══ CSV ══
-document.getElementById('csv-btn').addEventListener('click',()=>{
-  document.getElementById('csv-feedback').textContent='';
-  document.getElementById('modal-csv').classList.add('open');
-});
+// CSV
+document.getElementById('csv-btn').addEventListener('click',()=>{document.getElementById('csv-feedback').textContent='';document.getElementById('modal-csv').classList.add('open');});
 function closeCsv(){document.getElementById('modal-csv').classList.remove('open');}
 document.getElementById('csv-close').addEventListener('click',closeCsv);
 document.getElementById('modal-csv').addEventListener('click',e=>{if(e.target===document.getElementById('modal-csv'))closeCsv();});
-
 document.getElementById('csv-export').addEventListener('click',()=>{
-  const header='thaï,romanisation,sens\n';
-  const rows=words.map(w=>{
-    const t=(w.thai||'').replace(/"/g,'""');
-    const r=(w.roman||'').replace(/"/g,'""');
-    const m=(w.meaning||'').replace(/"/g,'""');
-    return `"${t}","${r}","${m}"`;
-  }).join('\n');
-  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8'});
+  const rows=words.map(w=>`"${(w.thai||'').replace(/"/g,'""')}","${(w.roman||'').replace(/"/g,'""')}","${(w.meaning||'').replace(/"/g,'""')}"`).join('\n');
+  const blob=new Blob(['\uFEFF'+'thaï,romanisation,sens\n'+rows],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='thai_vocabulaire.csv';a.click();
-  URL.revokeObjectURL(url);
+  const a=document.createElement('a');a.href=url;a.download='thai_vocabulaire.csv';a.click();URL.revokeObjectURL(url);
   document.getElementById('csv-feedback').textContent='✓ '+words.length+' mots exportés';
 });
-
-document.getElementById('csv-import-btn').addEventListener('click',()=>{
-  document.getElementById('csv-file-input').click();
-});
+document.getElementById('csv-import-btn').addEventListener('click',()=>document.getElementById('csv-file-input').click());
 document.getElementById('csv-file-input').addEventListener('change',e=>{
-  const file=e.target.files[0];
-  if(!file)return;
+  const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=evt=>{
     const text=evt.target.result.replace(/^\uFEFF/,'');
@@ -613,27 +570,19 @@ document.getElementById('csv-file-input').addEventListener('change',e=>{
     saveWords();render();
     document.getElementById('csv-feedback').textContent='✓ '+added+' mots importés';
   };
-  reader.readAsText(file,'UTF-8');
-  e.target.value='';
+  reader.readAsText(file,'UTF-8');e.target.value='';
 });
 
-// ══ CLAVIER ══
+// Clavier
 function buildKeyboard(){
   function makeRow(data,rowId,defaultClass,mini){
     const row=document.getElementById(rowId);
     const cls=mini?'mini-key':'kbd-key';
     data.forEach(d=>{
       const btn=document.createElement('button');
-      const toneClass=d.t?d.t:(defaultClass||'');
-      btn.className=cls+(toneClass?' '+toneClass:'');
+      btn.className=cls+' '+(d.t||defaultClass||'');
       const main=document.createElement('span');main.textContent=d.c;btn.appendChild(main);
       if(d.r){const rom=document.createElement('span');rom.className='rom';rom.textContent=d.r;btn.appendChild(rom);}
-      // Point de couleur classe tonale sur les consonnes
-      if(d.t&&!mini){
-        const dot=document.createElement('div');
-        dot.className='tone-dot '+d.t;
-        btn.appendChild(dot);
-      }
       btn.addEventListener('click',()=>{
         if(mini){correctionWord+=d.c;updateCorrectionWord();}
         else{composedWord+=d.c;updateComposer();}
@@ -645,7 +594,6 @@ function buildKeyboard(){
   makeRow(VOWELS,'kbd-vowels','vowel',false);
   makeRow(TONES,'kbd-tones','tone',false);
   makeRow(NUMBERS,'kbd-numbers','num',false);
-  // Mini clavier (correction) - consonnes avec classes
   makeRow(CONSONANTS,'mini-consonants','',true);
   makeRow(VOWELS,'mini-vowels','vowel',true);
   makeRow(TONES,'mini-tones','tone',true);
@@ -660,10 +608,7 @@ document.getElementById('compose-speak').addEventListener('click',()=>speak(comp
 document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();});
 document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();});
 
-document.getElementById('fab-kbd').addEventListener('click',()=>{
-  composedWord='';updateComposer();
-  document.getElementById('modal-kbd').classList.add('open');
-});
+document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('modal-kbd').classList.add('open');});
 function closeKbd(){document.getElementById('modal-kbd').classList.remove('open');}
 document.getElementById('kbd-close').addEventListener('click',closeKbd);
 document.getElementById('kbd-cancel').addEventListener('click',closeKbd);
@@ -675,7 +620,7 @@ document.getElementById('kbd-save').addEventListener('click',()=>{
   saveWords();closeKbd();render();
 });
 
-// ══ STYLET ══
+// Stylet
 document.getElementById('fab-stylet').addEventListener('click',()=>{
   selectedThai='';selectedRoman='';selectedFr='';
   document.getElementById('candidates').innerHTML='';
@@ -702,13 +647,10 @@ document.getElementById('stylet-cancel').addEventListener('click',closeStylet);
 document.getElementById('modal-stylet').addEventListener('click',e=>{if(e.target===document.getElementById('modal-stylet'))closeStylet();});
 
 function initCanvas(){
-  canvas=document.getElementById('stylet-canvas');
-  ctx=canvas.getContext('2d');
-  const dpr=window.devicePixelRatio||1;
-  const w=canvas.offsetWidth;
+  canvas=document.getElementById('stylet-canvas');ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1,w=canvas.offsetWidth;
   canvas.width=w*dpr;canvas.height=240*dpr;canvas.style.height='240px';
-  ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';
-  drawBg(w);
+  ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';drawBg(w);
   canvas.addEventListener('pointerdown',onPtrDown,{passive:false});
   canvas.addEventListener('pointermove',onPtrMove,{passive:false});
   canvas.addEventListener('pointerup',onPtrUp);
@@ -729,16 +671,15 @@ function onPtrDown(e){
   if(!hasDrawing){hasDrawing=true;document.getElementById('canvas-guide').classList.add('hidden');}
 }
 function onPtrMove(e){
-  if(!drawing)return;
-  if(e.pointerType==='touch'&&hasPencil)return;
+  if(!drawing||e.pointerType==='touch'&&hasPencil)return;
   e.preventDefault();const p=getPos(e);
   if(currentTool==='eraser'){
     ctx.save();ctx.globalCompositeOperation='destination-out';
     ctx.beginPath();ctx.arc(p.x,p.y,currentSize*6,0,Math.PI*2);ctx.fill();ctx.restore();
     strokes=strokes.filter(s=>!s.some(pt=>Math.hypot(pt.x-p.x,pt.y-p.y)<currentSize*6));
   }else{
-    const pressure=e.pressure>0?e.pressure:0.5;
-    ctx.lineWidth=currentSize*(0.4+pressure*1.4);ctx.strokeStyle=currentColor;
+    const pr=e.pressure>0?e.pressure:0.5;
+    ctx.lineWidth=currentSize*(0.4+pr*1.4);ctx.strokeStyle=currentColor;
     currentStroke.push(p);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
   }
 }
@@ -753,8 +694,7 @@ function onPtrUp(){
 document.getElementById('tool-pen').addEventListener('click',()=>{currentTool='pen';document.getElementById('tool-pen').classList.add('active');document.getElementById('tool-eraser').classList.remove('active');});
 document.getElementById('tool-eraser').addEventListener('click',()=>{currentTool='eraser';document.getElementById('tool-eraser').classList.add('active');document.getElementById('tool-pen').classList.remove('active');});
 document.getElementById('tool-clear-canvas').addEventListener('click',()=>{
-  if(!ctx)return;
-  drawBg(canvas.offsetWidth);strokes=[];currentStroke=[];hasDrawing=false;
+  if(!ctx)return;drawBg(canvas.offsetWidth);strokes=[];currentStroke=[];hasDrawing=false;
   document.getElementById('canvas-guide').classList.remove('hidden');
   document.getElementById('stroke-info').textContent='0 trait — prêt';
   document.getElementById('candidates').innerHTML='';
@@ -766,19 +706,11 @@ document.querySelectorAll('.color-dot').forEach(dot=>{dot.addEventListener('clic
 document.querySelectorAll('.size-dot').forEach(dot=>{dot.addEventListener('click',()=>{currentSize=parseFloat(dot.dataset.size);document.querySelectorAll('.size-dot').forEach(d=>d.classList.remove('selected'));dot.classList.add('selected');});});
 
 function showResultCard(thai){
-  selectedThai=thai;
-  const d=lookupDict(thai);
+  selectedThai=thai;const d=lookupDict(thai);
   selectedRoman=d?d.roman:'';selectedFr=d?d.fr:'';
   document.getElementById('result-thai-big').textContent=thai;
-  const fields={roman:'roman',fr:'fr',en:'en',pos:'pos'};
-  Object.entries(fields).forEach(([elId,key])=>{
-    const el=document.getElementById('res-'+elId);
-    const val=d?d[key]:null;
-    if(val){el.textContent=val;el.classList.remove('unknown');}
-    else{el.textContent='inconnu';el.classList.add('unknown');}
-  });
-  document.getElementById('result-card').classList.add('visible');
-  speak(thai);
+
+  document.getElementById('result-card').classList.add('visible');speak(thai);
 }
 
 function computeHMAC(body){return CryptoJS.HmacSHA512(body,APP_KEY+HMAC_KEY).toString(CryptoJS.enc.Hex);}
@@ -794,13 +726,10 @@ function buildPayload(){
 
 document.getElementById('btn-recog').addEventListener('click',async()=>{
   const status=document.getElementById('recog-status');
-  const candidatesDiv=document.getElementById('candidates');
+  const cDiv=document.getElementById('candidates');
   if(strokes.length===0){status.textContent='Dessine quelque chose d\'abord !';status.className='recog-status error';return;}
-  status.innerHTML='<span class="spinner"></span> Envoi à MyScript…';
-  status.className='recog-status loading';
-  candidatesDiv.innerHTML='';
-  document.getElementById('result-card').classList.remove('visible');
-  document.getElementById('correction-zone').classList.remove('open');
+  status.innerHTML='<span class="spinner"></span> Envoi à MyScript…';status.className='recog-status loading';
+  cDiv.innerHTML='';document.getElementById('result-card').classList.remove('visible');document.getElementById('correction-zone').classList.remove('open');
   try{
     const body=buildPayload();
     const resp=await fetch('https://cloud.myscript.com/api/v4.0/iink/batch',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/vnd.myscript.jiix,application/json','applicationKey':APP_KEY,'hmac':computeHMAC(body)},body});
@@ -816,32 +745,24 @@ document.getElementById('btn-recog').addEventListener('click',async()=>{
       const btn=document.createElement('button');
       btn.className='candidate-btn'+(i===0?' selected':'');btn.textContent=c;
       btn.addEventListener('click',()=>{document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');showResultCard(c);document.getElementById('correction-zone').classList.remove('open');});
-      candidatesDiv.appendChild(btn);
+      cDiv.appendChild(btn);
     });
     showResultCard(label);
   }catch(err){status.textContent='⚠ '+err.message;status.className='recog-status error';}
 });
 
 document.getElementById('res-speak').addEventListener('click',()=>speak(selectedThai));
-document.getElementById('res-correct').addEventListener('click',()=>openCorrectionZone(selectedThai));
-
-function openCorrectionZone(initial){
-  correctionWord=initial||'';updateCorrectionWord();
-  document.getElementById('correction-zone').classList.add('open');
-  setTimeout(()=>document.getElementById('correction-zone').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
-}
-function updateCorrectionWord(){document.getElementById('correction-word').textContent=correctionWord||'…';}
+document.getElementById('res-correct').addEventListener('click',()=>{correctionWord=selectedThai||'';updateCorrectionWord();document.getElementById('correction-zone').classList.add('open');setTimeout(()=>document.getElementById('correction-zone').scrollIntoView({behavior:'smooth',block:'nearest'}),100);});
 document.getElementById('correction-close').addEventListener('click',()=>document.getElementById('correction-zone').classList.remove('open'));
 document.getElementById('corr-speak').addEventListener('click',()=>speak(correctionWord));
 document.getElementById('corr-del').addEventListener('click',()=>{correctionWord=[...correctionWord].slice(0,-1).join('');updateCorrectionWord();});
 document.getElementById('corr-clear').addEventListener('click',()=>{correctionWord='';updateCorrectionWord();});
+function updateCorrectionWord(){document.getElementById('correction-word').textContent=correctionWord||'…';}
 document.getElementById('corr-validate').addEventListener('click',()=>{
   if(!correctionWord)return;
   document.querySelectorAll('.candidate-btn').forEach(b=>b.classList.remove('selected'));
-  showResultCard(correctionWord);
-  document.getElementById('correction-zone').classList.remove('open');
+  showResultCard(correctionWord);document.getElementById('correction-zone').classList.remove('open');
 });
-
 document.getElementById('stylet-save').addEventListener('click',()=>{
   if(!selectedThai){document.getElementById('recog-status').textContent='Lance d\'abord la reconnaissance !';document.getElementById('recog-status').className='recog-status error';return;}
   words.push({thai:selectedThai,roman:selectedRoman,meaning:selectedFr});
