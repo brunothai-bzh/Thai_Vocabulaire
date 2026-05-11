@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ภาษาไทย">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>ภาษาไทย · Vocabulaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+
+/* ── Variables ── */
+:root {
+  --bg:         #F7F5F0;
+  --surface:    #FFFFFF;
+  --surface2:   #F0EDE6;
+  --border:     rgba(0,0,0,.10);
+  --border2:    rgba(0,0,0,.18);
+  --text:       #1A1814;
+  --text2:      #6B6560;
+  --text3:      #A09A93;
+  --accent:     #C4521A;
+  --accent-bg:  #FBF0EA;
+  --accent2:    #2E6B4F;
+  --accent2-bg: #EAF3EE;
+  --danger:     #A32D2D;
+  --danger-bg:  #FCEBEB;
+  --low-bg:     #B5D4F4; --low-text:  #042C53; --low-border:  #185FA5;
+  --mid-bg:     #9FE1CB; --mid-text:  #04342C; --mid-border:  #0F6E56;
+  --high-bg:    #FAC775; --high-text: #412402; --high-border: #854F0B;
+  --shadow:     0 2px 12px rgba(0,0,0,.07);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,.12);
+  --radius:     14px;
+  --radius-sm:  8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px 12px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-title { display: flex; align-items: baseline; gap: 10px; }
+.header-title h1 { font-family: 'Noto Sans Thai', sans-serif; font-size: 22px; font-weight: 600; color: var(--text); }
+.header-title span { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+.header-right { display: flex; gap: 8px; align-items: center; }
+
+.voice-pill {
+  font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 20px;
+  background: var(--surface2); color: var(--text3); border: 1px solid var(--border);
+  transition: all .3s;
+}
+.voice-pill.ok { background: var(--accent2-bg); color: var(--accent2); border-color: rgba(46,107,79,.2); }
+
+.csv-btn {
+  font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 20px;
+  background: var(--surface2); color: var(--text2); border: 1px solid var(--border); cursor: pointer;
+}
+.csv-btn:active { background: var(--surface); }
+
+/* ── Toolbar / Boutons ── */
+.toolbar { padding: 14px 20px; display: flex; gap: 10px; }
+.search-wrap { flex: 1; position: relative; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; pointer-events: none; }
+
+input[type=text] {
+  font-family: 'DM Sans', sans-serif; font-size: 15px; width: 100%;
+  padding: 11px 14px 11px 38px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); outline: none; -webkit-appearance: none;
+}
+input[type=text]:focus { border-color: var(--accent); }
+input[type=text]::placeholder { color: var(--text3); }
+.search-wrap input { padding-left: 38px; }
+
+.btn {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  padding: 11px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: var(--surface); color: var(--text);
+  cursor: pointer; white-space: nowrap; -webkit-appearance: none;
+}
+.btn:active        { background: var(--surface2); }
+.btn.accent        { background: var(--accent);  color: #fff; border-color: var(--accent); }
+.btn.accent:active { background: #a84315; }
+.btn.green         { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.btn.green:active  { background: #1f4e38; }
+.btn-full          { flex: 1; text-align: center; }
+
+/* ── Formulaire ajout ── */
+.add-form {
+  margin: 0 20px 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; display: none; flex-direction: column; gap: 12px;
+  box-shadow: var(--shadow);
+}
+.add-form.open { display: flex; }
+.add-form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+.field label { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.field input { padding: 10px 12px; font-size: 15px; }
+.field input.thai-input { font-family: 'Noto Sans Thai', sans-serif; font-size: 20px; padding-left: 10px; }
+.form-actions { display: flex; align-items: center; gap: 10px; }
+.feedback-msg { font-size: 12px; color: var(--accent2); font-weight: 500; opacity: 0; transition: opacity .3s; }
+.feedback-msg.show { opacity: 1; }
+
+/* ── Liste de mots ── */
+.count-bar { padding: 0 20px 8px; font-size: 12px; color: var(--text3); }
+.table-wrap { padding: 0 20px 100px; }
+.word-list { display: flex; flex-direction: column; gap: 8px; }
+
+.word-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+  cursor: pointer; transition: background .12s, border-color .12s;
+  box-shadow: var(--shadow); user-select: none; -webkit-user-select: none;
+}
+.word-card:active { background: var(--surface2); }
+.word-card.active { border-color: var(--accent); background: var(--accent-bg); }
+.word-thai   { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 28px; font-weight: 500; line-height: 1.2; flex: 1; min-width: 0; text-align: left; }
+.word-meta    { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; max-width: 200px; text-align: right; }
+.word-roman   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 1px; }
+.word-transl  { display: flex; flex-direction: column; gap: 1px; align-items: flex-end; }
+.word-fr      { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.word-en      { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; }
+.word-actions{ display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+
+.speak-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text2); font-size: 20px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+}
+.speak-btn:active  { background: var(--surface); }
+.speak-btn.playing { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.del-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: transparent; color: var(--text3); font-size: 16px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.del-btn:active { background: var(--danger-bg); color: var(--danger); }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 15px; line-height: 1.8; }
+
+/* ── FABs ── */
+.fab-row  { position: fixed; bottom: 28px; right: 20px; display: flex; flex-direction: row; gap: 12px; align-items: flex-end; z-index: 150; }
+.fab      { width: 56px; height: 56px; border-radius: 50%; color: #fff; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.fab:active        { transform: scale(.93); }
+.fab.kbd    { background: var(--accent2); box-shadow: 0 4px 20px rgba(46,107,79,.4); }
+.fab.stylet { background: var(--accent);  box-shadow: 0 4px 20px rgba(196,82,26,.4); }
+.fab.fr2th  { background: #185FA5;        box-shadow: 0 4px 20px rgba(24,95,165,.4); font-size: 22px; }
+.fab.fr2th.recording { animation: pulse .8s infinite; }
+.fab.en2th  { background: #6B3FA0;        box-shadow: 0 4px 20px rgba(107,63,160,.4); font-size: 22px; }
+.fab.en2th.recording { animation: pulse .8s infinite; }
+.fab-wrap   { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.fab-badge  { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; color: #185FA5; letter-spacing: .5px; line-height: 1; }
+.fab-badge.en2th { color: #6B3FA0; }
+.fab-badge.thai { font-family: 'Noto Sans Thai', sans-serif; font-size: 10px; letter-spacing: .3px; color: var(--text3); }
+
+/* ── Modals ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 200;
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-overlay-full .modal { max-width: 100% !important; border-radius: var(--radius) var(--radius) 0 0 !important; margin-bottom: 0 !important; }
+
+.modal {
+  background: var(--surface); border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%; padding: 16px 16px 28px;
+  box-shadow: var(--shadow-lg); animation: slideUp .25s ease;
+  max-height: 95vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.modal-title  { font-size: 17px; font-weight: 500; }
+.modal-close  { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--surface2); color: var(--text2); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.modal-actions{ display: flex; gap: 10px; margin-top: 14px; }
+
+.spinner { width: 12px; height: 12px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Modal CSV / Clé ── */
+.csv-modal {
+  background: var(--surface); border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%; padding: 20px 20px 30px;
+  box-shadow: var(--shadow-lg); animation: slideUp .25s ease;
+}
+.csv-info    { font-size: 13px; color: var(--text2); line-height: 1.6; background: var(--surface2); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 12px; }
+.csv-actions { display: flex; gap: 10px; margin-bottom: 8px; }
+.csv-feedback{ font-size: 12px; color: var(--accent2); min-height: 18px; text-align: center; }
+
+/* ── Modal Clavier ── */
+.modal-kbd-inner { max-height: 90vh; height: 90vh; display: flex; flex-direction: column; padding-bottom: 16px; }
+.modal-kbd-inner .modal-header,
+.modal-kbd-inner .word-composer,
+.modal-kbd-inner .tone-legend,
+.modal-kbd-inner .kbd-save-row { flex-shrink: 0; }
+.modal-kbd-inner .kbd-sections-wrap { flex: 1; overflow-y: auto; }
+
+.word-composer {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 14px 16px; border: 1px solid var(--border);
+}
+.word-composed {
+  font-family: Thonburi, 'Noto Sans Thai', sans-serif;
+  font-size: 64px !important; font-weight: 500; color: var(--accent);
+  flex: 1; min-height: 80px; letter-spacing: 2px;
+  word-break: break-all; line-height: 1.2;
+  border: none; background: transparent; outline: none;
+  -webkit-appearance: none; -webkit-text-size-adjust: none;
+  padding: 0; width: 100%; transform: scale(1);
+}
+.word-composed::placeholder { color: var(--text3); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 400; }
+
+.composer-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.composer-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text2); font-size: 17px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.composer-btn:active { background: var(--surface2); }
+.composer-btn.speak  { background: var(--accent2-bg); color: var(--accent2); border-color: rgba(46,107,79,.25); }
+.composer-btn.mic    { background: var(--accent-bg);  color: var(--accent);  border-color: rgba(196,82,26,.25); }
+.composer-btn.mic.recording { background: var(--accent); color: #fff; animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
+.mic-wrap       { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.mic-badge      { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600; color: var(--accent); letter-spacing: .5px; line-height: 1; }
+.mic-badge.top  { font-family: 'Noto Sans Thai', sans-serif; letter-spacing: .3px; }
+
+/* ── Légende tons ── */
+.tone-legend { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; }
+.legend-item.low  { background: var(--low-bg);  color: var(--low-text);  border: 1px solid var(--low-border); }
+.legend-item.mid  { background: var(--mid-bg);  color: var(--mid-text);  border: 1px solid var(--mid-border); }
+.legend-item.high { background: var(--high-bg); color: var(--high-text); border: 1px solid var(--high-border); }
+
+/* ── Clavier ── */
+.kbd-section { margin-bottom: 10px; }
+.kbd-label   { font-size: 10px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 5px; }
+.kbd-row     { display: flex; flex-wrap: wrap; gap: 4px; }
+.kbd-save-row{ margin-top: 12px; display: flex; gap: 10px; }
+
+.kbd-key {
+  font-family: Thonburi, 'Noto Sans Thai', sans-serif;
+  font-size: 22px; min-width: 44px; height: 54px; padding: 0 4px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border2);
+  background: var(--surface); color: var(--text);
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: background .08s, transform .08s; -webkit-user-select: none;
+}
+.kbd-key:active { transform: scale(.92); }
+.kbd-key .rom   { font-family: 'DM Mono', monospace; font-size: 8px; line-height: 1; margin-top: 1px; }
+
+.kbd-key.low  { background: var(--low-bg);  border-color: var(--low-border);  color: var(--low-text); }
+.kbd-key.low  .rom { color: var(--low-text);  opacity: .7; }
+.kbd-key.low:active  { background: var(--low-border);  color: #fff; }
+.kbd-key.mid  { background: var(--mid-bg);  border-color: var(--mid-border);  color: var(--mid-text); }
+.kbd-key.mid  .rom { color: var(--mid-text);  opacity: .7; }
+.kbd-key.mid:active  { background: var(--mid-border);  color: #fff; }
+.kbd-key.high { background: var(--high-bg); border-color: var(--high-border); color: var(--high-text); }
+.kbd-key.high .rom { color: var(--high-text); opacity: .7; }
+.kbd-key.high:active { background: var(--high-border); color: #fff; }
+.kbd-key.vowel { background: #EAF3EE; border-color: rgba(46,107,79,.2); color: var(--text); }
+.kbd-key.vowel .rom { color: var(--text3); }
+.kbd-key.vowel:active { background: var(--accent2); color: #fff; }
+.kbd-key.tone  { background: #FBF0EA; border-color: rgba(196,82,26,.2); color: var(--text); }
+.kbd-key.tone  .rom { color: var(--text3); }
+.kbd-key.tone:active  { background: var(--accent); color: #fff; }
+.kbd-key.num   { background: var(--surface2); color: var(--text); }
+.kbd-key.num   .rom { color: var(--text3); }
+
+/* ── Champs résultat (roman + trad) ── */
+.result-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.result-field label { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.result-field input {
+  font-family: 'DM Sans', sans-serif; font-size: 15px; width: 100%;
+  padding: 10px 12px; background: #fff;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  color: #1A1814 !important; outline: none; -webkit-appearance: none;
+  -webkit-text-fill-color: #1A1814 !important;
+}
+.result-field input:focus { border-color: var(--accent); }
+.result-field input::placeholder { color: var(--text3); font-style: italic; -webkit-text-fill-color: var(--text3) !important; }
+
+.save-feedback { font-size: 13px; color: var(--accent2); font-weight: 500; text-align: center; opacity: 0; transition: opacity .3s; margin-top: 6px; min-height: 20px; }
+.save-feedback.show { opacity: 1; }
+
+/* ── Modal FR → ไทย ── */
+.fr2th-listen    { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0; }
+.fr2th-mic-btn   { width: 72px; height: 72px; border-radius: 50%; background: #185FA5; color: #fff; border: none; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(24,95,165,.35); transition: transform .1s; }
+.fr2th-mic-btn:active    { transform: scale(.93); }
+.fr2th-mic-btn.en { background: #6B3FA0; box-shadow: 0 4px 20px rgba(107,63,160,.35); }
+.fr2th-lang-badges { display: flex; align-items: center; gap: 8px; }
+.fr2th-badge     { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #185FA5; }
+.fr2th-badge.thai{ font-family: 'Noto Sans Thai', sans-serif; }
+.fr2th-arrow     { font-size: 14px; color: var(--text3); }
+.fr2th-status    { font-size: 12px; color: var(--text3); text-align: center; }
+.fr2th-status.active { color: var(--danger); font-weight: 500; }
+.fr2th-field     { margin-bottom: 12px; }
+.fr2th-field label { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.fr2th-text      { font-size: 15px; color: var(--text2); background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; min-height: 40px; }
+.fr2th-result    { display: none; background: var(--accent2-bg); border: 1px solid rgba(46,107,79,.2); border-radius: var(--radius); padding: 14px 16px; }
+.fr2th-result.visible { display: block; }
+.fr2th-thai      { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 42px; font-weight: 500; color: var(--accent2); text-align: center; margin-bottom: 6px; }
+.fr2th-sub       { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); text-align: center; margin-bottom: 12px; }
+.fr2th-actions   { display: flex; gap: 10px; }
+
+/* ── Modal Stylet ── */
+.modal-stylet-inner { max-height: 90vh; height: 90vh; display: flex; flex-direction: column; padding-bottom: 16px; }
+.modal-stylet-inner .modal-header,
+.modal-stylet-inner .stylet-toolbar,
+.modal-stylet-inner .modal-actions { flex-shrink: 0; }
+.modal-stylet-inner .stylet-scroll  { flex: 1; overflow-y: auto; }
+
+.stylet-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.tool-pill { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; }
+.tool-pill.active        { background: var(--text);   color: #fff; border-color: var(--text); }
+.tool-pill.eraser.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+.color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+.color-dot.selected { border-color: var(--text); transform: scale(1.18); }
+.size-dot  { border-radius: 50%; background: var(--text); cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+.size-dot.selected  { border-color: var(--accent); }
+.toolbar-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+
+.pencil-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--accent2-bg); color: var(--accent2); border: 1px solid rgba(46,107,79,.2); display: none; margin-left: auto; }
+.pencil-badge.visible { display: inline-block; }
+
+.canvas-wrap { position: relative; background: #FEFEFE; border: 1.5px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; touch-action: none; margin-bottom: 8px; }
+#stylet-canvas { display: block; width: 100%; cursor: crosshair; }
+.canvas-guide-stylet { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: .08; font-family: 'Noto Sans Thai', sans-serif; font-size: 100px; color: #000; transition: opacity .3s; }
+.canvas-guide-stylet.hidden { opacity: 0; }
+.stroke-info { font-size: 11px; color: var(--text3); text-align: right; margin-bottom: 8px; }
+
+.recog-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.recog-status        { font-size: 12px; flex: 1; }
+.recog-status.loading{ color: var(--accent); }
+.recog-status.error  { color: var(--danger); }
+.recog-status.ok     { color: var(--accent2); }
+
+.candidates { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.candidate-btn { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 24px; padding: 8px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border2); background: var(--surface2); color: var(--text); cursor: pointer; transition: all .15s; }
+.candidate-btn.selected { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+
+.result-card { display: none; margin-bottom: 12px; background: var(--accent2-bg); border: 1px solid rgba(46,107,79,.2); border-radius: var(--radius); padding: 14px 16px; }
+.result-card.visible { display: block; }
+.result-thai-big { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 40px; font-weight: 500; color: var(--accent2); text-align: center; margin-bottom: 10px; }
+.result-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+
+/* ── Zone correction (mini clavier) ── */
+.correction-zone { display: none; margin-bottom: 12px; border: 1.5px solid var(--accent2); border-radius: var(--radius); overflow: hidden; }
+.correction-zone.open { display: block; }
+.correction-header { background: var(--accent2-bg); padding: 8px 14px; font-size: 12px; font-weight: 500; color: var(--accent2); display: flex; align-items: center; justify-content: space-between; }
+.correction-composer { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); }
+.correction-word { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 28px; font-weight: 500; color: var(--accent); flex: 1; min-height: 40px; word-break: break-all; }
+.correction-actions { display: flex; gap: 5px; }
+.corr-btn { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.corr-btn:active { background: var(--surface); }
+.corr-btn.speak  { background: var(--accent2-bg); color: var(--accent2); }
+
+.mini-kbd { padding: 10px 14px 14px; background: var(--surface); }
+.mini-kbd-section { margin-bottom: 8px; }
+.mini-kbd-label { font-size: 9px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.mini-kbd-row { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.mini-key {
+  font-family: Thonburi, 'Noto Sans Thai', sans-serif;
+  font-size: 17px; min-width: 34px; height: 42px; padding: 0 4px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border2);
+  background: var(--surface); color: var(--text);
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  -webkit-user-select: none;
+}
+.mini-key:active { transform: scale(.92); }
+.mini-key .rom   { font-family: 'DM Mono', monospace; font-size: 7px; line-height: 1; }
+.mini-key.low    { background: var(--low-bg);  border-color: var(--low-border);  color: var(--low-text); }
+.mini-key.low:active  { background: var(--low-border);  color: #fff; }
+.mini-key.mid    { background: var(--mid-bg);  border-color: var(--mid-border);  color: var(--mid-text); }
+.mini-key.mid:active  { background: var(--mid-border);  color: #fff; }
+.mini-key.high   { background: var(--high-bg); border-color: var(--high-border); color: var(--high-text); }
+.mini-key.high:active { background: var(--high-border); color: #fff; }
+.mini-key.vowel  { background: #EAF3EE; border-color: rgba(46,107,79,.2); }
+.mini-key.vowel:active{ background: var(--accent2); color: #fff; }
+.mini-key.tone   { background: #FBF0EA; border-color: rgba(196,82,26,.2); }
+.mini-key.tone:active { background: var(--accent);  color: #fff; }
+
+/* ── Responsive ── */
+@media (min-width: 600px) {
+  .modal-overlay-full .modal { max-width: 100% !important; }
+  .modal { border-radius: var(--radius); max-width: 640px; margin-bottom: 40px; }
+  .modal-overlay { align-items: center; }
+  .kbd-key { min-width: 48px; font-size: 24px; height: 58px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-title">
+    <h1>ภาษาไทย</h1>
+    <span>vocabulaire</span>
+  </div>
+  <div class="header-right">
+    <button class="csv-btn" id="translate-key-btn" title="Clé Google Translation">🔑 trad.</button>
+    <button class="csv-btn" id="csv-btn">⇅ CSV</button>
+    <div id="voice-pill" class="voice-pill">⚠ voix</div>
+  </div>
+</header>
+
+<!-- ── Barre recherche + ajout ── -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="rechercher…" autocomplete="off" autocorrect="off" spellcheck="false" />
+  </div>
+  <button class="btn" id="toggle-add">+ ajouter</button>
+</div>
+
+<!-- ── Formulaire ajout manuel ── -->
+<div class="add-form" id="add-form">
+  <div class="add-form-grid">
+    <div class="field"><label>thaï *</label><input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+    <div class="field"><label>romanisation</label><input type="text" id="inp-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+    <div class="field"><label>français</label><input type="text" id="inp-meaning" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
+    <div class="field"><label>anglais</label><input type="text" id="inp-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
+  </div>
+  <div class="form-actions">
+    <button class="btn accent" id="btn-add-word">✓ enregistrer</button>
+    <span class="feedback-msg" id="feedback">✓ ajouté !</span>
+  </div>
+</div>
+
+<!-- ── Liste ── -->
+<div class="count-bar" id="count-bar"></div>
+<div class="table-wrap"><div class="word-list" id="word-list"></div></div>
+
+<!-- ── FABs ── -->
+<div class="fab-row">
+  <div class="fab-wrap">
+    <span class="fab-badge">FR</span>
+    <button class="fab fr2th" id="fab-fr2th">🎤</button>
+    <span class="fab-badge thai">ไทย</span>
+  </div>
+  <div class="fab-wrap">
+    <span class="fab-badge en2th">EN</span>
+    <button class="fab en2th" id="fab-en2th">🎤</button>
+    <span class="fab-badge thai">ไทย</span>
+  </div>
+  <button class="fab stylet" id="fab-stylet">✏️</button>
+  <button class="fab kbd"    id="fab-kbd">⌨️</button>
+</div>
+
+<!-- ── Modal : Clé Google Translation ── -->
+<div class="modal-overlay" id="modal-tkey">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Clé Google Translation</div>
+      <button class="modal-close" id="tkey-close">✕</button>
+    </div>
+    <div class="csv-info">Ta clé est stockée uniquement sur cet appareil. Elle sert uniquement à traduire automatiquement les mots thaï reconnus vers le français.</div>
+    <div class="field" style="margin-bottom:12px;">
+      <label>Clé API (AIza…)</label>
+      <input type="text" id="tkey-input" placeholder="AIza…" autocomplete="off" autocorrect="off" spellcheck="false" style="padding-left:14px;font-family:monospace;font-size:13px;" />
+    </div>
+    <div class="csv-actions">
+      <button class="btn btn-full" id="tkey-delete" style="color:var(--danger);">🗑 supprimer</button>
+      <button class="btn accent btn-full" id="tkey-save">✓ enregistrer</button>
+    </div>
+    <div class="csv-feedback" id="tkey-feedback"></div>
+  </div>
+</div>
+
+<!-- ── Modal : FR → ไทย ── -->
+<div class="modal-overlay" id="modal-fr2th">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🎤 FR → ไทย</div>
+      <button class="modal-close" id="fr2th-close">✕</button>
+    </div>
+
+    <!-- Zone écoute -->
+    <div class="fr2th-listen">
+      <button class="fr2th-mic-btn" id="fr2th-mic">🎤</button>
+      <div class="fr2th-lang-badges">
+        <span class="fr2th-badge">FR</span>
+        <span class="fr2th-arrow">→</span>
+        <span class="fr2th-badge thai">ไทย</span>
+      </div>
+      <div class="fr2th-status" id="fr2th-status">Appuie pour parler en français</div>
+    </div>
+
+    <!-- Texte français reconnu -->
+    <div class="fr2th-field">
+      <label>Français reconnu</label>
+      <div class="fr2th-text" id="fr2th-fr-text">—</div>
+    </div>
+
+    <!-- Résultat thaï -->
+    <div class="fr2th-result" id="fr2th-result">
+      <div class="fr2th-thai" id="fr2th-thai-text"></div>
+      <div class="fr2th-sub" id="fr2th-roman"></div>
+      <div class="fr2th-actions">
+        <button class="btn green btn-full" id="fr2th-speak">🔊 écouter</button>
+        <button class="btn accent btn-full" id="fr2th-save">✓ enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal : EN → ไทย ── -->
+<div class="modal-overlay" id="modal-en2th">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🎤 EN → ไทย</div>
+      <button class="modal-close" id="en2th-close">✕</button>
+    </div>
+    <div class="fr2th-listen">
+      <button class="fr2th-mic-btn en" id="en2th-mic">🎤</button>
+      <div class="fr2th-lang-badges">
+        <span class="fr2th-badge" style="color:#6B3FA0">EN</span>
+        <span class="fr2th-arrow">→</span>
+        <span class="fr2th-badge thai">ไทย</span>
+      </div>
+      <div class="fr2th-status" id="en2th-status">Appuie pour parler en anglais</div>
+    </div>
+    <div class="fr2th-field">
+      <label>Anglais reconnu</label>
+      <div class="fr2th-text" id="en2th-en-text">—</div>
+    </div>
+    <div class="fr2th-result" id="en2th-result">
+      <div class="fr2th-thai" id="en2th-thai-text"></div>
+      <div class="fr2th-sub"  id="en2th-roman"></div>
+      <div class="fr2th-actions">
+        <button class="btn green btn-full" id="en2th-speak">🔊 écouter</button>
+        <button class="btn accent btn-full" id="en2th-save">✓ enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal : CSV ── -->
+<div class="modal-overlay" id="modal-csv">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">⇅ Export / Import CSV</div>
+      <button class="modal-close" id="csv-close">✕</button>
+    </div>
+    <div class="csv-info">Format : <strong>thaï, romanisation, sens</strong> — UTF-8. L'import fusionne sans doublons.</div>
+    <div class="csv-actions">
+      <button class="btn green btn-full" id="csv-export">⬇ Exporter</button>
+      <button class="btn btn-full" id="csv-import-btn" style="color:var(--accent);border-color:var(--accent);">⬆ Importer</button>
+    </div>
+    <div class="csv-feedback" id="csv-feedback"></div>
+    <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display:none" />
+  </div>
+</div>
+
+<!-- ── Modal : Clavier thaï ── -->
+<div class="modal-overlay modal-overlay-full" id="modal-kbd">
+  <div class="modal modal-kbd-inner">
+    <div class="modal-header">
+      <div class="modal-title">⌨️ Clavier thaï</div>
+      <button class="modal-close" id="kbd-close">✕</button>
+    </div>
+
+    <div class="word-composer">
+      <input type="text" class="word-composed" id="composed"
+        placeholder="appuie sur une touche… ou sur ton clavier thaï"
+        autocomplete="off" autocorrect="off" autocapitalize="none"
+        spellcheck="false" inputmode="text" />
+      <div class="composer-actions">
+        <div class="mic-wrap">
+          <span class="mic-badge top">ไทย</span>
+          <button class="composer-btn mic" id="compose-mic" title="Saisie vocale thaï">🎤</button>
+          <span class="mic-badge">TH</span>
+        </div>
+        <button class="composer-btn speak" id="compose-speak">🔊</button>
+        <button class="composer-btn"       id="compose-del">⌫</button>
+        <button class="composer-btn"       id="compose-clear">✕</button>
+      </div>
+    </div>
+
+    <button class="btn" id="kbd-new" style="width:100%;margin-bottom:10px;border-color:var(--danger);color:var(--danger);">🗑 Effacer — saisir un nouveau mot</button>
+
+    <div class="tone-legend">
+      <div class="legend-item low">🔵 Basse (11)</div>
+      <div class="legend-item mid">🟢 Moyenne (9)</div>
+      <div class="legend-item high">🟡 Haute (11)</div>
+    </div>
+
+    <div class="kbd-sections-wrap">
+      <div class="kbd-section"><div class="kbd-label">Consonnes (44)</div><div class="kbd-row" id="kbd-consonants"></div></div>
+      <div class="kbd-section"><div class="kbd-label">Voyelles (16)</div><div class="kbd-row" id="kbd-vowels"></div></div>
+      <div class="kbd-section"><div class="kbd-label">Tons &amp; signes</div><div class="kbd-row" id="kbd-tones"></div></div>
+      <div class="kbd-section"><div class="kbd-label">Chiffres thaï (10)</div><div class="kbd-row" id="kbd-numbers"></div></div>
+    </div>
+
+    <div class="result-fields" style="margin-top:10px;">
+      <div class="result-field"><label>Romanisation</label><input type="text" id="kbd-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+      <div class="result-field"><label>Traduction française</label><input type="text" id="kbd-fr" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
+      <div class="result-field"><label>Traduction anglaise</label><input type="text" id="kbd-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
+    </div>
+
+    <button class="btn green" id="kbd-translate" style="width:100%;margin-top:8px;">🌐 Traduire en français</button>
+    <div class="save-feedback" id="kbd-feedback"></div>
+
+    <div class="kbd-save-row">
+      <button class="btn btn-full" id="kbd-cancel">annuler</button>
+      <button class="btn accent btn-full" id="kbd-save">✓ enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal : Stylet ── -->
+<div class="modal-overlay modal-overlay-full" id="modal-stylet">
+  <div class="modal modal-stylet-inner">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Stylet · MyScript</div>
+      <button class="modal-close" id="stylet-close">✕</button>
+    </div>
+
+    <div class="stylet-toolbar">
+      <button class="tool-pill active" id="tool-pen">✏️ crayon</button>
+      <button class="tool-pill eraser"  id="tool-eraser">⬜ gomme</button>
+      <button class="tool-pill"         id="tool-clear-canvas">🗑 effacer</button>
+      <div class="toolbar-sep"></div>
+      <div class="color-dot selected" data-color="#1A1814" style="background:#1A1814"></div>
+      <div class="color-dot"          data-color="#C4521A" style="background:#C4521A"></div>
+      <div class="color-dot"          data-color="#2E6B4F" style="background:#2E6B4F"></div>
+      <div class="color-dot"          data-color="#185FA5" style="background:#185FA5"></div>
+      <div class="toolbar-sep"></div>
+      <div class="size-dot selected" data-size="2.5" style="width:10px;height:10px;"></div>
+      <div class="size-dot"          data-size="4"   style="width:15px;height:15px;"></div>
+      <div class="size-dot"          data-size="7"   style="width:21px;height:21px;"></div>
+      <span class="pencil-badge" id="pencil-badge">✏️ Apple Pencil</span>
+    </div>
+
+    <div class="stylet-scroll">
+      <div class="canvas-wrap">
+        <canvas id="stylet-canvas" height="240"></canvas>
+        <div class="canvas-guide-stylet" id="canvas-guide">ก</div>
+      </div>
+      <div class="stroke-info" id="stroke-info">0 trait — prêt</div>
+
+      <div class="recog-bar">
+        <button class="btn green" id="btn-recog">🔍 reconnaître</button>
+        <span class="recog-status" id="recog-status"></span>
+      </div>
+      <div class="candidates" id="candidates"></div>
+
+      <!-- Carte résultat -->
+      <div class="result-card" id="result-card">
+        <div class="result-thai-big" id="result-thai-big"></div>
+        <div class="result-actions">
+          <button class="btn green btn-full" id="res-speak">🔊 écouter</button>
+          <button class="btn btn-full" id="res-correct" style="color:var(--accent2);border-color:var(--accent2);">⌨️ corriger</button>
+        </div>
+        <div class="result-fields">
+          <div class="result-field"><label>Romanisation</label><input type="text" id="res-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
+          <div class="result-field"><label>Traduction française</label><input type="text" id="res-fr" placeholder="traduction…" autocomplete="off" spellcheck="false" /></div>
+          <div class="result-field"><label>Traduction anglaise</label><input type="text" id="res-en" placeholder="traduction…" autocomplete="off" spellcheck="false" /></div>
+        </div>
+        <button class="btn accent" id="btn-save-word" style="width:100%;">✓ Enregistrer dans le vocabulaire</button>
+        <div class="save-feedback" id="save-feedback">✓ Mot ajouté au vocabulaire !</div>
+      </div>
+
+      <!-- Zone correction clavier -->
+      <div class="correction-zone" id="correction-zone">
+        <div class="correction-header">
+          <span>✏️ Corriger au clavier</span>
+          <button class="corr-btn" id="correction-close" style="width:28px;height:28px;font-size:14px;">✕</button>
+        </div>
+        <div class="correction-composer">
+          <div class="correction-word" id="correction-word"></div>
+          <div class="correction-actions">
+            <button class="corr-btn speak" id="corr-speak">🔊</button>
+            <button class="corr-btn"       id="corr-del">⌫</button>
+            <button class="corr-btn"       id="corr-clear">✕</button>
+          </div>
+        </div>
+        <div class="mini-kbd">
+          <div class="mini-kbd-section"><div class="mini-kbd-label">Consonnes</div><div class="mini-kbd-row" id="mini-consonants"></div></div>
+          <div class="mini-kbd-section"><div class="mini-kbd-label">Voyelles</div><div class="mini-kbd-row" id="mini-vowels"></div></div>
+          <div class="mini-kbd-section"><div class="mini-kbd-label">Tons</div><div class="mini-kbd-row" id="mini-tones"></div></div>
+          <div style="margin-top:10px;"><button class="btn accent" id="corr-validate" style="width:100%;">✓ utiliser cette correction</button></div>
+        </div>
+      </div>
+    </div><!-- /stylet-scroll -->
+
+    <div class="modal-actions">
+      <button class="btn btn-full" id="stylet-cancel">fermer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+'use strict';
+
+// ── Clés API ──
+const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
+const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
+const WORDS_KEY = 'thai_words_v3';
+
+// ── Mots initiaux au premier lancement (romanisation et sens complétés par Volubilis au runtime) ──
+const INITIAL_THAI = [
+  'สวัสดี','ขอบคุณ','ใช่','ไม่','น้ำ',
+];
+
+// ── Données clavier ──
+const CONSONANTS = [
+  {c:'ก',r:'g',t:'mid'}, {c:'ข',r:'kh',t:'high'},{c:'ฃ',r:'kh',t:'high'},{c:'ค',r:'kh',t:'low'},
+  {c:'ฅ',r:'kh',t:'low'},{c:'ฆ',r:'kh',t:'low'}, {c:'ง',r:'ng',t:'low'}, {c:'จ',r:'j',t:'mid'},
+  {c:'ฉ',r:'ch',t:'high'},{c:'ช',r:'ch',t:'low'},{c:'ซ',r:'s',t:'low'},  {c:'ฌ',r:'ch',t:'low'},
+  {c:'ญ',r:'y',t:'low'}, {c:'ฎ',r:'d',t:'mid'},  {c:'ฏ',r:'t',t:'mid'},  {c:'ฐ',r:'th',t:'high'},
+  {c:'ฑ',r:'th',t:'low'},{c:'ฒ',r:'th',t:'low'}, {c:'ณ',r:'n',t:'low'},  {c:'ด',r:'d',t:'mid'},
+  {c:'ต',r:'t',t:'mid'}, {c:'ถ',r:'th',t:'high'},{c:'ท',r:'th',t:'low'}, {c:'ธ',r:'th',t:'low'},
+  {c:'น',r:'n',t:'low'}, {c:'บ',r:'b',t:'mid'},  {c:'ป',r:'p',t:'mid'},  {c:'ผ',r:'ph',t:'high'},
+  {c:'ฝ',r:'f',t:'high'},{c:'พ',r:'ph',t:'low'}, {c:'ฟ',r:'f',t:'low'},  {c:'ภ',r:'ph',t:'low'},
+  {c:'ม',r:'m',t:'low'}, {c:'ย',r:'y',t:'low'},  {c:'ร',r:'r',t:'low'},  {c:'ล',r:'l',t:'low'},
+  {c:'ว',r:'w',t:'low'}, {c:'ศ',r:'s',t:'high'}, {c:'ษ',r:'s',t:'high'}, {c:'ส',r:'s',t:'high'},
+  {c:'ห',r:'h',t:'high'},{c:'ฬ',r:'l',t:'low'},  {c:'อ',r:'o',t:'mid'},  {c:'ฮ',r:'h',t:'low'},
+];
+const VOWELS = [
+  {c:'า',r:'aa'}, {c:'ะ',r:'a'},   {c:'ิ',r:'i'},       {c:'ี',r:'ii'},
+  {c:'ึ',r:'ue'}, {c:'ื',r:'uee'}, {c:'ุ',r:'u'},       {c:'ู',r:'uu'},
+  {c:'เ',r:'e'},  {c:'แ',r:'ae'},  {c:'โ',r:'o'},       {c:'ใ',r:'ai'},
+  {c:'ไ',r:'ai'}, {c:'ำ',r:'am'},  {c:'ั',r:'a'},       {c:'็',r:'mai tai'},
+];
+const TONES = [
+  {c:'่',r:'mai ek'}, {c:'้',r:'mai tho'},{c:'๊',r:'mai tri'},{c:'๋',r:'mai jat'},
+  {c:'์',r:'silent'}, {c:'ํ',r:'nasal'},  {c:'ๆ',r:'répét.'}, {c:'ฯ',r:'etc.'},
+  {c:'ฺ',r:'phinthu'},
+];
+const NUMBERS = [
+  {c:'๐',r:'0'},{c:'๑',r:'1'},{c:'๒',r:'2'},{c:'๓',r:'3'},{c:'๔',r:'4'},
+  {c:'๕',r:'5'},{c:'๖',r:'6'},{c:'๗',r:'7'},{c:'๘',r:'8'},{c:'๙',r:'9'},
+];
+
+// ── État global ──
+let words = [], activeRow = null, playingWord = null;
+let thaiVoice = null;
+const synth = window.speechSynthesis;
+let composedWord = '', correctionWord = '';
+let canvas = null, ctx = null, drawing = false;
+let strokes = [], currentStroke = [];
+let hasPencil = false, hasDrawing = false;
+let currentTool = 'pen', currentColor = '#1A1814', currentSize = 2.5;
+let selectedThai = '';
+let VOLUBILIS = null;
+
+// ── Persistance localStorage ──
+function loadWords() {
+  try {
+    const s = localStorage.getItem(WORDS_KEY);
+    if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } }
+  } catch(e) {}
+  words = INITIAL_THAI.map(thai => ({ thai, roman: '', meaning: '' }));
+  saveWords();
+}
+function saveWords() {
+  try { localStorage.setItem(WORDS_KEY, JSON.stringify(words)); } catch(e) {}
+}
+
+// ── Voix synthèse ──
+function checkVoices() {
+  const v = synth.getVoices().find(v => v.lang.startsWith('th'));
+  if (v) {
+    thaiVoice = v;
+    const p = document.getElementById('voice-pill');
+    p.textContent = '🔊 voix ok';
+    p.classList.add('ok');
+  }
+}
+checkVoices();
+synth.onvoiceschanged = checkVoices;
+
+function speak(word) {
+  if (!word) return;
+  synth.cancel(); playingWord = word; render();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'th-TH'; u.rate = 0.85; u.pitch = 1.1;
+  if (thaiVoice) u.voice = thaiVoice;
+  u.onend  = () => { playingWord = null; render(); };
+  u.onerror = () => { playingWord = null; render(); };
+  synth.speak(u);
+}
+
+// ── Volubilis — source unique de romanisation ──
+async function loadVolubilis() {
+  const pill = document.getElementById('voice-pill');
+  try {
+    pill.textContent += ' · ⏳dict…';
+    const resp = await fetch('volubilis.json');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    VOLUBILIS = await resp.json();
+    const n = Object.keys(VOLUBILIS).length;
+    // Indicateur visuel : Volubilis prêt
+    pill.textContent = pill.textContent
+      .replace(' · ⏳dict…', '')
+      + ' · 📖 ' + n + ' mots';
+    // Enrichir les mots du vocabulaire qui n'ont pas encore de romanisation
+    let updated = false;
+    words.forEach(w => {
+      const v = VOLUBILIS[w.thai.trim()];
+      if (v) {
+        if (!w.roman)   { w.roman   = v[0]; updated = true; }
+        if (!w.en)      { w.en      = v[1]; updated = true; }
+      }
+    });
+    if (updated) { saveWords(); render(); }
+  } catch(e) {
+    pill.textContent = pill.textContent.replace(' · ⏳dict…', '') + ' · ❌ ' + e.message;
+  }
+}
+
+// ── Lookup Volubilis uniquement ──
+function lookupDict(thai) {
+  if (!thai || !VOLUBILIS) return null;
+  const c = thai.trim().replace(/[\s\u200B\u200C\u200D\uFEFF]+/g, '');
+  const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
+  if (v) return { roman: v[0], en: v[1] };
+  return null;
+}
+
+// ── Rendu liste de mots ──
+function render() {
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const filtered = words.filter(w =>
+    ((w.thai || '') + ' ' + (w.roman || '') + ' ' + (w.meaning || '')).toLowerCase().includes(q)
+  );
+  document.getElementById('count-bar').textContent = filtered.length + ' mot' + (filtered.length !== 1 ? 's' : '');
+  const list = document.getElementById('word-list');
+  list.innerHTML = '';
+  if (filtered.length === 0) {
+    const msg = q
+      ? '<div class="empty-state">aucun mot trouvé</div>'
+      : '<div class="empty-state">Ton dictionnaire est vide.<br>Utilise ✏️ le stylet, ⌨️ le clavier<br>ou les boutons 🎤 FR / EN pour ajouter des mots.</div>';
+    list.innerHTML = msg; return;
+  }
+
+  filtered.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'word-card' + (activeRow === w.thai ? ' active' : '');
+
+    const thaiDiv = document.createElement('div');
+    thaiDiv.className = 'word-thai';
+    thaiDiv.textContent = w.thai;
+
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'word-meta';
+    const romanDiv = document.createElement('div');
+    romanDiv.className = 'word-roman';
+    romanDiv.textContent = w.roman || '';
+    metaDiv.appendChild(romanDiv);
+    if (w.meaning || w.en) {
+      const translDiv = document.createElement('div');
+      translDiv.className = 'word-transl';
+      if (w.meaning) {
+        const frSpan = document.createElement('span');
+        frSpan.className = 'word-fr';
+        frSpan.textContent = w.meaning;
+        translDiv.appendChild(frSpan);
+      }
+      if (w.en) {
+        const enSpan = document.createElement('span');
+        enSpan.className = 'word-en';
+        enSpan.textContent = w.en;
+        translDiv.appendChild(enSpan);
+      }
+      metaDiv.appendChild(translDiv);
+    }
+
+    const spk = document.createElement('button');
+    spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
+    spk.textContent = playingWord === w.thai ? '⏸' : '🔊';
+    spk.addEventListener('click', e => { e.stopPropagation(); speak(w.thai); });
+
+    const del = document.createElement('button');
+    del.className = 'del-btn';
+    del.textContent = '✕';
+    del.addEventListener('click', e => {
+      e.stopPropagation();
+      words = words.filter(x => x.thai !== w.thai);
+      if (activeRow === w.thai) activeRow = null;
+      if (playingWord === w.thai) { synth.cancel(); playingWord = null; }
+      saveWords(); render();
+    });
+
+    const actDiv = document.createElement('div');
+    actDiv.className = 'word-actions';
+    actDiv.appendChild(spk); actDiv.appendChild(del);
+
+    card.appendChild(thaiDiv); card.appendChild(metaDiv); card.appendChild(actDiv);
+    card.addEventListener('click', () => { activeRow = w.thai; speak(w.thai); });
+    list.appendChild(card);
+  });
+}
+
+// ── Recherche ──
+document.getElementById('search').addEventListener('input', render);
+
+// ── Formulaire ajout manuel ──
+document.getElementById('toggle-add').addEventListener('click', () => {
+  const f = document.getElementById('add-form');
+  const btn = document.getElementById('toggle-add');
+  const open = f.classList.toggle('open');
+  btn.textContent = open ? '✕ fermer' : '+ ajouter';
+  if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
+  else ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => document.getElementById(id).value = '');
+});
+
+function doAddWord() {
+  const thai    = document.getElementById('inp-thai').value.trim();
+  const roman   = document.getElementById('inp-roman').value.trim();
+  const meaning = document.getElementById('inp-meaning').value.trim();
+  const en      = document.getElementById('inp-en').value.trim();
+  if (!thai) { document.getElementById('inp-thai').focus(); return; }
+  words.push({ thai, roman, meaning, en });
+  saveWords();
+  ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inp-thai').focus();
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 1600);
+  render();
+}
+document.getElementById('btn-add-word').addEventListener('click', doAddWord);
+['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
+});
+
+// ── Clé Google Translation ──
+function getTranslateKey() {
+  try { return localStorage.getItem('google_translate_key') || ''; } catch(e) { return ''; }
+}
+function updateTkeyBtn() {
+  const k = getTranslateKey();
+  const btn = document.getElementById('translate-key-btn');
+  btn.textContent = k ? '🔑 trad. ok' : '🔑 trad.';
+  btn.style.color = k ? 'var(--accent2)' : '';
+}
+
+document.getElementById('translate-key-btn').addEventListener('click', () => {
+  document.getElementById('tkey-input').value = getTranslateKey();
+  document.getElementById('tkey-feedback').textContent = '';
+  document.getElementById('modal-tkey').classList.add('open');
+  setTimeout(() => document.getElementById('tkey-input').focus(), 80);
+});
+function closeTkey() { document.getElementById('modal-tkey').classList.remove('open'); }
+document.getElementById('tkey-close').addEventListener('click', closeTkey);
+document.getElementById('modal-tkey').addEventListener('click', e => { if (e.target === document.getElementById('modal-tkey')) closeTkey(); });
+document.getElementById('tkey-save').addEventListener('click', () => {
+  const k = document.getElementById('tkey-input').value.trim();
+  try { localStorage.setItem('google_translate_key', k); } catch(e) {}
+  updateTkeyBtn();
+  document.getElementById('tkey-feedback').textContent = k ? '✓ clé enregistrée' : 'clé supprimée';
+  setTimeout(closeTkey, 800);
+});
+document.getElementById('tkey-delete').addEventListener('click', () => {
+  try { localStorage.removeItem('google_translate_key'); } catch(e) {}
+  document.getElementById('tkey-input').value = '';
+  updateTkeyBtn();
+  document.getElementById('tkey-feedback').textContent = '✓ clé supprimée';
+  setTimeout(closeTkey, 800);
+});
+
+// ── Export / Import CSV ──
+document.getElementById('csv-btn').addEventListener('click', () => {
+  document.getElementById('csv-feedback').textContent = '';
+  document.getElementById('modal-csv').classList.add('open');
+});
+function closeCsv() { document.getElementById('modal-csv').classList.remove('open'); }
+document.getElementById('csv-close').addEventListener('click', closeCsv);
+document.getElementById('modal-csv').addEventListener('click', e => { if (e.target === document.getElementById('modal-csv')) closeCsv(); });
+
+document.getElementById('csv-export').addEventListener('click', () => {
+  const rows = words.map(w =>
+    `"${(w.thai    || '').replace(/"/g, '""')}","${(w.roman   || '').replace(/"/g, '""')}","${(w.meaning || '').replace(/"/g, '""')}"`
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + 'thaï,romanisation,sens\n' + rows], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'thai_vocabulaire.csv'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('csv-feedback').textContent = '✓ ' + words.length + ' mots exportés';
+});
+
+document.getElementById('csv-import-btn').addEventListener('click', () => document.getElementById('csv-file-input').click());
+document.getElementById('csv-file-input').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    const text = evt.target.result.replace(/^\uFEFF/, '');
+    const lines = text.split(/\r?\n/).filter(l => l.trim() && !l.startsWith('thaï'));
+    let added = 0;
+    lines.forEach(line => {
+      const parts = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(p => p.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
+      if (parts.length >= 1 && parts[0]) {
+        const [thai, roman = '', meaning = ''] = parts;
+        if (!words.find(w => w.thai === thai)) { words.push({ thai, roman, meaning }); added++; }
+      }
+    });
+    saveWords(); render();
+    document.getElementById('csv-feedback').textContent = '✓ ' + added + ' mots importés';
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = '';
+});
+
+// ── Construction du clavier ──
+function buildKeyboard() {
+  function makeRow(data, rowId, defaultClass, mini) {
+    const row = document.getElementById(rowId);
+    const cls = mini ? 'mini-key' : 'kbd-key';
+    data.forEach(d => {
+      const btn = document.createElement('button');
+      btn.className = cls + ' ' + (d.t || defaultClass || '');
+      const main = document.createElement('span'); main.textContent = d.c; btn.appendChild(main);
+      if (d.r) { const rom = document.createElement('span'); rom.className = 'rom'; rom.textContent = d.r; btn.appendChild(rom); }
+      btn.addEventListener('click', () => {
+        if (mini) { correctionWord += d.c; updateCorrectionWord(); }
+        else { composedWord += d.c; updateComposer(); autoFillKbd(composedWord); }
+      });
+      row.appendChild(btn);
+    });
+  }
+  makeRow(CONSONANTS, 'kbd-consonants',  '',      false);
+  makeRow(VOWELS,     'kbd-vowels',      'vowel', false);
+  makeRow(TONES,      'kbd-tones',       'tone',  false);
+  makeRow(NUMBERS,    'kbd-numbers',     'num',   false);
+  makeRow(CONSONANTS, 'mini-consonants', '',      true);
+  makeRow(VOWELS,     'mini-vowels',     'vowel', true);
+  makeRow(TONES,      'mini-tones',      'tone',  true);
+}
+
+// ── Composeur (clavier modal) ──
+function updateComposer() {
+  document.getElementById('composed').value = composedWord;
+}
+// Sync depuis clavier iOS natif
+let kbdDebounce = null;
+document.getElementById('composed').addEventListener('input', function() {
+  composedWord = this.value;
+  autoFillKbd(composedWord);
+});
+
+async function autoFillKbd(thai) {
+  // Annuler le debounce précédent
+  clearTimeout(kbdDebounce);
+  clearKbdFields();
+  if (!thai) return;
+
+  // Attendre Volubilis si pas encore chargé
+  if (!VOLUBILIS) {
+    await new Promise(resolve => {
+      let tries = 0;
+      const wait = setInterval(() => {
+        tries++;
+        if (VOLUBILIS || tries >= 16) { clearInterval(wait); resolve(); }
+      }, 500);
+    });
+  }
+
+  // Romanisation + anglais instantanés depuis Volubilis
+  const d = lookupDict(thai);
+  if (d) {
+    if (d.roman) document.getElementById('kbd-roman').value = d.roman;
+    if (d.en)    document.getElementById('kbd-en').value    = d.en;
+  }
+
+  // Traduction FR automatique après 800ms de pause (debounce)
+  kbdDebounce = setTimeout(async () => {
+    const key = getTranslateKey();
+    if (!key || !composedWord || composedWord !== thai) return;
+    const btn = document.getElementById('kbd-translate');
+    btn.textContent = '⏳…'; btn.disabled = true;
+    document.getElementById('kbd-fr').value = '⏳…';
+    if (!d || !d.en) document.getElementById('kbd-en').value = '⏳…';
+    const [resFr, resEn] = await Promise.all([
+      translateThai(thai, 'fr'),
+      translateThai(thai, 'en'),
+    ]);
+    // Vérifier que le mot n'a pas changé pendant l'appel
+    if (composedWord !== thai) return;
+    document.getElementById('kbd-fr').value = resFr.err || resFr.text || '—';
+    if (!d || !d.en) document.getElementById('kbd-en').value = resEn.err || resEn.text || '—';
+    btn.textContent = '🌐 Traduire en français'; btn.disabled = false;
+  }, 800);
+}
+
+document.getElementById('compose-speak').addEventListener('click', () => speak(composedWord));
+
+// ── Saisie vocale (clavier) ──
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+
+document.getElementById('compose-mic').addEventListener('click', () => {
+  if (!SpeechRec) {
+    alert('Saisie vocale non supportée sur ce navigateur.');
+    return;
+  }
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+  recognition = new SpeechRec();
+  recognition.lang = 'th-TH';
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  const micBtn = document.getElementById('compose-mic');
+  micBtn.classList.add('recording');
+  micBtn.textContent = '⏹';
+  isRecording = true;
+
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results)
+      .map(r => r[0].transcript)
+      .join('');
+    composedWord = transcript;
+    updateComposer();
+    if (e.results[e.results.length - 1].isFinal) {
+      autoFillKbd(composedWord);
+    }
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+    micBtn.textContent = '🎤';
+    if (composedWord) autoFillKbd(composedWord);
+  };
+
+  recognition.onerror = (e) => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+    micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      const fb = document.getElementById('kbd-feedback');
+      fb.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error;
+      fb.classList.add('show');
+      setTimeout(() => fb.classList.remove('show'), 3000);
+    }
+  };
+
+  recognition.start();
+});
+document.getElementById('compose-del').addEventListener('click', () => {
+  clearTimeout(kbdDebounce);
+  composedWord = [...composedWord].slice(0, -1).join('');
+  updateComposer();
+  autoFillKbd(composedWord);
+  document.getElementById('composed').focus();
+});
+document.getElementById('compose-clear').addEventListener('click', () => {
+  clearTimeout(kbdDebounce);
+  composedWord = ''; updateComposer(); clearKbdFields();
+  document.getElementById('composed').focus();
+});
+
+function clearKbdFields() {
+  document.getElementById('kbd-roman').value = '';
+  document.getElementById('kbd-fr').value    = '';
+  document.getElementById('kbd-en').value    = '';
+}
+document.getElementById('fab-kbd').addEventListener('click', () => {
+  composedWord = ''; updateComposer(); clearKbdFields();
+  document.getElementById('modal-kbd').classList.add('open');
+  setTimeout(() => document.getElementById('composed').focus(), 300);
+});
+function closeKbd() {
+  if (isRecording && recognition) { recognition.stop(); }
+  document.getElementById('modal-kbd').classList.remove('open');
+}
+document.getElementById('kbd-close').addEventListener('click',   closeKbd);
+document.getElementById('kbd-cancel').addEventListener('click',  closeKbd);
+document.getElementById('modal-kbd').addEventListener('click', e => { if (e.target === document.getElementById('modal-kbd')) closeKbd(); });
+
+document.getElementById('kbd-new').addEventListener('click', () => {
+  clearTimeout(kbdDebounce);
+  composedWord = ''; updateComposer(); clearKbdFields();
+  document.getElementById('kbd-feedback').classList.remove('show');
+  document.getElementById('composed').focus();
+});
+
+document.getElementById('kbd-translate').addEventListener('click', async () => {
+  if (!composedWord) return;
+  const btn = document.getElementById('kbd-translate');
+  const fb  = document.getElementById('kbd-feedback');
+  btn.textContent = '⏳…'; btn.disabled = true;
+
+  // Romanisation depuis Volubilis / dico interne
+  const d = lookupDict(composedWord);
+  if (d && d.roman) document.getElementById('kbd-roman').value = d.roman;
+  if (d && d.en)    document.getElementById('kbd-en').value    = d.en;
+
+  // Traduction Google
+  const key = getTranslateKey();
+  if (!key) {
+    fb.textContent = '⚠ clé API absente — appuie sur 🔑 trad.';
+    fb.classList.add('show'); setTimeout(() => fb.classList.remove('show'), 3000);
+  } else {
+    const targets = [
+      document.getElementById('kbd-fr').value
+        ? Promise.resolve({ text: document.getElementById('kbd-fr').value, err: '' })
+        : translateThai(composedWord, 'fr'),
+      document.getElementById('kbd-en').value
+        ? Promise.resolve({ text: document.getElementById('kbd-en').value, err: '' })
+        : translateThai(composedWord, 'en'),
+    ];
+    const [resFr, resEn] = await Promise.all(targets);
+    if (resFr.err) {
+      fb.textContent = resFr.err; fb.classList.add('show');
+      setTimeout(() => fb.classList.remove('show'), 3000);
+    } else {
+      document.getElementById('kbd-fr').value = resFr.text || '—';
+      document.getElementById('kbd-en').value = resEn.text || '—';
+    }
+  }
+  btn.textContent = '🌐 Traduire en français'; btn.disabled = false;
+});
+
+document.getElementById('kbd-save').addEventListener('click', () => {
+  if (!composedWord) return;
+  const roman   = document.getElementById('kbd-roman').value.trim();
+  const meaning = document.getElementById('kbd-fr').value.trim();
+  const en      = document.getElementById('kbd-en').value.trim();
+  words.push({ thai: composedWord, roman, meaning, en });
+  saveWords(); closeKbd(); render();
+});
+
+// ── Stylet ──
+function resetStyletState() {
+  selectedThai = '';
+  document.getElementById('candidates').innerHTML = '';
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('recog-status').textContent = '';
+  document.getElementById('recog-status').className = 'recog-status';
+  document.getElementById('correction-zone').classList.remove('open');
+  document.getElementById('res-roman').value = '';
+  document.getElementById('res-fr').value    = '';
+  document.getElementById('res-en').value    = '';
+  document.getElementById('save-feedback').classList.remove('show');
+}
+document.getElementById('fab-stylet').addEventListener('click', () => {
+  resetStyletState();
+  document.getElementById('modal-stylet').classList.add('open');
+  setTimeout(initCanvas, 60);
+});
+function closeStylet() {
+  document.getElementById('modal-stylet').classList.remove('open');
+  if (canvas) {
+    canvas.removeEventListener('pointerdown',  onPtrDown);
+    canvas.removeEventListener('pointermove',  onPtrMove);
+    canvas.removeEventListener('pointerup',    onPtrUp);
+    canvas.removeEventListener('pointercancel',onPtrUp);
+    canvas = null; ctx = null;
+  }
+  strokes = []; currentStroke = []; hasDrawing = false; hasPencil = false;
+}
+document.getElementById('stylet-close').addEventListener('click',  closeStylet);
+document.getElementById('stylet-cancel').addEventListener('click', closeStylet);
+document.getElementById('modal-stylet').addEventListener('click', e => { if (e.target === document.getElementById('modal-stylet')) closeStylet(); });
+
+// ── Canvas dessin ──
+function initCanvas() {
+  canvas = document.getElementById('stylet-canvas');
+  ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1, w = canvas.offsetWidth;
+  canvas.width = w * dpr; canvas.height = 240 * dpr; canvas.style.height = '240px';
+  ctx.scale(dpr, dpr); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  drawBg(w);
+  canvas.addEventListener('pointerdown',   onPtrDown, { passive: false });
+  canvas.addEventListener('pointermove',   onPtrMove, { passive: false });
+  canvas.addEventListener('pointerup',     onPtrUp);
+  canvas.addEventListener('pointercancel', onPtrUp);
+}
+function drawBg(w) {
+  const cw = w || canvas.offsetWidth;
+  ctx.fillStyle = '#FEFEFE'; ctx.fillRect(0, 0, cw, 240);
+  ctx.strokeStyle = 'rgba(196,82,26,0.10)'; ctx.lineWidth = 1;
+  for (let y = 60; y < 240; y += 60) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
+  }
+}
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top, t: Date.now() };
+}
+function onPtrDown(e) {
+  if (e.pointerType === 'pen') { hasPencil = true; document.getElementById('pencil-badge').classList.add('visible'); }
+  if (e.pointerType === 'touch' && hasPencil) return;
+  e.preventDefault(); drawing = true; currentStroke = [];
+  const p = getPos(e); currentStroke.push(p); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  if (!hasDrawing) { hasDrawing = true; document.getElementById('canvas-guide').classList.add('hidden'); }
+}
+function onPtrMove(e) {
+  if (!drawing || (e.pointerType === 'touch' && hasPencil)) return;
+  e.preventDefault();
+  const p = getPos(e);
+  if (currentTool === 'eraser') {
+    ctx.save(); ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(p.x, p.y, currentSize * 6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    strokes = strokes.filter(s => !s.some(pt => Math.hypot(pt.x - p.x, pt.y - p.y) < currentSize * 6));
+  } else {
+    const pr = e.pressure > 0 ? e.pressure : 0.5;
+    ctx.lineWidth = currentSize * (0.4 + pr * 1.4); ctx.strokeStyle = currentColor;
+    currentStroke.push(p); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  }
+}
+function onPtrUp() {
+  if (!drawing) return; drawing = false;
+  if (currentStroke.length > 1 && currentTool !== 'eraser') strokes.push([...currentStroke]);
+  currentStroke = [];
+  const n = strokes.length;
+  document.getElementById('stroke-info').textContent = n + ' trait' + (n > 1 ? 's' : '') + (n === 0 ? ' — prêt' : ' tracé' + (n > 1 ? 's' : ''));
+  if (ctx) ctx.beginPath();
+}
+
+document.getElementById('tool-pen').addEventListener('click', () => {
+  currentTool = 'pen';
+  document.getElementById('tool-pen').classList.add('active');
+  document.getElementById('tool-eraser').classList.remove('active');
+});
+document.getElementById('tool-eraser').addEventListener('click', () => {
+  currentTool = 'eraser';
+  document.getElementById('tool-eraser').classList.add('active');
+  document.getElementById('tool-pen').classList.remove('active');
+});
+document.getElementById('tool-clear-canvas').addEventListener('click', () => {
+  if (!ctx) return;
+  drawBg(canvas.offsetWidth);
+  strokes = []; currentStroke = []; hasDrawing = false;
+  document.getElementById('canvas-guide').classList.remove('hidden');
+  document.getElementById('stroke-info').textContent = '0 trait — prêt';
+  document.getElementById('candidates').innerHTML = '';
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('correction-zone').classList.remove('open');
+  document.getElementById('res-roman').value = '';
+  document.getElementById('res-fr').value    = '';
+  document.getElementById('res-en').value    = '';
+  document.getElementById('save-feedback').classList.remove('show');
+  selectedThai = '';
+  document.getElementById('recog-status').textContent = '';
+});
+
+document.querySelectorAll('.color-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    currentColor = dot.dataset.color;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    dot.classList.add('selected');
+  });
+});
+document.querySelectorAll('.size-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    currentSize = parseFloat(dot.dataset.size);
+    document.querySelectorAll('.size-dot').forEach(d => d.classList.remove('selected'));
+    dot.classList.add('selected');
+  });
+});
+
+// ── API Google Translation ──
+async function translateThai(thai, target = 'fr') {
+  const key = getTranslateKey();
+  if (!key) return { text: '', err: '⚠ clé API absente — appuie sur 🔑 trad.' };
+  try {
+    const url = 'https://translation.googleapis.com/language/translate/v2?key=' + key;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: thai, source: 'th', target, format: 'text' })
+    });
+    const data = await resp.json();
+    if (data.error) return { text: '', err: '⚠ ' + data.error.message };
+    return { text: data.data?.translations?.[0]?.translatedText || '', err: '' };
+  } catch(e) {
+    return { text: '', err: '⚠ erreur réseau' };
+  }
+}
+
+// ── Carte résultat (stylet) ──
+async function showResultCard(thai) {
+  selectedThai = thai;
+  document.getElementById('result-thai-big').textContent = thai;
+  document.getElementById('result-card').classList.add('visible');
+  document.getElementById('save-feedback').classList.remove('show');
+  document.getElementById('res-roman').value = '';
+  document.getElementById('res-fr').value    = '';
+  document.getElementById('res-en').value    = '';
+  speak(thai);
+
+  // 1. Romanisation + anglais depuis Volubilis
+  // Si Volubilis pas encore chargé, attendre jusqu'à 8 secondes
+  if (!VOLUBILIS) {
+    document.getElementById('res-roman').value = '⏳…';
+    await new Promise(resolve => {
+      let tries = 0;
+      const wait = setInterval(() => {
+        tries++;
+        if (VOLUBILIS || tries >= 16) { clearInterval(wait); resolve(); }
+      }, 500);
+    });
+  }
+  const d = lookupDict(thai);
+  if (d && d.roman) {
+    document.getElementById('res-roman').value = d.roman;
+    if (d.en) document.getElementById('res-en').value = d.en;
+  } else {
+    document.getElementById('res-roman').value = '';
+  }
+
+  // 2. Traduction FR + EN automatique via Google Translation
+  const key = getTranslateKey();
+  if (key) {
+    document.getElementById('res-fr').value = '⏳…';
+    if (!document.getElementById('res-en').value) document.getElementById('res-en').value = '⏳…';
+    const [resFr, resEn] = await Promise.all([
+      translateThai(thai, 'fr'),
+      translateThai(thai, 'en'),
+    ]);
+    document.getElementById('res-fr').value = resFr.err || resFr.text || '—';
+    if (!d || !d.en) document.getElementById('res-en').value = resEn.err || resEn.text || '—';
+  }
+}
+
+// ── Reconnaissance MyScript ──
+function computeHMAC(body) {
+  return CryptoJS.HmacSHA512(body, APP_KEY + HMAC_KEY).toString(CryptoJS.enc.Hex);
+}
+function buildPayload() {
+  const r = canvas.getBoundingClientRect(), t0 = strokes[0][0].t;
+  return JSON.stringify({
+    contentType: 'Text',
+    configuration: { lang: 'th_TH', export: { jiix: { 'bounding-box': false, strokes: false, text: { chars: false, words: true } } } },
+    height: Math.round(r.height), width: Math.round(r.width),
+    strokeGroups: [{ strokes: strokes.map(s => ({
+      x: s.map(p => Math.round(p.x)),
+      y: s.map(p => Math.round(p.y)),
+      t: s.map(p => p.t - t0),
+      pointerType: 'PEN'
+    })) }]
+  });
+}
+
+document.getElementById('btn-recog').addEventListener('click', async () => {
+  const status = document.getElementById('recog-status');
+  const cDiv   = document.getElementById('candidates');
+  if (strokes.length === 0) {
+    status.textContent = "Dessine quelque chose d'abord !";
+    status.className = 'recog-status error'; return;
+  }
+  status.innerHTML = '<span class="spinner"></span> Envoi à MyScript…';
+  status.className = 'recog-status loading';
+  cDiv.innerHTML = '';
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('correction-zone').classList.remove('open');
+  document.getElementById('save-feedback').classList.remove('show');
+
+  try {
+    const body = buildPayload();
+    const resp = await fetch('https://cloud.myscript.com/api/v4.0/iink/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/vnd.myscript.jiix,application/json', 'applicationKey': APP_KEY, 'hmac': computeHMAC(body) },
+      body
+    });
+    if (!resp.ok) { const e = await resp.json().catch(() => ({})); throw new Error(e.message || 'Erreur HTTP ' + resp.status); }
+    const jiix  = await resp.json();
+    const wds   = jiix.words || [];
+    const label = wds.map(w => (w.label || '').replace(/\s/g, '')).join('').trim();
+    const alts  = wds[0]?.candidates?.map(c => (c.label || '').replace(/\s/g, '')).filter(Boolean) || [];
+    if (!label) throw new Error('Rien reconnu — écris plus grand');
+
+    const all = [label, ...alts.slice(0, 5)].filter((v, i, a) => a.indexOf(v) === i);
+    status.textContent = ''; status.className = 'recog-status';
+    all.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'candidate-btn' + (i === 0 ? ' selected' : '');
+      btn.textContent = c;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected'); showResultCard(c);
+        document.getElementById('correction-zone').classList.remove('open');
+      });
+      cDiv.appendChild(btn);
+    });
+    showResultCard(label);
+  } catch(err) {
+    status.textContent = '⚠ ' + err.message;
+    status.className = 'recog-status error';
+  }
+});
+
+// ── Boutons résultat stylet ──
+document.getElementById('res-speak').addEventListener('click', () => speak(selectedThai));
+
+document.getElementById('res-correct').addEventListener('click', () => {
+  correctionWord = selectedThai || ''; updateCorrectionWord();
+  document.getElementById('correction-zone').classList.add('open');
+  setTimeout(() => document.getElementById('correction-zone').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+});
+
+document.getElementById('btn-save-word').addEventListener('click', () => {
+  if (!selectedThai) return;
+  const roman   = document.getElementById('res-roman').value.trim();
+  const meaning = document.getElementById('res-fr').value.trim();
+  const en      = document.getElementById('res-en').value.trim();
+  if (!words.find(w => w.thai === selectedThai)) {
+    words.push({ thai: selectedThai, roman, meaning, en });
+    saveWords(); render();
+  }
+  const fb = document.getElementById('save-feedback');
+  fb.classList.add('show'); setTimeout(() => fb.classList.remove('show'), 2000);
+});
+
+// ── Correction clavier (mini) ──
+document.getElementById('correction-close').addEventListener('click', () => document.getElementById('correction-zone').classList.remove('open'));
+document.getElementById('corr-speak').addEventListener('click', () => speak(correctionWord));
+document.getElementById('corr-del').addEventListener('click', () => { correctionWord = [...correctionWord].slice(0, -1).join(''); updateCorrectionWord(); });
+document.getElementById('corr-clear').addEventListener('click', () => { correctionWord = ''; updateCorrectionWord(); });
+function updateCorrectionWord() { document.getElementById('correction-word').textContent = correctionWord || '…'; }
+document.getElementById('corr-validate').addEventListener('click', () => {
+  if (!correctionWord) return;
+  document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
+  showResultCard(correctionWord);
+  document.getElementById('correction-zone').classList.remove('open');
+});
+
+// ── Modal EN → ไทย ──
+let en2thRec = null, en2thRecording = false;
+let en2thCurrentThai = '', en2thFrResult = '';
+
+function openEn2th() {
+  document.getElementById('en2th-en-text').textContent = '—';
+  document.getElementById('en2th-result').classList.remove('visible');
+  document.getElementById('en2th-status').textContent = 'Appuie pour parler en anglais';
+  document.getElementById('en2th-status').classList.remove('active');
+  en2thCurrentThai = ''; en2thFrResult = '';
+  document.getElementById('modal-en2th').classList.add('open');
+}
+function closeEn2th() {
+  if (en2thRecording && en2thRec) en2thRec.stop();
+  document.getElementById('modal-en2th').classList.remove('open');
+}
+document.getElementById('fab-en2th').addEventListener('click', openEn2th);
+document.getElementById('en2th-close').addEventListener('click', closeEn2th);
+document.getElementById('modal-en2th').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-en2th')) closeEn2th();
+});
+
+document.getElementById('en2th-mic').addEventListener('click', async () => {
+  if (!SpeechRec) { alert('Saisie vocale non supportée sur ce navigateur.'); return; }
+  if (en2thRecording) { en2thRec.stop(); return; }
+
+  const micBtn = document.getElementById('en2th-mic');
+  const status = document.getElementById('en2th-status');
+  en2thRec = new SpeechRec();
+  en2thRec.lang = 'en-US';
+  en2thRec.interimResults = true;
+  en2thRec.maxAlternatives = 1;
+
+  micBtn.classList.add('recording'); micBtn.textContent = '⏹';
+  status.textContent = '🔴 Listening…'; status.classList.add('active');
+  en2thRecording = true;
+  document.getElementById('en2th-result').classList.remove('visible');
+
+  en2thRec.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('en2th-en-text').textContent = transcript;
+  };
+
+  en2thRec.onend = async () => {
+    en2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    const enText = document.getElementById('en2th-en-text').textContent.trim();
+    if (!enText || enText === '—') {
+      status.textContent = 'Nothing heard — try again'; status.classList.remove('active'); return;
+    }
+    status.textContent = '⏳ Translating…'; status.classList.remove('active');
+
+    const key = getTranslateKey();
+    if (!key) { status.textContent = '⚠ API key missing — tap 🔑 trad.'; return; }
+    try {
+      const url = 'https://translation.googleapis.com/language/translate/v2?key=' + key;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: enText, source: 'en', target: 'th', format: 'text' })
+      });
+      const data = await resp.json();
+      if (data.error) { status.textContent = '⚠ ' + data.error.message; return; }
+      const thaiText = data.data?.translations?.[0]?.translatedText || '';
+      if (!thaiText) { status.textContent = 'Empty translation'; return; }
+
+      en2thCurrentThai = thaiText;
+      document.getElementById('en2th-thai-text').textContent = thaiText;
+      const d = lookupDict(thaiText);
+      document.getElementById('en2th-roman').textContent = d ? d.roman : '';
+      document.getElementById('en2th-result').classList.add('visible');
+      status.textContent = 'Appuie pour parler en anglais';
+      speak(thaiText);
+      // Traduction FR en parallèle (en fond)
+      translateThai(thaiText, 'fr').then(r => { if (!r.err) en2thFrResult = r.text; });
+    } catch(e) {
+      status.textContent = '⚠ Network error';
+    }
+  };
+
+  en2thRec.onerror = (e) => {
+    en2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      status.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error; status.classList.remove('active');
+    }
+  };
+
+  en2thRec.start();
+});
+
+document.getElementById('en2th-speak').addEventListener('click', () => speak(en2thCurrentThai));
+
+document.getElementById('en2th-save').addEventListener('click', () => {
+  if (!en2thCurrentThai) return;
+  const d = lookupDict(en2thCurrentThai);
+  const enText = document.getElementById('en2th-en-text').textContent.trim();
+  if (!words.find(w => w.thai === en2thCurrentThai)) {
+    words.push({ thai: en2thCurrentThai, roman: d ? d.roman : '', meaning: en2thFrResult, en: enText });
+    saveWords(); render();
+  }
+  closeEn2th();
+});
+
+// ── Modal FR → ไทย ──
+let fr2thRec = null, fr2thRecording = false;
+let fr2thCurrentThai = '', fr2thEnResult = '';
+
+function openFr2th() {
+  document.getElementById('fr2th-fr-text').textContent = '—';
+  document.getElementById('fr2th-result').classList.remove('visible');
+  document.getElementById('fr2th-status').textContent = 'Appuie pour parler en français';
+  document.getElementById('fr2th-status').classList.remove('active');
+  fr2thCurrentThai = ''; fr2thEnResult = '';
+  document.getElementById('modal-fr2th').classList.add('open');
+}
+function closeFr2th() {
+  if (fr2thRecording && fr2thRec) fr2thRec.stop();
+  document.getElementById('modal-fr2th').classList.remove('open');
+}
+document.getElementById('fab-fr2th').addEventListener('click', openFr2th);
+document.getElementById('fr2th-close').addEventListener('click', closeFr2th);
+document.getElementById('modal-fr2th').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-fr2th')) closeFr2th();
+});
+
+document.getElementById('fr2th-mic').addEventListener('click', async () => {
+  if (!SpeechRec) { alert('Saisie vocale non supportée sur ce navigateur.'); return; }
+  if (fr2thRecording) { fr2thRec.stop(); return; }
+
+  const micBtn = document.getElementById('fr2th-mic');
+  const status = document.getElementById('fr2th-status');
+  fr2thRec = new SpeechRec();
+  fr2thRec.lang = 'fr-FR';
+  fr2thRec.interimResults = true;
+  fr2thRec.maxAlternatives = 1;
+
+  micBtn.classList.add('recording'); micBtn.textContent = '⏹';
+  status.textContent = '🔴 Écoute en cours…'; status.classList.add('active');
+  fr2thRecording = true;
+  document.getElementById('fr2th-result').classList.remove('visible');
+
+  fr2thRec.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('fr2th-fr-text').textContent = transcript;
+  };
+
+  fr2thRec.onend = async () => {
+    fr2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    const frText = document.getElementById('fr2th-fr-text').textContent.trim();
+    if (!frText || frText === '—') {
+      status.textContent = 'Rien reconnu — réessaie'; status.classList.remove('active'); return;
+    }
+    status.textContent = '⏳ Traduction en cours…'; status.classList.remove('active');
+
+    // Traduire FR → TH via Google Translation
+    const key = getTranslateKey();
+    if (!key) {
+      status.textContent = '⚠ Clé API absente — appuie sur 🔑 trad.'; return;
+    }
+    try {
+      const url = 'https://translation.googleapis.com/language/translate/v2?key=' + key;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: frText, source: 'fr', target: 'th', format: 'text' })
+      });
+      const data = await resp.json();
+      if (data.error) { status.textContent = '⚠ ' + data.error.message; return; }
+      const thaiText = data.data?.translations?.[0]?.translatedText || '';
+      if (!thaiText) { status.textContent = 'Traduction vide'; return; }
+
+      // Afficher le résultat
+      fr2thCurrentThai = thaiText;
+      document.getElementById('fr2th-thai-text').textContent = thaiText;
+      const d = lookupDict(thaiText);
+      document.getElementById('fr2th-roman').textContent = d ? d.roman : '';
+      document.getElementById('fr2th-result').classList.add('visible');
+      status.textContent = 'Appuie pour parler en français';
+      speak(thaiText);
+      // Traduction EN en parallèle (en fond)
+      translateThai(thaiText, 'en').then(r => { if (!r.err) fr2thEnResult = r.text; });
+    } catch(e) {
+      status.textContent = '⚠ Erreur réseau';
+    }
+  };
+
+  fr2thRec.onerror = (e) => {
+    fr2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      status.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error; status.classList.remove('active');
+    }
+  };
+
+  fr2thRec.start();
+});
+
+document.getElementById('fr2th-speak').addEventListener('click', () => speak(fr2thCurrentThai));
+
+document.getElementById('fr2th-save').addEventListener('click', () => {
+  if (!fr2thCurrentThai) return;
+  const d = lookupDict(fr2thCurrentThai);
+  const frText = document.getElementById('fr2th-fr-text').textContent.trim();
+  if (!words.find(w => w.thai === fr2thCurrentThai)) {
+    words.push({ thai: fr2thCurrentThai, roman: d ? d.roman : '', meaning: frText, en: fr2thEnResult || (d ? d.en : '') });
+    saveWords(); render();
+  }
+  closeFr2th();
+});
+
+// ── Init ──
+loadWords();
+buildKeyboard();
+render();
+updateTkeyBtn();
+loadVolubilis();
+</script>
+</body>
+</html>
