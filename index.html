@@ -864,13 +864,13 @@ function render() {
       if (w.meaning) {
         const frSpan = document.createElement('span');
         frSpan.className = 'word-fr';
-        frSpan.textContent = 'fr\u00a0' + w.meaning;
+        frSpan.textContent = w.meaning;
         translDiv.appendChild(frSpan);
       }
       if (w.en) {
         const enSpan = document.createElement('span');
         enSpan.className = 'word-en';
-        enSpan.textContent = 'en\u00a0' + w.en;
+        enSpan.textContent = w.en;
         translDiv.appendChild(enSpan);
       }
       metaDiv.appendChild(translDiv);
