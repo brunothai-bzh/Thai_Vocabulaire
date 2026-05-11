@@ -152,9 +152,12 @@ input[type=text]::placeholder { color: var(--text3); }
 .fab.stylet { background: var(--accent);  box-shadow: 0 4px 20px rgba(196,82,26,.4); }
 .fab.fr2th  { background: #185FA5;        box-shadow: 0 4px 20px rgba(24,95,165,.4); font-size: 22px; }
 .fab.fr2th.recording { animation: pulse .8s infinite; }
+.fab.en2th  { background: #6B3FA0;        box-shadow: 0 4px 20px rgba(107,63,160,.4); font-size: 22px; }
+.fab.en2th.recording { animation: pulse .8s infinite; }
 .fab-wrap   { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .fab-badge  { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; color: #185FA5; letter-spacing: .5px; line-height: 1; }
-.fab-badge.thai { font-family: 'Noto Sans Thai', sans-serif; font-size: 10px; letter-spacing: .3px; }
+.fab-badge.en2th { color: #6B3FA0; }
+.fab-badge.thai { font-family: 'Noto Sans Thai', sans-serif; font-size: 10px; letter-spacing: .3px; color: var(--text3); }
 
 /* ── Modals ── */
 .modal-overlay {
@@ -293,7 +296,7 @@ input[type=text]::placeholder { color: var(--text3); }
 .fr2th-listen    { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0; }
 .fr2th-mic-btn   { width: 72px; height: 72px; border-radius: 50%; background: #185FA5; color: #fff; border: none; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(24,95,165,.35); transition: transform .1s; }
 .fr2th-mic-btn:active    { transform: scale(.93); }
-.fr2th-mic-btn.recording { background: var(--danger); animation: pulse .8s infinite; }
+.fr2th-mic-btn.en { background: #6B3FA0; box-shadow: 0 4px 20px rgba(107,63,160,.35); }
 .fr2th-lang-badges { display: flex; align-items: center; gap: 8px; }
 .fr2th-badge     { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #185FA5; }
 .fr2th-badge.thai{ font-family: 'Noto Sans Thai', sans-serif; }
@@ -445,6 +448,11 @@ input[type=text]::placeholder { color: var(--text3); }
     <button class="fab fr2th" id="fab-fr2th">🎤</button>
     <span class="fab-badge thai">ไทย</span>
   </div>
+  <div class="fab-wrap">
+    <span class="fab-badge en2th">EN</span>
+    <button class="fab en2th" id="fab-en2th">🎤</button>
+    <span class="fab-badge thai">ไทย</span>
+  </div>
   <button class="fab stylet" id="fab-stylet">✏️</button>
   <button class="fab kbd"    id="fab-kbd">⌨️</button>
 </div>
@@ -501,6 +509,37 @@ input[type=text]::placeholder { color: var(--text3); }
       <div class="fr2th-actions">
         <button class="btn green btn-full" id="fr2th-speak">🔊 écouter</button>
         <button class="btn accent btn-full" id="fr2th-save">✓ enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal : EN → ไทย ── -->
+<div class="modal-overlay" id="modal-en2th">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🎤 EN → ไทย</div>
+      <button class="modal-close" id="en2th-close">✕</button>
+    </div>
+    <div class="fr2th-listen">
+      <button class="fr2th-mic-btn en" id="en2th-mic">🎤</button>
+      <div class="fr2th-lang-badges">
+        <span class="fr2th-badge" style="color:#6B3FA0">EN</span>
+        <span class="fr2th-arrow">→</span>
+        <span class="fr2th-badge thai">ไทย</span>
+      </div>
+      <div class="fr2th-status" id="en2th-status">Appuie pour parler en anglais</div>
+    </div>
+    <div class="fr2th-field">
+      <label>Anglais reconnu</label>
+      <div class="fr2th-text" id="en2th-en-text">—</div>
+    </div>
+    <div class="fr2th-result" id="en2th-result">
+      <div class="fr2th-thai" id="en2th-thai-text"></div>
+      <div class="fr2th-sub"  id="en2th-roman"></div>
+      <div class="fr2th-actions">
+        <button class="btn green btn-full" id="en2th-speak">🔊 écouter</button>
+        <button class="btn accent btn-full" id="en2th-save">✓ enregistrer</button>
       </div>
     </div>
   </div>
@@ -1472,6 +1511,108 @@ document.getElementById('corr-validate').addEventListener('click', () => {
   document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
   showResultCard(correctionWord);
   document.getElementById('correction-zone').classList.remove('open');
+});
+
+// ── Modal EN → ไทย ──
+let en2thRec = null, en2thRecording = false;
+let en2thCurrentThai = '';
+
+function openEn2th() {
+  document.getElementById('en2th-en-text').textContent = '—';
+  document.getElementById('en2th-result').classList.remove('visible');
+  document.getElementById('en2th-status').textContent = 'Appuie pour parler en anglais';
+  document.getElementById('en2th-status').classList.remove('active');
+  en2thCurrentThai = '';
+  document.getElementById('modal-en2th').classList.add('open');
+}
+function closeEn2th() {
+  if (en2thRecording && en2thRec) en2thRec.stop();
+  document.getElementById('modal-en2th').classList.remove('open');
+}
+document.getElementById('fab-en2th').addEventListener('click', openEn2th);
+document.getElementById('en2th-close').addEventListener('click', closeEn2th);
+document.getElementById('modal-en2th').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-en2th')) closeEn2th();
+});
+
+document.getElementById('en2th-mic').addEventListener('click', async () => {
+  if (!SpeechRec) { alert('Saisie vocale non supportée sur ce navigateur.'); return; }
+  if (en2thRecording) { en2thRec.stop(); return; }
+
+  const micBtn = document.getElementById('en2th-mic');
+  const status = document.getElementById('en2th-status');
+  en2thRec = new SpeechRec();
+  en2thRec.lang = 'en-US';
+  en2thRec.interimResults = true;
+  en2thRec.maxAlternatives = 1;
+
+  micBtn.classList.add('recording'); micBtn.textContent = '⏹';
+  status.textContent = '🔴 Listening…'; status.classList.add('active');
+  en2thRecording = true;
+  document.getElementById('en2th-result').classList.remove('visible');
+
+  en2thRec.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('en2th-en-text').textContent = transcript;
+  };
+
+  en2thRec.onend = async () => {
+    en2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    const enText = document.getElementById('en2th-en-text').textContent.trim();
+    if (!enText || enText === '—') {
+      status.textContent = 'Nothing heard — try again'; status.classList.remove('active'); return;
+    }
+    status.textContent = '⏳ Translating…'; status.classList.remove('active');
+
+    const key = getTranslateKey();
+    if (!key) { status.textContent = '⚠ API key missing — tap 🔑 trad.'; return; }
+    try {
+      const url = 'https://translation.googleapis.com/language/translate/v2?key=' + key;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: enText, source: 'en', target: 'th', format: 'text' })
+      });
+      const data = await resp.json();
+      if (data.error) { status.textContent = '⚠ ' + data.error.message; return; }
+      const thaiText = data.data?.translations?.[0]?.translatedText || '';
+      if (!thaiText) { status.textContent = 'Empty translation'; return; }
+
+      en2thCurrentThai = thaiText;
+      document.getElementById('en2th-thai-text').textContent = thaiText;
+      const d = lookupDict(thaiText);
+      document.getElementById('en2th-roman').textContent = d ? d.roman : '';
+      document.getElementById('en2th-result').classList.add('visible');
+      status.textContent = 'Appuie pour parler en anglais';
+      speak(thaiText);
+    } catch(e) {
+      status.textContent = '⚠ Network error';
+    }
+  };
+
+  en2thRec.onerror = (e) => {
+    en2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      status.textContent = '⚠ Mic: ' + e.error; status.classList.remove('active');
+    }
+  };
+
+  en2thRec.start();
+});
+
+document.getElementById('en2th-speak').addEventListener('click', () => speak(en2thCurrentThai));
+
+document.getElementById('en2th-save').addEventListener('click', () => {
+  if (!en2thCurrentThai) return;
+  const d = lookupDict(en2thCurrentThai);
+  const enText = document.getElementById('en2th-en-text').textContent.trim();
+  if (!words.find(w => w.thai === en2thCurrentThai)) {
+    words.push({ thai: en2thCurrentThai, roman: d ? d.roman : '', meaning: enText });
+    saveWords(); render();
+  }
+  closeEn2th();
 });
 
 // ── Modal FR → ไทย ──
