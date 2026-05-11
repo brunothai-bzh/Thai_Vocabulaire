@@ -812,15 +812,13 @@ async function loadVolubilis() {
     // Enrichir les mots du vocabulaire qui n'ont pas encore de romanisation
     let updated = false;
     words.forEach(w => {
-      if (!w.roman) {
-        const v = VOLUBILIS[w.thai.trim()];
-        if (v) { w.roman = v[0]; updated = true; }
+      const v = VOLUBILIS[w.thai.trim()];
+      if (v) {
+        if (!w.roman)   { w.roman   = v[0]; updated = true; }
+        if (!w.en)      { w.en      = v[1]; updated = true; }
       }
     });
     if (updated) { saveWords(); render(); }
-    // Test immédiat sur แฉลบ
-    const test = VOLUBILIS['แฉลบ'];
-    pill.textContent += ' · test:' + (test ? test[0] : 'absent');
   } catch(e) {
     pill.textContent = pill.textContent.replace(' · ⏳dict…', '') + ' · ❌ ' + e.message;
   }
@@ -828,13 +826,9 @@ async function loadVolubilis() {
 
 // ── Lookup Volubilis uniquement ──
 function lookupDict(thai) {
-  if (!thai || !VOLUBILIS) {
-    console.warn('lookupDict: VOLUBILIS=', !!VOLUBILIS, 'thai=', thai);
-    return null;
-  }
+  if (!thai || !VOLUBILIS) return null;
   const c = thai.trim().replace(/[\s\u200B\u200C\u200D\uFEFF]+/g, '');
   const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
-  console.log('lookupDict:', thai, '→ c=', c, '→ v=', v);
   if (v) return { roman: v[0], en: v[1] };
   return null;
 }
@@ -1414,7 +1408,6 @@ async function showResultCard(thai) {
     });
   }
   const d = lookupDict(thai);
-  console.log('lookupDict(', thai, ') =>', d);
   if (d && d.roman) {
     document.getElementById('res-roman').value = d.roman;
     if (d.en) document.getElementById('res-en').value = d.en;
