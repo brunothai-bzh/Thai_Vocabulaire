@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="ภาษาไทย">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <title>ภาษาไทย · Vocabulaire</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
@@ -1148,7 +1150,7 @@ document.getElementById('compose-mic').addEventListener('click', () => {
     micBtn.textContent = '🎤';
     if (e.error !== 'aborted') {
       const fb = document.getElementById('kbd-feedback');
-      fb.textContent = '⚠ Micro : ' + e.error;
+      fb.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error;
       fb.classList.add('show');
       setTimeout(() => fb.classList.remove('show'), 3000);
     }
@@ -1620,7 +1622,7 @@ document.getElementById('en2th-mic').addEventListener('click', async () => {
     en2thRecording = false;
     micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
     if (e.error !== 'aborted') {
-      status.textContent = '⚠ Mic: ' + e.error; status.classList.remove('active');
+      status.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error; status.classList.remove('active');
     }
   };
 
@@ -1728,7 +1730,7 @@ document.getElementById('fr2th-mic').addEventListener('click', async () => {
     fr2thRecording = false;
     micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
     if (e.error !== 'aborted') {
-      status.textContent = '⚠ Micro : ' + e.error; status.classList.remove('active');
+      status.textContent = e.error === 'not-allowed' ? '⚠ Accès micro refusé — Réglages > Safari > Microphone' : '⚠ Micro : ' + e.error; status.classList.remove('active');
     }
   };
 
