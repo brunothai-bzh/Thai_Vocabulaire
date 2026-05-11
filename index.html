@@ -222,6 +222,9 @@ input[type=text]::placeholder { color: var(--text3); }
 .composer-btn.mic    { background: var(--accent-bg);  color: var(--accent);  border-color: rgba(196,82,26,.25); }
 .composer-btn.mic.recording { background: var(--accent); color: #fff; animation: pulse .8s infinite; }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
+.mic-wrap       { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.mic-badge      { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600; color: var(--accent); letter-spacing: .5px; line-height: 1; }
+.mic-badge.top  { font-family: 'Noto Sans Thai', sans-serif; letter-spacing: .3px; }
 
 /* ── Légende tons ── */
 .tone-legend { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
@@ -467,7 +470,11 @@ input[type=text]::placeholder { color: var(--text3); }
         autocomplete="off" autocorrect="off" autocapitalize="none"
         spellcheck="false" inputmode="text" />
       <div class="composer-actions">
-        <button class="composer-btn mic" id="compose-mic" title="Saisie vocale">🎤</button>
+        <div class="mic-wrap">
+          <span class="mic-badge top">ไทย</span>
+          <button class="composer-btn mic" id="compose-mic" title="Saisie vocale thaï">🎤</button>
+          <span class="mic-badge">TH</span>
+        </div>
         <button class="composer-btn speak" id="compose-speak">🔊</button>
         <button class="composer-btn"       id="compose-del">⌫</button>
         <button class="composer-btn"       id="compose-clear">✕</button>
