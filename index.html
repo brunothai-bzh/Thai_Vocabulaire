@@ -98,7 +98,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .modal-kbd-inner .modal-header,.modal-kbd-inner .word-composer,.modal-kbd-inner .tone-legend,.modal-kbd-inner .kbd-save-row{flex-shrink:0;}
 .modal-kbd-inner .kbd-sections-wrap{flex:1;overflow-y:auto;}
 .word-composer{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;border:1px solid var(--border);}
-.word-composed{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:40px;font-weight:500;color:var(--accent);flex:1;min-height:52px;letter-spacing:2px;word-break:break-all;line-height:1.2;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;width:100%;}
+.word-composed{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:48px;font-weight:500;color:var(--accent);flex:1;min-height:60px;letter-spacing:2px;word-break:break-all;line-height:1.2;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;width:100%;}
 .word-composed::placeholder{color:var(--text3);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;}
 .composer-actions{display:flex;gap:5px;flex-shrink:0;}
 .composer-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
@@ -338,7 +338,13 @@ input[type=text]::placeholder{color:var(--text3);}
         <label>Traduction française</label>
         <input type="text" id="kbd-fr" placeholder="ex : préparer" autocomplete="off" spellcheck="false" />
       </div>
+      <div class="result-field">
+        <label>Traduction anglaise</label>
+        <input type="text" id="kbd-en" placeholder="ex : prepare" autocomplete="off" spellcheck="false" />
+      </div>
     </div>
+    <button class="btn green" id="kbd-translate" style="width:100%;margin-top:8px;">🔍 Romanisation + Traduction FR &amp; EN</button>
+    <div class="save-feedback" id="kbd-feedback"></div>
     <div class="kbd-save-row">
       <button class="btn btn-full" id="kbd-cancel">annuler</button>
       <button class="btn accent btn-full" id="kbd-save">✓ enregistrer</button>
@@ -703,21 +709,53 @@ function autoFillKbd(thai){
   if(d){
     if(d.roman)document.getElementById('kbd-roman').value=d.roman;
     if(d.fr)document.getElementById('kbd-fr').value=d.fr;
+    if(d.en)document.getElementById('kbd-en').value=d.en;
   }
 }
 document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
 document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();document.getElementById('composed').focus();});
 document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('composed').focus();});
-document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('kbd-roman').value='';document.getElementById('kbd-fr').value='';document.getElementById('modal-kbd').classList.add('open');setTimeout(()=>document.getElementById('composed').focus(),300);});
+document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('kbd-roman').value='';document.getElementById('kbd-fr').value='';document.getElementById('kbd-en').value='';document.getElementById('modal-kbd').classList.add('open');setTimeout(()=>document.getElementById('composed').focus(),300);});
 function closeKbd(){document.getElementById('modal-kbd').classList.remove('open');}
 document.getElementById('kbd-close').addEventListener('click',closeKbd);
 document.getElementById('kbd-cancel').addEventListener('click',closeKbd);
 document.getElementById('modal-kbd').addEventListener('click',e=>{if(e.target===document.getElementById('modal-kbd'))closeKbd();});
+document.getElementById('kbd-translate').addEventListener('click',async()=>{
+  if(!composedWord)return;
+  const btn=document.getElementById('kbd-translate');
+  const fb=document.getElementById('kbd-feedback');
+  btn.textContent='⏳…';btn.disabled=true;
+  // Romanisation depuis Volubilis
+  const d=lookupDict(composedWord);
+  if(d&&d.roman)document.getElementById('kbd-roman').value=d.roman;
+  if(d&&d.en)document.getElementById('kbd-en').value=d.en;
+  // Traduction Google
+  const key=getTranslateKey();
+  if(!key){
+    fb.textContent='⚠ clé API absente — appuie sur 🔑 trad.';
+    fb.classList.add('show');setTimeout(()=>fb.classList.remove('show'),3000);
+  } else {
+    const targets=[];
+    if(!document.getElementById('kbd-fr').value) targets.push(translateThai(composedWord,'fr'));
+    else targets.push(Promise.resolve({text:document.getElementById('kbd-fr').value,err:''}));
+    if(!document.getElementById('kbd-en').value) targets.push(translateThai(composedWord,'en'));
+    else targets.push(Promise.resolve({text:document.getElementById('kbd-en').value,err:''}));
+    const [resFr,resEn]=await Promise.all(targets);
+    if(resFr.err){fb.textContent=resFr.err;fb.classList.add('show');setTimeout(()=>fb.classList.remove('show'),3000);}
+    else{
+      document.getElementById('kbd-fr').value=resFr.text||'—';
+      document.getElementById('kbd-en').value=resEn.text||'—';
+    }
+  }
+  btn.textContent='🔍 Romanisation + Traduction FR & EN';btn.disabled=false;
+});
+
 document.getElementById('kbd-save').addEventListener('click',()=>{
   if(!composedWord)return;
   const roman=document.getElementById('kbd-roman').value.trim();
   const meaning=document.getElementById('kbd-fr').value.trim();
-  words.push({thai:composedWord,roman,meaning});
+  const en=document.getElementById('kbd-en').value.trim();
+  words.push({thai:composedWord,roman,meaning,en});
   saveWords();closeKbd();render();
 });
 
@@ -814,21 +852,21 @@ document.querySelectorAll('.size-dot').forEach(dot=>{dot.addEventListener('click
 
 function getTranslateKey(){try{return localStorage.getItem('google_translate_key')||'';}catch(e){return '';}}
 
-async function translateThai(thai){
+async function translateThai(thai, target='fr'){
   const key=getTranslateKey();
-  if(!key)return {fr:'',err:'⚠ clé API absente — appuie sur 🔑 trad.'};
+  if(!key)return {text:'',err:'⚠ clé API absente — appuie sur 🔑 trad.'};
   try{
     const url='https://translation.googleapis.com/language/translate/v2?key='+key;
     const resp=await fetch(url,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({q:thai,source:'th',target:'fr',format:'text'})
+      body:JSON.stringify({q:thai,source:'th',target,format:'text'})
     });
     const data=await resp.json();
-    if(data.error)return {fr:'',err:'⚠ '+data.error.message};
-    const fr=data.data?.translations?.[0]?.translatedText||'';
-    return {fr,err:''};
-  }catch(e){return {fr:'',err:'⚠ erreur réseau'};}
+    if(data.error)return {text:'',err:'⚠ '+data.error.message};
+    const text=data.data?.translations?.[0]?.translatedText||'';
+    return {text,err:''};
+  }catch(e){return {text:'',err:'⚠ erreur réseau'};}
 }
 
 async function showResultCard(thai){
