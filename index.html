@@ -100,7 +100,7 @@ input[type=text]::placeholder { color: var(--text3); }
   box-shadow: var(--shadow);
 }
 .add-form.open { display: flex; }
-.add-form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.add-form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
 .field label { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
 .field input { padding: 10px 12px; font-size: 15px; }
 .field input.thai-input { font-family: 'Noto Sans Thai', sans-serif; font-size: 20px; padding-left: 10px; }
@@ -122,9 +122,10 @@ input[type=text]::placeholder { color: var(--text3); }
 .word-card:active { background: var(--surface2); }
 .word-card.active { border-color: var(--accent); background: var(--accent-bg); }
 .word-thai   { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 28px; font-weight: 500; line-height: 1.2; flex: 1; min-width: 0; text-align: left; }
-.word-meta   { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; max-width: 140px; text-align: right; }
+.word-meta   { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; max-width: 150px; text-align: right; }
 .word-roman  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
-.word-meaning{ font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+.word-meaning{ font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+.word-en     { color: var(--text3); }
 .word-actions{ display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
 
 .speak-btn {
@@ -429,7 +430,8 @@ input[type=text]::placeholder { color: var(--text3); }
   <div class="add-form-grid">
     <div class="field"><label>thaï *</label><input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
     <div class="field"><label>romanisation</label><input type="text" id="inp-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
-    <div class="field"><label>sens (français)</label><input type="text" id="inp-meaning" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
+    <div class="field"><label>🇫🇷 français</label><input type="text" id="inp-meaning" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
+    <div class="field"><label>🇬🇧 anglais</label><input type="text" id="inp-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
   </div>
   <div class="form-actions">
     <button class="btn accent" id="btn-add-word">✓ enregistrer</button>
@@ -857,7 +859,11 @@ function render() {
 
     const metaDiv = document.createElement('div');
     metaDiv.className = 'word-meta';
-    metaDiv.innerHTML = `<div class="word-roman">${w.roman || ''}</div><div class="word-meaning">${w.meaning || ''}</div>`;
+    metaDiv.innerHTML = `
+      <div class="word-roman">${w.roman || ''}</div>
+      ${w.meaning ? `<div class="word-meaning word-fr">🇫🇷 ${w.meaning}</div>` : ''}
+      ${w.en      ? `<div class="word-meaning word-en">🇬🇧 ${w.en}</div>`      : ''}
+    `;
 
     const spk = document.createElement('button');
     spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
@@ -895,17 +901,18 @@ document.getElementById('toggle-add').addEventListener('click', () => {
   const open = f.classList.toggle('open');
   btn.textContent = open ? '✕ fermer' : '+ ajouter';
   if (open) setTimeout(() => document.getElementById('inp-thai').focus(), 80);
-  else ['inp-thai', 'inp-roman', 'inp-meaning'].forEach(id => document.getElementById(id).value = '');
+  else ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => document.getElementById(id).value = '');
 });
 
 function doAddWord() {
   const thai    = document.getElementById('inp-thai').value.trim();
   const roman   = document.getElementById('inp-roman').value.trim();
   const meaning = document.getElementById('inp-meaning').value.trim();
+  const en      = document.getElementById('inp-en').value.trim();
   if (!thai) { document.getElementById('inp-thai').focus(); return; }
-  words.push({ thai, roman, meaning });
+  words.push({ thai, roman, meaning, en });
   saveWords();
-  ['inp-thai', 'inp-roman', 'inp-meaning'].forEach(id => document.getElementById(id).value = '');
+  ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('inp-thai').focus();
   const fb = document.getElementById('feedback');
   fb.classList.add('show');
@@ -913,7 +920,7 @@ function doAddWord() {
   render();
 }
 document.getElementById('btn-add-word').addEventListener('click', doAddWord);
-['inp-thai', 'inp-roman', 'inp-meaning'].forEach(id => {
+['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
 });
 
@@ -1492,8 +1499,9 @@ document.getElementById('btn-save-word').addEventListener('click', () => {
   if (!selectedThai) return;
   const roman   = document.getElementById('res-roman').value.trim();
   const meaning = document.getElementById('res-fr').value.trim();
+  const en      = document.getElementById('res-en').value.trim();
   if (!words.find(w => w.thai === selectedThai)) {
-    words.push({ thai: selectedThai, roman, meaning });
+    words.push({ thai: selectedThai, roman, meaning, en });
     saveWords(); render();
   }
   const fb = document.getElementById('save-feedback');
