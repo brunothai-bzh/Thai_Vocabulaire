@@ -219,6 +219,9 @@ input[type=text]::placeholder { color: var(--text3); }
 }
 .composer-btn:active { background: var(--surface2); }
 .composer-btn.speak  { background: var(--accent2-bg); color: var(--accent2); border-color: rgba(46,107,79,.25); }
+.composer-btn.mic    { background: var(--accent-bg);  color: var(--accent);  border-color: rgba(196,82,26,.25); }
+.composer-btn.mic.recording { background: var(--accent); color: #fff; animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.55; } }
 
 /* ── Légende tons ── */
 .tone-legend { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
@@ -464,6 +467,7 @@ input[type=text]::placeholder { color: var(--text3); }
         autocomplete="off" autocorrect="off" autocapitalize="none"
         spellcheck="false" inputmode="text" />
       <div class="composer-actions">
+        <button class="composer-btn mic" id="compose-mic" title="Saisie vocale">🎤</button>
         <button class="composer-btn speak" id="compose-speak">🔊</button>
         <button class="composer-btn"       id="compose-del">⌫</button>
         <button class="composer-btn"       id="compose-clear">✕</button>
@@ -959,6 +963,63 @@ async function autoFillKbd(thai) {
 }
 
 document.getElementById('compose-speak').addEventListener('click', () => speak(composedWord));
+
+// ── Saisie vocale (clavier) ──
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+
+document.getElementById('compose-mic').addEventListener('click', () => {
+  if (!SpeechRec) {
+    alert('Saisie vocale non supportée sur ce navigateur.');
+    return;
+  }
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+  recognition = new SpeechRec();
+  recognition.lang = 'th-TH';
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  const micBtn = document.getElementById('compose-mic');
+  micBtn.classList.add('recording');
+  micBtn.textContent = '⏹';
+  isRecording = true;
+
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results)
+      .map(r => r[0].transcript)
+      .join('');
+    composedWord = transcript;
+    updateComposer();
+    if (e.results[e.results.length - 1].isFinal) {
+      autoFillKbd(composedWord);
+    }
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+    micBtn.textContent = '🎤';
+    if (composedWord) autoFillKbd(composedWord);
+  };
+
+  recognition.onerror = (e) => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+    micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      const fb = document.getElementById('kbd-feedback');
+      fb.textContent = '⚠ Micro : ' + e.error;
+      fb.classList.add('show');
+      setTimeout(() => fb.classList.remove('show'), 3000);
+    }
+  };
+
+  recognition.start();
+});
 document.getElementById('compose-del').addEventListener('click', () => {
   clearTimeout(kbdDebounce);
   composedWord = [...composedWord].slice(0, -1).join('');
@@ -982,7 +1043,10 @@ document.getElementById('fab-kbd').addEventListener('click', () => {
   document.getElementById('modal-kbd').classList.add('open');
   setTimeout(() => document.getElementById('composed').focus(), 300);
 });
-function closeKbd() { document.getElementById('modal-kbd').classList.remove('open'); }
+function closeKbd() {
+  if (isRecording && recognition) { recognition.stop(); }
+  document.getElementById('modal-kbd').classList.remove('open');
+}
 document.getElementById('kbd-close').addEventListener('click',   closeKbd);
 document.getElementById('kbd-cancel').addEventListener('click',  closeKbd);
 document.getElementById('modal-kbd').addEventListener('click', e => { if (e.target === document.getElementById('modal-kbd')) closeKbd(); });
