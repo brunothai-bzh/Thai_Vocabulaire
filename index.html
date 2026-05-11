@@ -491,7 +491,7 @@ input[type=text]::placeholder { color: var(--text3); }
       <div class="result-field"><label>Traduction anglaise</label><input type="text" id="kbd-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
     </div>
 
-    <button class="btn green" id="kbd-translate" style="width:100%;margin-top:8px;">🔍 Romanisation + Traduction FR &amp; EN</button>
+    <button class="btn green" id="kbd-translate" style="width:100%;margin-top:8px;">🌐 Traduire en français</button>
     <div class="save-feedback" id="kbd-feedback"></div>
 
     <div class="kbd-save-row">
@@ -993,7 +993,7 @@ document.getElementById('kbd-translate').addEventListener('click', async () => {
       document.getElementById('kbd-en').value = resEn.text || '—';
     }
   }
-  btn.textContent = '🔍 Romanisation + Traduction FR & EN'; btn.disabled = false;
+  btn.textContent = '🌐 Traduire en français'; btn.disabled = false;
 });
 
 document.getElementById('kbd-save').addEventListener('click', () => {
