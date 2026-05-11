@@ -545,8 +545,6 @@ input[type=text]::placeholder { color: var(--text3); }
           <button class="btn green btn-full" id="res-speak">🔊 écouter</button>
           <button class="btn btn-full" id="res-correct" style="color:var(--accent2);border-color:var(--accent2);">⌨️ corriger</button>
         </div>
-        <button class="btn green" id="res-translate" style="width:100%;margin-bottom:10px;">🌐 Traduire FR &amp; EN</button>
-        <div class="save-feedback" id="res-translate-feedback"></div>
         <div class="result-fields">
           <div class="result-field"><label>Romanisation</label><input type="text" id="res-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
           <div class="result-field"><label>Traduction française</label><input type="text" id="res-fr" placeholder="traduction…" autocomplete="off" spellcheck="false" /></div>
@@ -594,43 +592,10 @@ const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
 const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
 const WORDS_KEY = 'thai_words_v2';
 
-// ── Dictionnaire interne ──
-const DICT = [
-  {thai:'สวัสดี',  roman:'Sawatdee',  fr:'Bonjour'},
-  {thai:'ขอบคุณ',  roman:'Khob khun', fr:'Merci'},
-  {thai:'ใช่',     roman:'Chai',       fr:'Oui'},
-  {thai:'ไม่',     roman:'Mai',        fr:'Non / Pas'},
-  {thai:'น้ำ',     roman:'Nám',        fr:'Eau'},
-  {thai:'ข้าว',    roman:'Kâao',       fr:'Riz'},
-  {thai:'บ้าน',    roman:'Bâan',       fr:'Maison'},
-  {thai:'แมว',     roman:'Mæw',        fr:'Chat'},
-  {thai:'หมา',     roman:'Mǎa',        fr:'Chien'},
-  {thai:'กิน',     roman:'Gin',        fr:'Manger'},
-  {thai:'ดี',      roman:'Dii',        fr:'Bien / Bon'},
-  {thai:'ร้อน',    roman:'Rón',        fr:'Chaud'},
-  {thai:'เย็น',    roman:'Yen',        fr:'Froid'},
-  {thai:'รัก',     roman:'Rák',        fr:'Aimer'},
-  {thai:'ไป',      roman:'Pai',        fr:'Aller'},
-  {thai:'มา',      roman:'Maa',        fr:'Venir'},
-  {thai:'คน',      roman:'Khon',       fr:'Personne'},
-  {thai:'ใหญ่',    roman:'Yài',        fr:'Grand'},
-  {thai:'เล็ก',    roman:'Lék',        fr:'Petit'},
-  {thai:'วัน',     roman:'Wan',        fr:'Jour'},
-  {thai:'เงา',     roman:'Ngao',       fr:'Ombre'},
-  {thai:'ยา',      roman:'Yaa',        fr:'Médicament'},
-  {thai:'เนื้อไก่', roman:'Néua gài',  fr:'Viande de poulet'},
-  {thai:'ปลา',     roman:'Plaa',       fr:'Poisson'},
-  {thai:'หมู',     roman:'Mǔu',        fr:'Porc'},
-  {thai:'อร่อย',   roman:'Aròi',       fr:'Délicieux'},
-  {thai:'เผ็ด',    roman:'Phèt',       fr:'Pimenté'},
-  {thai:'หวาน',    roman:'Wǎan',       fr:'Sucré'},
-  {thai:'ราคา',    roman:'Raakhaa',    fr:'Prix'},
-  {thai:'รถ',      roman:'Rót',        fr:'Voiture'},
-  {thai:'ตลาด',    roman:'Talàat',     fr:'Marché'},
+// ── Mots initiaux au premier lancement (romanisation et sens complétés par Volubilis au runtime) ──
+const INITIAL_THAI = [
+  'สวัสดี','ขอบคุณ','ใช่','ไม่','น้ำ','ข้าว','บ้าน','แมว','หมา','กิน','ดี','ร้อน','เย็น',
 ];
-const DICT_MAP = {};
-DICT.forEach(d => DICT_MAP[d.thai] = d);
-const INITIAL = DICT.slice(0, 13).map(d => ({ thai: d.thai, roman: d.roman, meaning: d.fr }));
 
 // ── Données clavier ──
 const CONSONANTS = [
@@ -680,7 +645,7 @@ function loadWords() {
     const s = localStorage.getItem(WORDS_KEY);
     if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) { words = p; return; } }
   } catch(e) {}
-  words = INITIAL.map(w => ({...w}));
+  words = INITIAL_THAI.map(thai => ({ thai, roman: '', meaning: '' }));
   saveWords();
 }
 function saveWords() {
@@ -711,28 +676,46 @@ function speak(word) {
   synth.speak(u);
 }
 
-// ── Volubilis (dictionnaire externe) ──
+// ── Volubilis — source unique de romanisation ──
 async function loadVolubilis() {
+  const pill = document.getElementById('voice-pill');
   try {
+    pill.textContent += ' · ⏳dict…';
     const resp = await fetch('volubilis.json');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     VOLUBILIS = await resp.json();
-    console.log('Volubilis chargé :', Object.keys(VOLUBILIS).length, 'mots');
+    const n = Object.keys(VOLUBILIS).length;
+    // Indicateur visuel : Volubilis prêt
+    pill.textContent = pill.textContent
+      .replace(' · ⏳dict…', '')
+      + ' · 📖 ' + n + ' mots';
+    // Enrichir les mots du vocabulaire qui n'ont pas encore de romanisation
+    let updated = false;
+    words.forEach(w => {
+      if (!w.roman) {
+        const v = VOLUBILIS[w.thai.trim()];
+        if (v) { w.roman = v[0]; updated = true; }
+      }
+    });
+    if (updated) { saveWords(); render(); }
+    // Test immédiat sur แฉลบ
+    const test = VOLUBILIS['แฉลบ'];
+    pill.textContent += ' · test:' + (test ? test[0] : 'absent');
   } catch(e) {
-    console.warn('Volubilis non disponible', e);
+    pill.textContent = pill.textContent.replace(' · ⏳dict…', '') + ' · ❌ ' + e.message;
   }
 }
 
-// ── Lookup dictionnaire (interne + Volubilis) ──
+// ── Lookup Volubilis uniquement ──
 function lookupDict(thai) {
-  if (!thai) return null;
-  // Nettoyage : espaces insécables et caractères invisibles
-  const c = thai.trim().replace(/[\s \u200B\u200C\u200D\uFEFF]+/g, '');
-  const d = DICT_MAP[c] || DICT_MAP[thai.trim()] || null;
-  if (d) return d;
-  if (VOLUBILIS) {
-    const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
-    if (v) return { roman: v[0], fr: '', en: v[1], pos: '' };
+  if (!thai || !VOLUBILIS) {
+    console.warn('lookupDict: VOLUBILIS=', !!VOLUBILIS, 'thai=', thai);
+    return null;
   }
+  const c = thai.trim().replace(/[\s\u200B\u200C\u200D\uFEFF]+/g, '');
+  const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
+  console.log('lookupDict:', thai, '→ c=', c, '→ v=', v);
+  if (v) return { roman: v[0], en: v[1] };
   return null;
 }
 
@@ -929,11 +912,19 @@ document.getElementById('composed').addEventListener('input', function() {
   composedWord = this.value;
   autoFillKbd(composedWord);
 });
-function autoFillKbd(thai) {
+async function autoFillKbd(thai) {
+  if (!VOLUBILIS) {
+    await new Promise(resolve => {
+      let tries = 0;
+      const wait = setInterval(() => {
+        tries++;
+        if (VOLUBILIS || tries >= 16) { clearInterval(wait); resolve(); }
+      }, 500);
+    });
+  }
   const d = lookupDict(thai);
   if (d) {
     if (d.roman) document.getElementById('kbd-roman').value = d.roman;
-    if (d.fr)    document.getElementById('kbd-fr').value    = d.fr;
     if (d.en)    document.getElementById('kbd-en').value    = d.en;
   }
 }
@@ -1169,40 +1160,43 @@ async function showResultCard(thai) {
   document.getElementById('result-thai-big').textContent = thai;
   document.getElementById('result-card').classList.add('visible');
   document.getElementById('save-feedback').classList.remove('show');
+  document.getElementById('res-roman').value = '';
+  document.getElementById('res-fr').value    = '';
+  document.getElementById('res-en').value    = '';
   speak(thai);
 
-  // 1. Romanisation depuis dico / Volubilis
-  const fillRoman = (word) => {
-    const r = lookupDict(word);
-    if (r && r.roman) {
-      document.getElementById('res-roman').value = r.roman;
-      if (r.en) document.getElementById('res-en').value = r.en;
-      return true;
-    }
-    return false;
-  };
-  if (!fillRoman(thai)) {
+  // 1. Romanisation + anglais depuis Volubilis
+  // Si Volubilis pas encore chargé, attendre jusqu'à 8 secondes
+  if (!VOLUBILIS) {
     document.getElementById('res-roman').value = '⏳…';
-    let tries = 0;
-    const savedThai = thai;
-    const retryRoman = setInterval(() => {
-      tries++;
-      if (fillRoman(savedThai)) { clearInterval(retryRoman); }
-      else if (tries >= 10)     { document.getElementById('res-roman').value = ''; clearInterval(retryRoman); }
-    }, 500);
+    await new Promise(resolve => {
+      let tries = 0;
+      const wait = setInterval(() => {
+        tries++;
+        if (VOLUBILIS || tries >= 16) { clearInterval(wait); resolve(); }
+      }, 500);
+    });
+  }
+  const d = lookupDict(thai);
+  console.log('lookupDict(', thai, ') =>', d);
+  if (d && d.roman) {
+    document.getElementById('res-roman').value = d.roman;
+    if (d.en) document.getElementById('res-en').value = d.en;
+  } else {
+    document.getElementById('res-roman').value = '';
   }
 
-  // 2. Traduction française
-  const d = lookupDict(thai);
-  if (d && d.fr) {
-    document.getElementById('res-fr').value = d.fr;
-  } else {
-    const key = getTranslateKey();
-    if (key) {
-      document.getElementById('res-fr').value = '⏳…';
-      const { text: fr, err } = await translateThai(thai, 'fr');
-      document.getElementById('res-fr').value = err || fr || '—';
-    }
+  // 2. Traduction FR + EN automatique via Google Translation
+  const key = getTranslateKey();
+  if (key) {
+    document.getElementById('res-fr').value = '⏳…';
+    if (!document.getElementById('res-en').value) document.getElementById('res-en').value = '⏳…';
+    const [resFr, resEn] = await Promise.all([
+      translateThai(thai, 'fr'),
+      translateThai(thai, 'en'),
+    ]);
+    document.getElementById('res-fr').value = resFr.err || resFr.text || '—';
+    if (!d || !d.en) document.getElementById('res-en').value = resEn.err || resEn.text || '—';
   }
 }
 
@@ -1275,31 +1269,6 @@ document.getElementById('btn-recog').addEventListener('click', async () => {
 
 // ── Boutons résultat stylet ──
 document.getElementById('res-speak').addEventListener('click', () => speak(selectedThai));
-
-document.getElementById('res-translate').addEventListener('click', async () => {
-  if (!selectedThai) return;
-  const btn = document.getElementById('res-translate');
-  const fb  = document.getElementById('res-translate-feedback');
-  btn.textContent = '⏳…'; btn.disabled = true;
-  const key = getTranslateKey();
-  if (!key) {
-    fb.textContent = '⚠ clé API absente — appuie sur 🔑 trad.';
-    fb.classList.add('show'); setTimeout(() => fb.classList.remove('show'), 3000);
-  } else {
-    const [resFr, resEn] = await Promise.all([
-      translateThai(selectedThai, 'fr'),
-      translateThai(selectedThai, 'en'),
-    ]);
-    if (resFr.err) {
-      fb.textContent = resFr.err; fb.classList.add('show');
-      setTimeout(() => fb.classList.remove('show'), 3000);
-    } else {
-      document.getElementById('res-fr').value = resFr.text || '—';
-      document.getElementById('res-en').value = resEn.text || '—';
-    }
-  }
-  btn.textContent = '🌐 Traduire FR & EN'; btn.disabled = false;
-});
 
 document.getElementById('res-correct').addEventListener('click', () => {
   correctionWord = selectedThai || ''; updateCorrectionWord();
