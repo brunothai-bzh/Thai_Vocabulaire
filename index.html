@@ -144,7 +144,7 @@ input[type=text]::placeholder { color: var(--text3); }
   display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 .del-btn:active { background: var(--danger-bg); color: var(--danger); }
-.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 15px; }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 15px; line-height: 1.8; }
 
 /* ── FABs ── */
 .fab-row  { position: fixed; bottom: 28px; right: 20px; display: flex; flex-direction: row; gap: 12px; align-items: flex-end; z-index: 150; }
@@ -710,11 +710,11 @@ input[type=text]::placeholder { color: var(--text3); }
 // ── Clés API ──
 const APP_KEY  = '0c8d5f2a-957e-475d-aae2-3cad538d5995';
 const HMAC_KEY = '25cba5bd-3ca1-4b23-a98f-d822cad8ef91';
-const WORDS_KEY = 'thai_words_v2';
+const WORDS_KEY = 'thai_words_v3';
 
 // ── Mots initiaux au premier lancement (romanisation et sens complétés par Volubilis au runtime) ──
 const INITIAL_THAI = [
-  'สวัสดี','ขอบคุณ','ใช่','ไม่','น้ำ','ข้าว','บ้าน','แมว','หมา','กิน','ดี','ร้อน','เย็น',
+  'สวัสดี','ขอบคุณ','ใช่','ไม่','น้ำ',
 ];
 
 // ── Données clavier ──
@@ -842,7 +842,12 @@ function render() {
   document.getElementById('count-bar').textContent = filtered.length + ' mot' + (filtered.length !== 1 ? 's' : '');
   const list = document.getElementById('word-list');
   list.innerHTML = '';
-  if (filtered.length === 0) { list.innerHTML = '<div class="empty-state">aucun mot trouvé</div>'; return; }
+  if (filtered.length === 0) {
+    const msg = q
+      ? '<div class="empty-state">aucun mot trouvé</div>'
+      : '<div class="empty-state">Ton dictionnaire est vide.<br>Utilise ✏️ le stylet, ⌨️ le clavier<br>ou les boutons 🎤 FR / EN pour ajouter des mots.</div>';
+    list.innerHTML = msg; return;
+  }
 
   filtered.forEach(w => {
     const card = document.createElement('div');
