@@ -908,11 +908,19 @@ function updateComposer() {
   document.getElementById('composed').value = composedWord;
 }
 // Sync depuis clavier iOS natif
+let kbdDebounce = null;
 document.getElementById('composed').addEventListener('input', function() {
   composedWord = this.value;
   autoFillKbd(composedWord);
 });
+
 async function autoFillKbd(thai) {
+  // Annuler le debounce précédent
+  clearTimeout(kbdDebounce);
+  clearKbdFields();
+  if (!thai) return;
+
+  // Attendre Volubilis si pas encore chargé
   if (!VOLUBILIS) {
     await new Promise(resolve => {
       let tries = 0;
@@ -922,20 +930,46 @@ async function autoFillKbd(thai) {
       }, 500);
     });
   }
+
+  // Romanisation + anglais instantanés depuis Volubilis
   const d = lookupDict(thai);
   if (d) {
     if (d.roman) document.getElementById('kbd-roman').value = d.roman;
     if (d.en)    document.getElementById('kbd-en').value    = d.en;
   }
+
+  // Traduction FR automatique après 800ms de pause (debounce)
+  kbdDebounce = setTimeout(async () => {
+    const key = getTranslateKey();
+    if (!key || !composedWord || composedWord !== thai) return;
+    const btn = document.getElementById('kbd-translate');
+    btn.textContent = '⏳…'; btn.disabled = true;
+    document.getElementById('kbd-fr').value = '⏳…';
+    if (!d || !d.en) document.getElementById('kbd-en').value = '⏳…';
+    const [resFr, resEn] = await Promise.all([
+      translateThai(thai, 'fr'),
+      translateThai(thai, 'en'),
+    ]);
+    // Vérifier que le mot n'a pas changé pendant l'appel
+    if (composedWord !== thai) return;
+    document.getElementById('kbd-fr').value = resFr.err || resFr.text || '—';
+    if (!d || !d.en) document.getElementById('kbd-en').value = resEn.err || resEn.text || '—';
+    btn.textContent = '🌐 Traduire en français'; btn.disabled = false;
+  }, 800);
 }
 
 document.getElementById('compose-speak').addEventListener('click', () => speak(composedWord));
 document.getElementById('compose-del').addEventListener('click', () => {
+  clearTimeout(kbdDebounce);
   composedWord = [...composedWord].slice(0, -1).join('');
-  updateComposer(); document.getElementById('composed').focus();
+  updateComposer();
+  autoFillKbd(composedWord);
+  document.getElementById('composed').focus();
 });
 document.getElementById('compose-clear').addEventListener('click', () => {
-  composedWord = ''; updateComposer(); document.getElementById('composed').focus();
+  clearTimeout(kbdDebounce);
+  composedWord = ''; updateComposer(); clearKbdFields();
+  document.getElementById('composed').focus();
 });
 
 function clearKbdFields() {
@@ -954,6 +988,7 @@ document.getElementById('kbd-cancel').addEventListener('click',  closeKbd);
 document.getElementById('modal-kbd').addEventListener('click', e => { if (e.target === document.getElementById('modal-kbd')) closeKbd(); });
 
 document.getElementById('kbd-new').addEventListener('click', () => {
+  clearTimeout(kbdDebounce);
   composedWord = ''; updateComposer(); clearKbdFields();
   document.getElementById('kbd-feedback').classList.remove('show');
   document.getElementById('composed').focus();
