@@ -431,8 +431,8 @@ input[type=text]::placeholder { color: var(--text3); }
   <div class="add-form-grid">
     <div class="field"><label>thaï *</label><input type="text" id="inp-thai" class="thai-input" placeholder="เช่น แมว" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
     <div class="field"><label>romanisation</label><input type="text" id="inp-roman" placeholder="romanisation…" autocomplete="off" autocorrect="off" spellcheck="false" /></div>
-    <div class="field"><label>🇫🇷 français</label><input type="text" id="inp-meaning" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
-    <div class="field"><label>🇬🇧 anglais</label><input type="text" id="inp-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
+    <div class="field"><label>français</label><input type="text" id="inp-meaning" placeholder="traduction fr…" autocomplete="off" spellcheck="false" /></div>
+    <div class="field"><label>anglais</label><input type="text" id="inp-en" placeholder="traduction en…" autocomplete="off" spellcheck="false" /></div>
   </div>
   <div class="form-actions">
     <button class="btn accent" id="btn-add-word">✓ enregistrer</button>
@@ -860,13 +860,27 @@ function render() {
 
     const metaDiv = document.createElement('div');
     metaDiv.className = 'word-meta';
-    metaDiv.innerHTML = `
-      <div class="word-roman">${w.roman || ''}</div>
-      <div class="word-transl">
-        ${w.meaning ? `<span class="word-fr">🇫🇷 ${w.meaning}</span>` : ''}
-        ${w.en      ? `<span class="word-en">🇬🇧 ${w.en}</span>`      : ''}
-      </div>
-    `;
+    const romanDiv = document.createElement('div');
+    romanDiv.className = 'word-roman';
+    romanDiv.textContent = w.roman || '';
+    metaDiv.appendChild(romanDiv);
+    if (w.meaning || w.en) {
+      const translDiv = document.createElement('div');
+      translDiv.className = 'word-transl';
+      if (w.meaning) {
+        const frSpan = document.createElement('span');
+        frSpan.className = 'word-fr';
+        frSpan.textContent = w.meaning;
+        translDiv.appendChild(frSpan);
+      }
+      if (w.en) {
+        const enSpan = document.createElement('span');
+        enSpan.className = 'word-en';
+        enSpan.textContent = w.en;
+        translDiv.appendChild(enSpan);
+      }
+      metaDiv.appendChild(translDiv);
+    }
 
     const spk = document.createElement('button');
     spk.className = 'speak-btn' + (playingWord === w.thai ? ' playing' : '');
