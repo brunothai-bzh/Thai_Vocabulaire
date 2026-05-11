@@ -98,7 +98,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .modal-kbd-inner .modal-header,.modal-kbd-inner .word-composer,.modal-kbd-inner .tone-legend,.modal-kbd-inner .kbd-save-row{flex-shrink:0;}
 .modal-kbd-inner .kbd-sections-wrap{flex:1;overflow-y:auto;}
 .word-composer{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--surface2);border-radius:var(--radius-sm);padding:6px 10px;border:1px solid var(--border);}
-.word-composed{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:36px;letter-spacing:2px;word-break:break-all;line-height:1.2;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;width:100%;}
+.word-composed{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:40px;font-weight:500;color:var(--accent);flex:1;min-height:36px;letter-spacing:2px;word-break:break-all;line-height:1.2;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;width:100%;}
 .word-composed::placeholder{color:var(--text3);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;}
 .composer-actions{display:flex;gap:5px;flex-shrink:0;}
 .composer-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
@@ -328,6 +328,16 @@ input[type=text]::placeholder{color:var(--text3);}
       <div class="kbd-section"><div class="kbd-label">Voyelles</div><div class="kbd-row" id="kbd-vowels"></div></div>
       <div class="kbd-section"><div class="kbd-label">Tons & signes</div><div class="kbd-row" id="kbd-tones"></div></div>
       <div class="kbd-section"><div class="kbd-label">Chiffres thaï</div><div class="kbd-row" id="kbd-numbers"></div></div>
+    </div>
+    <div class="result-fields" style="margin-top:10px;">
+      <div class="result-field">
+        <label>Romanisation</label>
+        <input type="text" id="kbd-roman" placeholder="ex : trīem" autocomplete="off" autocorrect="off" spellcheck="false" />
+      </div>
+      <div class="result-field">
+        <label>Traduction française</label>
+        <input type="text" id="kbd-fr" placeholder="ex : préparer" autocomplete="off" spellcheck="false" />
+      </div>
     </div>
     <div class="kbd-save-row">
       <button class="btn btn-full" id="kbd-cancel">annuler</button>
@@ -664,7 +674,7 @@ function buildKeyboard(){
       if(d.r){const rom=document.createElement('span');rom.className='rom';rom.textContent=d.r;btn.appendChild(rom);}
       btn.addEventListener('click',()=>{
         if(mini){correctionWord+=d.c;updateCorrectionWord();}
-        else{composedWord+=d.c;updateComposer();}
+        else{composedWord+=d.c;updateComposer();autoFillKbd(composedWord);}
       });
       row.appendChild(btn);
     });
@@ -685,19 +695,29 @@ function updateComposer(){
 // Sync depuis clavier iOS natif
 document.getElementById('composed').addEventListener('input',function(){
   composedWord=this.value;
+  autoFillKbd(composedWord);
 });
+
+function autoFillKbd(thai){
+  const d=lookupDict(thai);
+  if(d){
+    if(d.roman)document.getElementById('kbd-roman').value=d.roman;
+    if(d.fr)document.getElementById('kbd-fr').value=d.fr;
+  }
+}
 document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
 document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();document.getElementById('composed').focus();});
 document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('composed').focus();});
-document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('modal-kbd').classList.add('open');setTimeout(()=>document.getElementById('composed').focus(),300);});
+document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('kbd-roman').value='';document.getElementById('kbd-fr').value='';document.getElementById('modal-kbd').classList.add('open');setTimeout(()=>document.getElementById('composed').focus(),300);});
 function closeKbd(){document.getElementById('modal-kbd').classList.remove('open');}
 document.getElementById('kbd-close').addEventListener('click',closeKbd);
 document.getElementById('kbd-cancel').addEventListener('click',closeKbd);
 document.getElementById('modal-kbd').addEventListener('click',e=>{if(e.target===document.getElementById('modal-kbd'))closeKbd();});
 document.getElementById('kbd-save').addEventListener('click',()=>{
   if(!composedWord)return;
-  const d=lookupDict(composedWord);
-  words.push({thai:composedWord,roman:d?d.roman:'',meaning:d?d.fr:''});
+  const roman=document.getElementById('kbd-roman').value.trim();
+  const meaning=document.getElementById('kbd-fr').value.trim();
+  words.push({thai:composedWord,roman,meaning});
   saveWords();closeKbd();render();
 });
 
