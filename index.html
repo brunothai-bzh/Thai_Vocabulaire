@@ -66,7 +66,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .word-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s,border-color .12s;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;}
 .word-card:active{background:var(--surface2);}
 .word-card.active{border-color:var(--accent);background:var(--accent-bg);}
-.word-thai{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;line-height:1.2;flex:1;min-width:0;text-align:left;}
+.word-thai{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;line-height:1.2;flex:1;min-width:0;text-align:left;}
 .word-meta{display:flex;flex-direction:column;gap:1px;flex-shrink:0;max-width:140px;text-align:right;}
 .word-roman{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
 .word-meaning{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
@@ -160,11 +160,11 @@ input[type=text]::placeholder{color:var(--text3);}
 .recog-status.error{color:var(--danger);}
 .recog-status.ok{color:var(--accent2);}
 .candidates{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-.candidate-btn{font-family:'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;}
+.candidate-btn{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:24px;padding:8px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;}
 .candidate-btn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
 .result-card{display:none;margin-bottom:12px;background:var(--accent2-bg);border:1px solid rgba(46,107,79,.2);border-radius:var(--radius);padding:14px 16px;}
 .result-card.visible{display:block;}
-.result-thai-big{font-family:'Noto Sans Thai',sans-serif;font-size:40px;font-weight:500;color:var(--accent2);text-align:center;margin-bottom:10px;}
+.result-thai-big{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:40px;font-weight:500;color:var(--accent2);text-align:center;margin-bottom:10px;}
 .result-actions{display:flex;gap:8px;margin-bottom:14px;}
 
 /* Champs romanisation + traduction DANS la result-card */
@@ -178,7 +178,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .correction-zone.open{display:block;}
 .correction-header{background:var(--accent2-bg);padding:8px 14px;font-size:12px;font-weight:500;color:var(--accent2);display:flex;align-items:center;justify-content:space-between;}
 .correction-composer{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface);}
-.correction-word{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:40px;word-break:break-all;}
+.correction-word{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:40px;word-break:break-all;}
 .correction-actions{display:flex;gap:5px;}
 .corr-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .corr-btn:active{background:var(--surface);}
