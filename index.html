@@ -145,11 +145,16 @@ input[type=text]::placeholder { color: var(--text3); }
 .empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 15px; }
 
 /* ── FABs ── */
-.fab-row { position: fixed; bottom: 28px; right: 20px; display: flex; flex-direction: row; gap: 12px; align-items: center; z-index: 150; }
-.fab { width: 56px; height: 56px; border-radius: 50%; color: #fff; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.fab-row  { position: fixed; bottom: 28px; right: 20px; display: flex; flex-direction: row; gap: 12px; align-items: flex-end; z-index: 150; }
+.fab      { width: 56px; height: 56px; border-radius: 50%; color: #fff; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .fab:active        { transform: scale(.93); }
 .fab.kbd    { background: var(--accent2); box-shadow: 0 4px 20px rgba(46,107,79,.4); }
 .fab.stylet { background: var(--accent);  box-shadow: 0 4px 20px rgba(196,82,26,.4); }
+.fab.fr2th  { background: #185FA5;        box-shadow: 0 4px 20px rgba(24,95,165,.4); font-size: 22px; }
+.fab.fr2th.recording { animation: pulse .8s infinite; }
+.fab-wrap   { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.fab-badge  { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; color: #185FA5; letter-spacing: .5px; line-height: 1; }
+.fab-badge.thai { font-family: 'Noto Sans Thai', sans-serif; font-size: 10px; letter-spacing: .3px; }
 
 /* ── Modals ── */
 .modal-overlay {
@@ -284,6 +289,26 @@ input[type=text]::placeholder { color: var(--text3); }
 .save-feedback { font-size: 13px; color: var(--accent2); font-weight: 500; text-align: center; opacity: 0; transition: opacity .3s; margin-top: 6px; min-height: 20px; }
 .save-feedback.show { opacity: 1; }
 
+/* ── Modal FR → ไทย ── */
+.fr2th-listen    { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0; }
+.fr2th-mic-btn   { width: 72px; height: 72px; border-radius: 50%; background: #185FA5; color: #fff; border: none; font-size: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(24,95,165,.35); transition: transform .1s; }
+.fr2th-mic-btn:active    { transform: scale(.93); }
+.fr2th-mic-btn.recording { background: var(--danger); animation: pulse .8s infinite; }
+.fr2th-lang-badges { display: flex; align-items: center; gap: 8px; }
+.fr2th-badge     { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #185FA5; }
+.fr2th-badge.thai{ font-family: 'Noto Sans Thai', sans-serif; }
+.fr2th-arrow     { font-size: 14px; color: var(--text3); }
+.fr2th-status    { font-size: 12px; color: var(--text3); text-align: center; }
+.fr2th-status.active { color: var(--danger); font-weight: 500; }
+.fr2th-field     { margin-bottom: 12px; }
+.fr2th-field label { display: block; font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 5px; }
+.fr2th-text      { font-size: 15px; color: var(--text2); background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; min-height: 40px; }
+.fr2th-result    { display: none; background: var(--accent2-bg); border: 1px solid rgba(46,107,79,.2); border-radius: var(--radius); padding: 14px 16px; }
+.fr2th-result.visible { display: block; }
+.fr2th-thai      { font-family: Thonburi, 'Noto Sans Thai', sans-serif; font-size: 42px; font-weight: 500; color: var(--accent2); text-align: center; margin-bottom: 6px; }
+.fr2th-sub       { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); text-align: center; margin-bottom: 12px; }
+.fr2th-actions   { display: flex; gap: 10px; }
+
 /* ── Modal Stylet ── */
 .modal-stylet-inner { max-height: 90vh; height: 90vh; display: flex; flex-direction: column; padding-bottom: 16px; }
 .modal-stylet-inner .modal-header,
@@ -415,6 +440,11 @@ input[type=text]::placeholder { color: var(--text3); }
 
 <!-- ── FABs ── -->
 <div class="fab-row">
+  <div class="fab-wrap">
+    <span class="fab-badge">FR</span>
+    <button class="fab fr2th" id="fab-fr2th">🎤</button>
+    <span class="fab-badge thai">ไทย</span>
+  </div>
   <button class="fab stylet" id="fab-stylet">✏️</button>
   <button class="fab kbd"    id="fab-kbd">⌨️</button>
 </div>
@@ -436,6 +466,43 @@ input[type=text]::placeholder { color: var(--text3); }
       <button class="btn accent btn-full" id="tkey-save">✓ enregistrer</button>
     </div>
     <div class="csv-feedback" id="tkey-feedback"></div>
+  </div>
+</div>
+
+<!-- ── Modal : FR → ไทย ── -->
+<div class="modal-overlay" id="modal-fr2th">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">🎤 FR → ไทย</div>
+      <button class="modal-close" id="fr2th-close">✕</button>
+    </div>
+
+    <!-- Zone écoute -->
+    <div class="fr2th-listen">
+      <button class="fr2th-mic-btn" id="fr2th-mic">🎤</button>
+      <div class="fr2th-lang-badges">
+        <span class="fr2th-badge">FR</span>
+        <span class="fr2th-arrow">→</span>
+        <span class="fr2th-badge thai">ไทย</span>
+      </div>
+      <div class="fr2th-status" id="fr2th-status">Appuie pour parler en français</div>
+    </div>
+
+    <!-- Texte français reconnu -->
+    <div class="fr2th-field">
+      <label>Français reconnu</label>
+      <div class="fr2th-text" id="fr2th-fr-text">—</div>
+    </div>
+
+    <!-- Résultat thaï -->
+    <div class="fr2th-result" id="fr2th-result">
+      <div class="fr2th-thai" id="fr2th-thai-text"></div>
+      <div class="fr2th-sub" id="fr2th-roman"></div>
+      <div class="fr2th-actions">
+        <button class="btn green btn-full" id="fr2th-speak">🔊 écouter</button>
+        <button class="btn accent btn-full" id="fr2th-save">✓ enregistrer</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1405,6 +1472,114 @@ document.getElementById('corr-validate').addEventListener('click', () => {
   document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('selected'));
   showResultCard(correctionWord);
   document.getElementById('correction-zone').classList.remove('open');
+});
+
+// ── Modal FR → ไทย ──
+let fr2thRec = null, fr2thRecording = false;
+let fr2thCurrentThai = '';
+
+function openFr2th() {
+  document.getElementById('fr2th-fr-text').textContent = '—';
+  document.getElementById('fr2th-result').classList.remove('visible');
+  document.getElementById('fr2th-status').textContent = 'Appuie pour parler en français';
+  document.getElementById('fr2th-status').classList.remove('active');
+  fr2thCurrentThai = '';
+  document.getElementById('modal-fr2th').classList.add('open');
+}
+function closeFr2th() {
+  if (fr2thRecording && fr2thRec) fr2thRec.stop();
+  document.getElementById('modal-fr2th').classList.remove('open');
+}
+document.getElementById('fab-fr2th').addEventListener('click', openFr2th);
+document.getElementById('fr2th-close').addEventListener('click', closeFr2th);
+document.getElementById('modal-fr2th').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-fr2th')) closeFr2th();
+});
+
+document.getElementById('fr2th-mic').addEventListener('click', async () => {
+  if (!SpeechRec) { alert('Saisie vocale non supportée sur ce navigateur.'); return; }
+  if (fr2thRecording) { fr2thRec.stop(); return; }
+
+  const micBtn = document.getElementById('fr2th-mic');
+  const status = document.getElementById('fr2th-status');
+  fr2thRec = new SpeechRec();
+  fr2thRec.lang = 'fr-FR';
+  fr2thRec.interimResults = true;
+  fr2thRec.maxAlternatives = 1;
+
+  micBtn.classList.add('recording'); micBtn.textContent = '⏹';
+  status.textContent = '🔴 Écoute en cours…'; status.classList.add('active');
+  fr2thRecording = true;
+  document.getElementById('fr2th-result').classList.remove('visible');
+
+  fr2thRec.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('fr2th-fr-text').textContent = transcript;
+  };
+
+  fr2thRec.onend = async () => {
+    fr2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    const frText = document.getElementById('fr2th-fr-text').textContent.trim();
+    if (!frText || frText === '—') {
+      status.textContent = 'Rien reconnu — réessaie'; status.classList.remove('active'); return;
+    }
+    status.textContent = '⏳ Traduction en cours…'; status.classList.remove('active');
+
+    // Traduire FR → TH via Google Translation
+    const key = getTranslateKey();
+    if (!key) {
+      status.textContent = '⚠ Clé API absente — appuie sur 🔑 trad.'; return;
+    }
+    try {
+      const url = 'https://translation.googleapis.com/language/translate/v2?key=' + key;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: frText, source: 'fr', target: 'th', format: 'text' })
+      });
+      const data = await resp.json();
+      if (data.error) { status.textContent = '⚠ ' + data.error.message; return; }
+      const thaiText = data.data?.translations?.[0]?.translatedText || '';
+      if (!thaiText) { status.textContent = 'Traduction vide'; return; }
+
+      // Afficher le résultat
+      fr2thCurrentThai = thaiText;
+      document.getElementById('fr2th-thai-text').textContent = thaiText;
+      // Romanisation depuis Volubilis
+      const d = lookupDict(thaiText);
+      document.getElementById('fr2th-roman').textContent = d ? d.roman : '';
+      document.getElementById('fr2th-result').classList.add('visible');
+      status.textContent = 'Appuie pour parler en français';
+      // Prononcer
+      speak(thaiText);
+    } catch(e) {
+      status.textContent = '⚠ Erreur réseau';
+    }
+  };
+
+  fr2thRec.onerror = (e) => {
+    fr2thRecording = false;
+    micBtn.classList.remove('recording'); micBtn.textContent = '🎤';
+    if (e.error !== 'aborted') {
+      status.textContent = '⚠ Micro : ' + e.error; status.classList.remove('active');
+    }
+  };
+
+  fr2thRec.start();
+});
+
+document.getElementById('fr2th-speak').addEventListener('click', () => speak(fr2thCurrentThai));
+
+document.getElementById('fr2th-save').addEventListener('click', () => {
+  if (!fr2thCurrentThai) return;
+  const d = lookupDict(fr2thCurrentThai);
+  const frText = document.getElementById('fr2th-fr-text').textContent.trim();
+  if (!words.find(w => w.thai === fr2thCurrentThai)) {
+    words.push({ thai: fr2thCurrentThai, roman: d ? d.roman : '', meaning: frText });
+    saveWords(); render();
+  }
+  closeFr2th();
 });
 
 // ── Init ──
