@@ -98,8 +98,8 @@ input[type=text]::placeholder{color:var(--text3);}
 .modal-kbd-inner .modal-header,.modal-kbd-inner .word-composer,.modal-kbd-inner .tone-legend,.modal-kbd-inner .kbd-save-row{flex-shrink:0;}
 .modal-kbd-inner .kbd-sections-wrap{flex:1;overflow-y:auto;}
 .word-composer{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--surface2);border-radius:var(--radius-sm);padding:6px 10px;border:1px solid var(--border);}
-.word-composed{font-family:'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:36px;letter-spacing:2px;word-break:break-all;line-height:1.2;}
-.word-composed.empty{color:var(--text3);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;display:flex;align-items:center;}
+.word-composed{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:28px;font-weight:500;color:var(--accent);flex:1;min-height:36px;letter-spacing:2px;word-break:break-all;line-height:1.2;border:none;background:transparent;outline:none;-webkit-appearance:none;padding:0;width:100%;}
+.word-composed::placeholder{color:var(--text3);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;}
 .composer-actions{display:flex;gap:5px;flex-shrink:0;}
 .composer-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .composer-btn:active{background:var(--surface2);}
@@ -112,7 +112,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .kbd-section{margin-bottom:10px;}
 .kbd-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
 .kbd-row{display:flex;flex-wrap:wrap;gap:4px;}
-.kbd-key{font-family:'Noto Sans Thai',sans-serif;font-size:22px;min-width:44px;height:54px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .08s,transform .08s;-webkit-user-select:none;}
+.kbd-key{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:22px;min-width:44px;height:54px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .08s,transform .08s;-webkit-user-select:none;}
 .kbd-key:active{transform:scale(.92);}
 .kbd-key .rom{font-family:'DM Mono',monospace;font-size:8px;line-height:1;margin-top:1px;}
 .kbd-key.low{background:var(--low-bg);border-color:var(--low-border);color:var(--low-text);}
@@ -187,7 +187,7 @@ input[type=text]::placeholder{color:var(--text3);}
 .mini-kbd-section{margin-bottom:8px;}
 .mini-kbd-label{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
 .mini-kbd-row{display:flex;flex-wrap:wrap;gap:4px;}
-.mini-key{font-family:'Noto Sans Thai',sans-serif;font-size:17px;min-width:34px;height:42px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-user-select:none;}
+.mini-key{font-family:Thonburi,'Noto Sans Thai',sans-serif;font-size:17px;min-width:34px;height:42px;padding:0 4px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-user-select:none;}
 .mini-key:active{transform:scale(.92);}
 .mini-key .rom{font-family:'DM Mono',monospace;font-size:7px;line-height:1;}
 .mini-key.low{background:var(--low-bg);border-color:var(--low-border);color:var(--low-text);}
@@ -311,7 +311,7 @@ input[type=text]::placeholder{color:var(--text3);}
       <button class="modal-close" id="kbd-close">✕</button>
     </div>
     <div class="word-composer">
-      <div class="word-composed empty" id="composed">appuie sur une touche…</div>
+      <input type="text" class="word-composed" id="composed" placeholder="appuie sur une touche…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" />
       <div class="composer-actions">
         <button class="composer-btn speak" id="compose-speak">🔊</button>
         <button class="composer-btn" id="compose-del">⌫</button>
@@ -680,13 +680,16 @@ function buildKeyboard(){
 
 function updateComposer(){
   const el=document.getElementById('composed');
-  if(composedWord){el.textContent=composedWord;el.classList.remove('empty');}
-  else{el.textContent='appuie sur une touche…';el.classList.add('empty');}
+  el.value=composedWord;
 }
+// Sync depuis clavier iOS natif
+document.getElementById('composed').addEventListener('input',function(){
+  composedWord=this.value;
+});
 document.getElementById('compose-speak').addEventListener('click',()=>speak(composedWord));
-document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();});
-document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();});
-document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('modal-kbd').classList.add('open');});
+document.getElementById('compose-del').addEventListener('click',()=>{composedWord=[...composedWord].slice(0,-1).join('');updateComposer();document.getElementById('composed').focus();});
+document.getElementById('compose-clear').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('composed').focus();});
+document.getElementById('fab-kbd').addEventListener('click',()=>{composedWord='';updateComposer();document.getElementById('modal-kbd').classList.add('open');setTimeout(()=>document.getElementById('composed').focus(),300);});
 function closeKbd(){document.getElementById('modal-kbd').classList.remove('open');}
 document.getElementById('kbd-close').addEventListener('click',closeKbd);
 document.getElementById('kbd-cancel').addEventListener('click',closeKbd);
