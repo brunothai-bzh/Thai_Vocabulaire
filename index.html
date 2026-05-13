@@ -415,6 +415,7 @@ input[type=text]::placeholder { color: var(--text3); }
   </div>
   <div class="header-right">
     <button class="csv-btn" id="translate-key-btn" title="Clé Google Translation">🔑 trad.</button>
+    <button class="csv-btn" id="webhook-btn" title="URL webhook Google Sheet">📋 sheet</button>
     <button class="csv-btn" id="csv-btn">⇅ CSV</button>
     <div id="voice-pill" class="voice-pill">⚠ voix</div>
   </div>
@@ -461,6 +462,28 @@ input[type=text]::placeholder { color: var(--text3); }
   </div>
   <button class="fab stylet" id="fab-stylet">✏️</button>
   <button class="fab kbd"    id="fab-kbd">⌨️</button>
+</div>
+
+<!-- ── Modal : Webhook Google Sheet ── -->
+<div class="modal-overlay" id="modal-webhook">
+  <div class="csv-modal">
+    <div class="modal-header">
+      <div class="modal-title">📋 Webhook Google Sheet</div>
+      <button class="modal-close" id="webhook-close">✕</button>
+    </div>
+    <div class="csv-info">URL fournie par Apps Script après déploiement.<br>Chaque mot enregistré sera automatiquement synchronisé dans ton Google Sheet.</div>
+    <div class="field" style="margin-bottom:12px;">
+      <label>URL du webhook (https://script.google.com/…)</label>
+      <input type="text" id="webhook-input" placeholder="https://script.google.com/macros/s/…/exec"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        style="padding-left:14px;font-family:monospace;font-size:11px;" />
+    </div>
+    <div class="csv-actions">
+      <button class="btn btn-full" id="webhook-delete" style="color:var(--danger);">🗑 supprimer</button>
+      <button class="btn accent btn-full" id="webhook-save">✓ enregistrer</button>
+    </div>
+    <div class="csv-feedback" id="webhook-feedback"></div>
+  </div>
 </div>
 
 <!-- ── Modal : Clé Google Translation ── -->
@@ -803,6 +826,29 @@ function speak(word) {
 const GSHEET_ID = '1g3YoB0YbdairgczkfQcfY2L8aTyNK7m4zr737STCbFc';
 const GSHEET_URL = 'https://docs.google.com/spreadsheets/d/' + GSHEET_ID + '/gviz/tq?tqx=out:json';
 let GSHEET_PERSO = {}; // { thai: { roman, fr, en } }
+// URL du webhook Apps Script — à remplacer après déploiement
+let GSHEET_WEBHOOK = '';
+const WEBHOOK_KEY = 'gsheet_webhook_url';
+
+function getWebhookUrl() {
+  try { return localStorage.getItem(WEBHOOK_KEY) || ''; } catch(e) { return ''; }
+}
+
+async function syncToSheet(word) {
+  const url = getWebhookUrl();
+  if (!url || !word.thai) return;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' }, // Apps Script accepte text/plain pour éviter les preflight CORS
+      body: JSON.stringify({ thai: word.thai, roman: word.roman || '', fr: word.meaning || '', en: word.en || '' })
+    });
+    // Mettre à jour le cache local GSHEET_PERSO
+    GSHEET_PERSO[word.thai] = { roman: word.roman || '', fr: word.meaning || '', en: word.en || '' };
+  } catch(e) {
+    console.warn('Sync Sheet échouée :', e.message);
+  }
+}
 
 async function loadGSheet() {
   const pill = document.getElementById('voice-pill');
@@ -976,7 +1022,9 @@ function doAddWord() {
   const meaning = document.getElementById('inp-meaning').value.trim();
   const en      = document.getElementById('inp-en').value.trim();
   if (!thai) { document.getElementById('inp-thai').focus(); return; }
-  words.push({ thai, roman, meaning, en });
+  const newWord1 = { thai, roman, meaning, en };
+  words.push(newWord1);
+  syncToSheet(newWord1);
   saveWords();
   ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('inp-thai').focus();
@@ -988,6 +1036,49 @@ function doAddWord() {
 document.getElementById('btn-add-word').addEventListener('click', doAddWord);
 ['inp-thai', 'inp-roman', 'inp-meaning', 'inp-en'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAddWord(); });
+});
+
+// ── Modal Webhook Google Sheet ──
+function updateWebhookBtn() {
+  const url = getWebhookUrl();
+  const btn = document.getElementById('webhook-btn');
+  btn.textContent = url ? '📋 sheet ok' : '📋 sheet';
+  btn.style.color = url ? 'var(--accent2)' : '';
+}
+document.getElementById('webhook-btn').addEventListener('click', () => {
+  document.getElementById('webhook-input').value = getWebhookUrl();
+  document.getElementById('webhook-feedback').textContent = '';
+  document.getElementById('modal-webhook').classList.add('open');
+  setTimeout(() => document.getElementById('webhook-input').focus(), 80);
+});
+function closeWebhook() { document.getElementById('modal-webhook').classList.remove('open'); }
+document.getElementById('webhook-close').addEventListener('click', closeWebhook);
+document.getElementById('modal-webhook').addEventListener('click', e => { if (e.target === document.getElementById('modal-webhook')) closeWebhook(); });
+document.getElementById('webhook-save').addEventListener('click', async () => {
+  const url = document.getElementById('webhook-input').value.trim();
+  try { localStorage.setItem(WEBHOOK_KEY, url); } catch(e) {}
+  updateWebhookBtn();
+  // Tester le webhook
+  if (url) {
+    document.getElementById('webhook-feedback').textContent = '⏳ test en cours…';
+    try {
+      const resp = await fetch(url);
+      const data = await resp.json();
+      document.getElementById('webhook-feedback').textContent = data.ok ? '✓ webhook actif !' : '⚠ ' + (data.error || 'réponse inattendue');
+    } catch(e) {
+      document.getElementById('webhook-feedback').textContent = '⚠ erreur réseau — vérifie l\'URL';
+    }
+  } else {
+    document.getElementById('webhook-feedback').textContent = 'URL supprimée';
+    setTimeout(closeWebhook, 800);
+  }
+});
+document.getElementById('webhook-delete').addEventListener('click', () => {
+  try { localStorage.removeItem(WEBHOOK_KEY); } catch(e) {}
+  document.getElementById('webhook-input').value = '';
+  updateWebhookBtn();
+  document.getElementById('webhook-feedback').textContent = '✓ webhook supprimé';
+  setTimeout(closeWebhook, 800);
 });
 
 // ── Clé Google Translation ──
@@ -1290,7 +1381,9 @@ document.getElementById('kbd-save').addEventListener('click', () => {
   const roman   = document.getElementById('kbd-roman').value.trim();
   const meaning = document.getElementById('kbd-fr').value.trim();
   const en      = document.getElementById('kbd-en').value.trim();
-  words.push({ thai: composedWord, roman, meaning, en });
+  const newWordKbd = { thai: composedWord, roman, meaning, en };
+  words.push(newWordKbd);
+  syncToSheet(newWordKbd);
   saveWords(); closeKbd(); render();
 });
 
@@ -1572,7 +1665,9 @@ document.getElementById('btn-save-word').addEventListener('click', () => {
   const meaning = document.getElementById('res-fr').value.trim();
   const en      = document.getElementById('res-en').value.trim();
   if (!words.find(w => w.thai === selectedThai)) {
-    words.push({ thai: selectedThai, roman, meaning, en });
+    const newWordSty = { thai: selectedThai, roman, meaning, en };
+    words.push(newWordSty);
+    syncToSheet(newWordSty);
     saveWords(); render();
   }
   const fb = document.getElementById('save-feedback');
@@ -1690,7 +1785,9 @@ document.getElementById('en2th-save').addEventListener('click', () => {
   const d = lookupDict(en2thCurrentThai);
   const enText = document.getElementById('en2th-en-text').textContent.trim();
   if (!words.find(w => w.thai === en2thCurrentThai)) {
-    words.push({ thai: en2thCurrentThai, roman: d ? d.roman : '', meaning: en2thFrResult, en: enText });
+    const newWordEn = { thai: en2thCurrentThai, roman: d ? d.roman : '', meaning: en2thFrResult, en: enText };
+    words.push(newWordEn);
+    syncToSheet(newWordEn);
     saveWords(); render();
   }
   closeEn2th();
@@ -1798,7 +1895,9 @@ document.getElementById('fr2th-save').addEventListener('click', () => {
   const d = lookupDict(fr2thCurrentThai);
   const frText = document.getElementById('fr2th-fr-text').textContent.trim();
   if (!words.find(w => w.thai === fr2thCurrentThai)) {
-    words.push({ thai: fr2thCurrentThai, roman: d ? d.roman : '', meaning: frText, en: fr2thEnResult || (d ? d.en : '') });
+    const newWordFr = { thai: fr2thCurrentThai, roman: d ? d.roman : '', meaning: frText, en: fr2thEnResult || (d ? d.en : '') };
+    words.push(newWordFr);
+    syncToSheet(newWordFr);
     saveWords(); render();
   }
   closeFr2th();
@@ -1809,6 +1908,7 @@ loadWords();
 buildKeyboard();
 render();
 updateTkeyBtn();
+updateWebhookBtn();
 loadVolubilis();
 loadGSheet();
 </script>
