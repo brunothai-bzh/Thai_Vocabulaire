@@ -838,14 +838,14 @@ async function syncToSheet(word) {
   const url = getWebhookUrl();
   if (!url || !word.thai) return;
   try {
-    // mode no-cors : pas de preflight, fonctionne depuis PWA iOS
-    // La réponse sera opaque mais l'écriture dans le Sheet se fait quand même
-    await fetch(url, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ thai: word.thai, roman: word.roman || '', fr: word.meaning || '', en: word.en || '' })
+    // GET avec paramètres URL — fonctionne en no-cors, Apps Script reçoit via e.parameter
+    const params = new URLSearchParams({
+      thai:  word.thai,
+      roman: word.roman   || '',
+      fr:    word.meaning || '',
+      en:    word.en      || ''
     });
+    await fetch(url + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
     // Mettre à jour le cache local GSHEET_PERSO
     GSHEET_PERSO[word.thai] = { roman: word.roman || '', fr: word.meaning || '', en: word.en || '' };
   } catch(e) {
