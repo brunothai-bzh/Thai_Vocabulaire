@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="ภาษาไทย">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>ภาษาไทย · Vocabulaire</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
@@ -803,7 +804,7 @@ async function loadVolubilis() {
   const pill = document.getElementById('voice-pill');
   try {
     pill.textContent += ' · ⏳dict…';
-    const resp = await fetch('volubilis.json');
+    const resp = await fetch('https://cdn.jsdelivr.net/gh/brunothai-bzh/Thai_Vocabulaire@main/volubilis.json');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     VOLUBILIS = await resp.json();
     const n = Object.keys(VOLUBILIS).length;
