@@ -826,6 +826,11 @@ function speak(word) {
 const GSHEET_ID = '1g3YoB0YbdairgczkfQcfY2L8aTyNK7m4zr737STCbFc';
 const GSHEET_URL = 'https://docs.google.com/spreadsheets/d/' + GSHEET_ID + '/gviz/tq?tqx=out:json';
 let GSHEET_PERSO = {}; // { thai: { roman, fr, en } }
+
+// ── Google Sheet Volubilis FR (dico-thai-eng-fran) — source secondaire ──
+const GSHEET_VOL_ID = '1C9sZX4fl2PmxtjP5iUtKQkcTtfqGxH9-zMdNeE_qh6U';
+const GSHEET_VOL_URL = 'https://docs.google.com/spreadsheets/d/' + GSHEET_VOL_ID + '/gviz/tq?tqx=out:json';
+let GSHEET_VOL = {}; // { thai: { roman, fr, en } }
 // URL du webhook Apps Script — à remplacer après déploiement
 let GSHEET_WEBHOOK = '';
 const WEBHOOK_KEY = 'gsheet_webhook_url';
@@ -890,6 +895,46 @@ async function loadGSheet() {
   }
 }
 
+// ── Google Sheet Volubilis FR — source secondaire avec FR ──
+async function loadGSheetVol() {
+  const pill = document.getElementById('voice-pill');
+  try {
+    pill.textContent += ' · ⏳vol…';
+    const resp = await fetch(GSHEET_VOL_URL);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+    const rows = json.table?.rows || [];
+    let count = 0;
+    rows.forEach(row => {
+      const cells = row.c || [];
+      const thai  = cells[0]?.v?.toString().trim() || '';
+      const roman = cells[1]?.v?.toString().trim() || '';
+      const fr    = cells[2]?.v?.toString().trim() || '';
+      const en    = cells[3]?.v?.toString().trim() || '';
+      if (thai && thai.charAt(0) !== '"') { // ignorer la ligne d'en-tête
+        GSHEET_VOL[thai] = { roman, fr, en };
+        count++;
+      }
+    });
+    pill.textContent = pill.textContent.replace(' · ⏳vol…', '') + ' · 🌐 ' + count;
+    // Enrichir les mots du vocabulaire
+    let updated = false;
+    words.forEach(w => {
+      const v = GSHEET_VOL[w.thai.trim()];
+      if (v) {
+        if (!w.roman   && v.roman) { w.roman   = v.roman; updated = true; }
+        if (!w.meaning && v.fr)    { w.meaning = v.fr;    updated = true; }
+        if (!w.en      && v.en)    { w.en      = v.en;    updated = true; }
+      }
+    });
+    if (updated) { saveWords(); render(); }
+  } catch(e) {
+    pill.textContent = pill.textContent.replace(' · ⏳vol…', '');
+    console.warn('Volubilis Sheet FR non disponible :', e.message);
+  }
+}
+
 // ── Volubilis — source unique de romanisation ──
 async function loadVolubilis() {
   const pill = document.getElementById('voice-pill');
@@ -918,14 +963,17 @@ async function loadVolubilis() {
   }
 }
 
-// ── Lookup : Sheet perso (priorité) → Volubilis ──
+// ── Lookup : Perso (priorité) → Volubilis Sheet FR → Volubilis.json ──
 function lookupDict(thai) {
   if (!thai) return null;
   const c = thai.trim().replace(/[\s\u200B\u200C\u200D\uFEFF]+/g, '');
-  // 1. Sheet perso en priorité
+  // 1. Sheet perso
   const p = GSHEET_PERSO[c] || GSHEET_PERSO[thai.trim()];
   if (p && (p.roman || p.fr || p.en)) return { roman: p.roman, fr: p.fr, en: p.en };
-  // 2. Volubilis
+  // 2. Volubilis Sheet FR (avec traductions françaises)
+  const vf = GSHEET_VOL[c] || GSHEET_VOL[thai.trim()];
+  if (vf && (vf.roman || vf.fr || vf.en)) return { roman: vf.roman, fr: vf.fr, en: vf.en };
+  // 3. Volubilis.json (romanisation + anglais uniquement)
   if (!VOLUBILIS) return null;
   const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
   if (v) return { roman: v[0], fr: '', en: v[1] };
@@ -1913,6 +1961,7 @@ updateTkeyBtn();
 updateWebhookBtn();
 loadVolubilis();
 loadGSheet();
+loadGSheetVol();
 </script>
 </body>
 </html>
