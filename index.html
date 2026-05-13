@@ -838,9 +838,12 @@ async function syncToSheet(word) {
   const url = getWebhookUrl();
   if (!url || !word.thai) return;
   try {
+    // mode no-cors : pas de preflight, fonctionne depuis PWA iOS
+    // La réponse sera opaque mais l'écriture dans le Sheet se fait quand même
     await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' }, // Apps Script accepte text/plain pour éviter les preflight CORS
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ thai: word.thai, roman: word.roman || '', fr: word.meaning || '', en: word.en || '' })
     });
     // Mettre à jour le cache local GSHEET_PERSO
@@ -1058,15 +1061,14 @@ document.getElementById('webhook-save').addEventListener('click', async () => {
   const url = document.getElementById('webhook-input').value.trim();
   try { localStorage.setItem(WEBHOOK_KEY, url); } catch(e) {}
   updateWebhookBtn();
-  // Tester le webhook
   if (url) {
     document.getElementById('webhook-feedback').textContent = '⏳ test en cours…';
     try {
-      const resp = await fetch(url);
-      const data = await resp.json();
-      document.getElementById('webhook-feedback').textContent = data.ok ? '✓ webhook actif !' : '⚠ ' + (data.error || 'réponse inattendue');
+      // Test GET simple — ouvre l'URL dans un iframe invisible
+      await fetch(url, { mode: 'no-cors' });
+      document.getElementById('webhook-feedback').textContent = '✓ webhook enregistré — test sur le Sheet en envoyant un mot';
     } catch(e) {
-      document.getElementById('webhook-feedback').textContent = '⚠ erreur réseau — vérifie l\'URL';
+      document.getElementById('webhook-feedback').textContent = '⚠ erreur — vérifie l\'URL';
     }
   } else {
     document.getElementById('webhook-feedback').textContent = 'URL supprimée';
