@@ -799,6 +799,48 @@ function speak(word) {
   synth.speak(u);
 }
 
+// ── Google Sheet perso — source prioritaire ──
+const GSHEET_ID = '1g3YoB0YbdairgczkfQcfY2L8aTyNK7m4zr737STCbFc';
+const GSHEET_URL = 'https://docs.google.com/spreadsheets/d/' + GSHEET_ID + '/gviz/tq?tqx=out:json';
+let GSHEET_PERSO = {}; // { thai: { roman, fr, en } }
+
+async function loadGSheet() {
+  const pill = document.getElementById('voice-pill');
+  try {
+    const resp = await fetch(GSHEET_URL);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    // Google renvoie du JSONP : google.visualization.Query.setResponse({...})
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+    const rows = json.table?.rows || [];
+    let count = 0;
+    rows.forEach(row => {
+      const cells = row.c || [];
+      const thai  = cells[0]?.v?.toString().trim() || '';
+      const roman = cells[1]?.v?.toString().trim() || '';
+      const fr    = cells[2]?.v?.toString().trim() || '';
+      const en    = cells[3]?.v?.toString().trim() || '';
+      if (thai) { GSHEET_PERSO[thai] = { roman, fr, en }; count++; }
+    });
+    if (count > 0) {
+      pill.textContent += ' · 📝 ' + count + ' perso';
+      // Enrichir les mots du vocabulaire depuis le sheet perso
+      let updated = false;
+      words.forEach(w => {
+        const p = GSHEET_PERSO[w.thai.trim()];
+        if (p) {
+          if (!w.roman   && p.roman) { w.roman   = p.roman; updated = true; }
+          if (!w.meaning && p.fr)    { w.meaning = p.fr;    updated = true; }
+          if (!w.en      && p.en)    { w.en      = p.en;    updated = true; }
+        }
+      });
+      if (updated) { saveWords(); render(); }
+    }
+  } catch(e) {
+    console.warn('Google Sheet perso non disponible :', e.message);
+  }
+}
+
 // ── Volubilis — source unique de romanisation ──
 async function loadVolubilis() {
   const pill = document.getElementById('voice-pill');
@@ -827,12 +869,17 @@ async function loadVolubilis() {
   }
 }
 
-// ── Lookup Volubilis uniquement ──
+// ── Lookup : Sheet perso (priorité) → Volubilis ──
 function lookupDict(thai) {
-  if (!thai || !VOLUBILIS) return null;
+  if (!thai) return null;
   const c = thai.trim().replace(/[\s\u200B\u200C\u200D\uFEFF]+/g, '');
+  // 1. Sheet perso en priorité
+  const p = GSHEET_PERSO[c] || GSHEET_PERSO[thai.trim()];
+  if (p && (p.roman || p.fr || p.en)) return { roman: p.roman, fr: p.fr, en: p.en };
+  // 2. Volubilis
+  if (!VOLUBILIS) return null;
   const v = VOLUBILIS[c] || VOLUBILIS[thai.trim()] || VOLUBILIS[thai];
-  if (v) return { roman: v[0], en: v[1] };
+  if (v) return { roman: v[0], fr: '', en: v[1] };
   return null;
 }
 
@@ -1074,29 +1121,33 @@ async function autoFillKbd(thai) {
     });
   }
 
-  // Romanisation + anglais instantanés depuis Volubilis
+  // Romanisation + FR + EN depuis Sheet perso ou Volubilis
   const d = lookupDict(thai);
   if (d) {
     if (d.roman) document.getElementById('kbd-roman').value = d.roman;
+    if (d.fr)    document.getElementById('kbd-fr').value    = d.fr;
     if (d.en)    document.getElementById('kbd-en').value    = d.en;
   }
 
-  // Traduction FR automatique après 800ms de pause (debounce)
+  // Traduction FR/EN automatique après 800ms — seulement si champs encore vides
   kbdDebounce = setTimeout(async () => {
     const key = getTranslateKey();
     if (!key || !composedWord || composedWord !== thai) return;
     const btn = document.getElementById('kbd-translate');
     btn.textContent = '⏳…'; btn.disabled = true;
-    document.getElementById('kbd-fr').value = '⏳…';
-    if (!d || !d.en) document.getElementById('kbd-en').value = '⏳…';
-    const [resFr, resEn] = await Promise.all([
-      translateThai(thai, 'fr'),
-      translateThai(thai, 'en'),
-    ]);
-    // Vérifier que le mot n'a pas changé pendant l'appel
-    if (composedWord !== thai) return;
-    document.getElementById('kbd-fr').value = resFr.err || resFr.text || '—';
-    if (!d || !d.en) document.getElementById('kbd-en').value = resEn.err || resEn.text || '—';
+    const needFr = !document.getElementById('kbd-fr').value;
+    const needEn = !document.getElementById('kbd-en').value;
+    if (needFr) document.getElementById('kbd-fr').value = '⏳…';
+    if (needEn) document.getElementById('kbd-en').value = '⏳…';
+    const calls = [];
+    if (needFr) calls.push(translateThai(thai, 'fr'));
+    if (needEn) calls.push(translateThai(thai, 'en'));
+    if (calls.length > 0 && composedWord === thai) {
+      const results = await Promise.all(calls);
+      let i = 0;
+      if (needFr) { document.getElementById('kbd-fr').value = results[i].err || results[i].text || '—'; i++; }
+      if (needEn) { document.getElementById('kbd-en').value = results[i].err || results[i].text || '—'; }
+    }
     btn.textContent = '🌐 Traduire en français'; btn.disabled = false;
   }, 800);
 }
@@ -1416,24 +1467,26 @@ async function showResultCard(thai) {
     });
   }
   const d = lookupDict(thai);
-  if (d && d.roman) {
-    document.getElementById('res-roman').value = d.roman;
-    if (d.en) document.getElementById('res-en').value = d.en;
-  } else {
-    document.getElementById('res-roman').value = '';
-  }
+  if (d && d.roman) document.getElementById('res-roman').value = d.roman;
+  if (d && d.en)    document.getElementById('res-en').value    = d.en;
+  if (d && d.fr)    document.getElementById('res-fr').value    = d.fr;
 
-  // 2. Traduction FR + EN automatique via Google Translation
+  // 2. Traduction FR + EN via Google Translation si pas déjà rempli par le Sheet perso
   const key = getTranslateKey();
   if (key) {
-    document.getElementById('res-fr').value = '⏳…';
-    if (!document.getElementById('res-en').value) document.getElementById('res-en').value = '⏳…';
-    const [resFr, resEn] = await Promise.all([
-      translateThai(thai, 'fr'),
-      translateThai(thai, 'en'),
-    ]);
-    document.getElementById('res-fr').value = resFr.err || resFr.text || '—';
-    if (!d || !d.en) document.getElementById('res-en').value = resEn.err || resEn.text || '—';
+    const needFr = !document.getElementById('res-fr').value;
+    const needEn = !document.getElementById('res-en').value;
+    if (needFr) document.getElementById('res-fr').value = '⏳…';
+    if (needEn) document.getElementById('res-en').value = '⏳…';
+    const calls = [];
+    if (needFr) calls.push(translateThai(thai, 'fr'));
+    if (needEn) calls.push(translateThai(thai, 'en'));
+    if (calls.length > 0) {
+      const results = await Promise.all(calls);
+      let i = 0;
+      if (needFr) { document.getElementById('res-fr').value = results[i].err || results[i].text || '—'; i++; }
+      if (needEn) { document.getElementById('res-en').value = results[i].err || results[i].text || '—'; }
+    }
   }
 }
 
@@ -1757,6 +1810,7 @@ buildKeyboard();
 render();
 updateTkeyBtn();
 loadVolubilis();
+loadGSheet();
 </script>
 </body>
 </html>
